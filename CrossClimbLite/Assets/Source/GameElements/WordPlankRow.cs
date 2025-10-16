@@ -3,19 +3,14 @@ using UnityEngine;
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
+    /*
+     * This class stores the code and data (AKA the model) only representation of a word plank (AKA a row of letter slots) in the game grid.
+     * This class is none UI.
+     */
     public class WordPlankRow : MonoBehaviour
     {
-        [field: SerializeField]
-        private LetterSlotInPlank LetterSlotPrefab;
-
-        [field: SerializeField]
-        [field: Min(1.0f)]
-        public float plankSlotSize { get; private set; } = 1.0f;
-
-        //Have a UI Slot Prefab here as well
-
         //the row number of the plank in the game grid - starting from 0
-        private int plankRowNum = 0;
+        private int plankRowOrder = 0;
 
         //total number of letter slots in the plank - default is 4
         private int totalLetterCountInPlank = 4;
@@ -27,9 +22,11 @@ namespace CrossClimbLite
 
         private GameGrid gameGridHoldingPlank;
 
-        public void InitPlank(GameGrid parentGrid, int rowNumOfPlank, int letterCountInPlank)
+        public bool isPlankLocked { get; private set; } = false;
+
+        public void InitPlank(GameGrid parentGrid, int rowOrderOfPlank, int letterCountInPlank, bool isLocked = false)
         {
-            if (!parentGrid || !LetterSlotPrefab)
+            if (!parentGrid)
             {
                 gameObject.SetActive(false);
 
@@ -40,23 +37,35 @@ namespace CrossClimbLite
 
             gameGridHoldingPlank = parentGrid;
 
-            plankRowNum = rowNumOfPlank;
+            plankRowOrder = rowOrderOfPlank;
 
             totalLetterCountInPlank = letterCountInPlank;
 
             letterSlotsInWordPlank = new LetterSlotInPlank[totalLetterCountInPlank];
 
-            for(int i = 0; i < letterSlotsInWordPlank.Length; i++)
+            for (int i = 0; i < letterSlotsInWordPlank.Length; i++)
             {
-                letterSlotsInWordPlank[i].InitSlot(this, i);//NO INSTANCE OF SLOT INSTANTIATED -> WILL CAUSE NULL REFERENCE HERE -> FIX ASAP!!!
+                GameObject letterSlotObj = new GameObject("LetterSlot_" + i);
+
+                letterSlotObj.transform.SetParent(transform);
+
+                letterSlotObj.transform.localPosition = Vector3.zero;
+
+                LetterSlotInPlank letterSlotComp = letterSlotObj.AddComponent<LetterSlotInPlank>();
+
+                letterSlotComp.InitSlot(this, i);
+
+                letterSlotsInWordPlank[i] = letterSlotComp;
             }
 
             currentLetterIndex = 0;
+
+            isPlankLocked = isLocked;
         }
 
         public void WriteLetterToPlankSlot(char letter, int slotIndexToWriteTo = -1)
         {
-            if(letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
+            if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
 
             if (slotIndexToWriteTo >= totalLetterCountInPlank) slotIndexToWriteTo = totalLetterCountInPlank - 1;
 
@@ -69,9 +78,21 @@ namespace CrossClimbLite
             currentLetterIndex++;
         }
 
-        public void SetPlankRowNum(int rowNum)
+        public void SetPlankRowNum(int rowOrder)
         {
-            plankRowNum = rowNum;
+            plankRowOrder = rowOrder;
+        }
+
+        public void SetPlankLockStatus(bool isLocked)
+        {
+            isPlankLocked = isLocked;
+
+            if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
+
+            for (int i = 0; i < letterSlotsInWordPlank.Length; i++)
+            {
+                letterSlotsInWordPlank[i].SetSlotLockStatus(isLocked);
+            }
         }
     }
 }
