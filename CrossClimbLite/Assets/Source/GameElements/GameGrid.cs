@@ -22,8 +22,17 @@ namespace CrossClimbLite
         [field: SerializeField]
         private List<int> rowNumToLockOnStart = new List<int>();
 
+        private WordPlankRow[] wordPlankRowsInGrid;
+
         public void InitGrid()
         {
+            if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
+            {
+                RemoveGrid();
+            }
+
+            wordPlankRowsInGrid = new WordPlankRow[rowNum];
+
             for (int i = 0; i < rowNum; i++)
             {
                 GameObject wordPlankRowObj = new GameObject("WordPlankRow_" + i);
@@ -42,6 +51,21 @@ namespace CrossClimbLite
                     {
                         wordPlankRowComp.SetPlankLockStatus(true);
                     }
+                }
+
+                wordPlankRowsInGrid[i] = wordPlankRowComp;
+            }
+        }
+
+        public void RemoveGrid()
+        {
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if(wordPlankRowsInGrid[i])
+                {
+                    Destroy(wordPlankRowsInGrid[i].gameObject);
                 }
             }
         }
