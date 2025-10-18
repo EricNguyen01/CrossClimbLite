@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using System.Collections.Generic;
 
 namespace CrossClimbLite
 {
@@ -12,7 +13,7 @@ namespace CrossClimbLite
 
         private GameElementBase gameElementLinked;
 
-        public virtual void Awake()
+        protected virtual void Awake()
         {
             if(!TryGetComponent<CanvasGroup>(out elementCanvasGroup))
             {
@@ -27,7 +28,7 @@ namespace CrossClimbLite
             }
         }
 
-        public virtual void InitGameElementUI<T>(T gameElementToLink) where T : GameElementBase
+        protected virtual void InitGameElementUI<T>(T gameElementToLink) where T : GameElementBase
         {
             if (!gameElementLinked)
             {
@@ -45,7 +46,7 @@ namespace CrossClimbLite
             gameElementLinked.OnElementLocked += OnGameElementLocked;
         }
 
-        public virtual void OnDisable()
+        protected virtual void OnDisable()
         {
             if (gameElementLinked)
             {
@@ -55,12 +56,14 @@ namespace CrossClimbLite
             }
         }
 
-        public abstract void OnGameElementUpdated();
+        protected abstract void OnGameElementUpdated();
 
-        public abstract void OnGameElementSelected(bool isSelected);
+        protected abstract void OnGameElementSelected(bool isSelected);
 
-        public virtual void OnGameElementLocked(bool isLocked)
+        protected virtual void OnGameElementLocked(bool isLocked)
         {
+            if (!enabled) return;
+
             if (isLocked)
             {
                 elementCanvasGroup.blocksRaycasts = false;

@@ -16,24 +16,28 @@ namespace CrossClimbLite
 
         //INHERITED FUNCS..................................................................................
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 
             TryGetComponent<TMP_InputField>(out inputField);
         }
 
-        public override void InitGameElementUI<T>(T letterSlotToLink)
+        protected override void InitGameElementUI<T>(T letterSlotToLink)
         {
-            base.InitGameElementUI<T>(letterSlotToLink);    
+            base.InitGameElementUI<T>(letterSlotToLink);
+
+            if (!letterSlotToLink) return;
 
             if (letterSlotToLink is not PlankLetterSlot) return;
 
             linkedPlankLetterSlot = letterSlotToLink as PlankLetterSlot;
         }
 
-        public override void OnGameElementUpdated()
+        protected override void OnGameElementUpdated()
         {
+            if(!enabled) return;
+
             if (!linkedPlankLetterSlot) return;
 
             if(linkedPlankLetterSlot.letter != letter)
@@ -47,8 +51,10 @@ namespace CrossClimbLite
             }
         }
 
-        public override void OnGameElementSelected(bool isSelected)
+        protected override void OnGameElementSelected(bool isSelected)
         {
+            if (!enabled) return;
+
             if (!eventSystem) return;
 
             if (isSelected)
@@ -66,15 +72,19 @@ namespace CrossClimbLite
 
         //UNITY TMP INPUT FIELD EVENT SUBS............................................................
 
-        public void OnLetterSlotSelect(bool isSelected)
+        protected void OnLetterSlotSelect(bool isSelected)
         {
+            if (!enabled) return;
+
             if (!linkedPlankLetterSlot) return;
 
             linkedPlankLetterSlot.SetSlotSelectedStatus(isSelected);
         }
 
-        public void OnLetterSlotValueChanged(string letter)
+        protected void OnLetterSlotValueChanged(string letter)
         {
+            if (!enabled) return;
+
             this.letter = letter;
 
             if (!linkedPlankLetterSlot) return;

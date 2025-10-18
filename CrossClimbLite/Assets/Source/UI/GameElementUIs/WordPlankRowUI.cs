@@ -21,7 +21,7 @@ namespace CrossClimbLite
         //the non-UI word plank row model (where plank row logic is stored)
         private WordPlankRow wordPlankRowLinked;
 
-        public override void Awake()
+        protected override void Awake()
         {
             base.Awake();
 
@@ -30,22 +30,27 @@ namespace CrossClimbLite
                 TryGetComponent<Image>(out wordPlankRowBackgroundImage);
             }
         }
-        public override void InitGameElementUI<T>(T wordPlankRowToLink)
+
+        protected override void InitGameElementUI<T>(T wordPlankRowToLink)
         {
             base.InitGameElementUI<T>(wordPlankRowToLink);
+
+            if (!wordPlankRowLinked) return;
 
             if (wordPlankRowToLink is not WordPlankRow) return;
 
             wordPlankRowLinked = wordPlankRowToLink as WordPlankRow;
         }
 
-        public override void OnGameElementUpdated()
+        protected override void OnGameElementUpdated()
         {
             throw new System.NotImplementedException();
         }
 
-        public override void OnGameElementSelected(bool isSelected)
+        protected override void OnGameElementSelected(bool isSelected)
         {
+            if (!enabled) return;
+
             if (!wordPlankRowBackgroundImage) return;
 
             if (isSelected)
@@ -58,9 +63,11 @@ namespace CrossClimbLite
             wordPlankRowBackgroundImage.color = normalStateColor;
         }
 
-        public override void OnGameElementLocked(bool isLocked)
+        protected override void OnGameElementLocked(bool isLocked)
         {
             base.OnGameElementLocked(isLocked);
+
+            if (!enabled) return;
 
             if (!wordPlankRowBackgroundImage) return;
 

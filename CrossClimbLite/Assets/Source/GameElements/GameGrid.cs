@@ -11,6 +11,8 @@ namespace CrossClimbLite
      */
     public class GameGrid : GameElementBase
     {
+        [field: Header("Game Grid Settings")]
+
         [field: SerializeField]
         [field: Min(1)]
         public int rowNum { get; private set; } = 5;
@@ -22,12 +24,26 @@ namespace CrossClimbLite
         [field: SerializeField]
         private List<int> rowNumToLockOnStart = new List<int>();
 
+        [Space]
+
+        [Header("Game Grid UI")]
+
+        [SerializeField]
+        private GameGridUI gameGridUIPrefabToSpawn;
+
+        [SerializeField]
+        private Canvas canvasToPlaceGameGridUI;
+
+        private GameGridUI gameGridUIInstance;
+
         private WordPlankRow[] wordPlankRowsInGrid;
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
 
         public void InitGrid()
         {
+            SpawnGameGridUI_IfNull();
+
             if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
             {
                 RemoveGrid();
@@ -57,6 +73,8 @@ namespace CrossClimbLite
 
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
             }
+
+            if (gameGridUIInstance) gameGridUIInstance.InitGridUIGameElements();
         }
 
         public void RemoveGrid()
@@ -70,6 +88,8 @@ namespace CrossClimbLite
                     Destroy(wordPlankRowsInGrid[i].gameObject);
                 }
             }
+
+            if (gameGridUIInstance) gameGridUIInstance.RemoveGridUIGameElements();
         }
 
         public void SetCurrentPlankRowSelected(WordPlankRow selectedPlankRow)
@@ -87,6 +107,22 @@ namespace CrossClimbLite
 
                 currentPlankBeingSelected = selectedPlankRow;
             }
+        }
+
+        private void SpawnGameGridUI_IfNull()
+        {
+            if (!gameGridUIPrefabToSpawn) return;
+
+            if (gameGridUIInstance) return;
+
+            if (!canvasToPlaceGameGridUI)
+            {
+                canvasToPlaceGameGridUI = FindAnyObjectByType<Canvas>();
+            }
+
+            if (!canvasToPlaceGameGridUI) return;
+
+            gameGridUIInstance = Instantiate(gameGridUIPrefabToSpawn, canvasToPlaceGameGridUI.transform);
         }
     }
 }
