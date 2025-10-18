@@ -9,7 +9,7 @@ namespace CrossClimbLite
      * This class stores the code and data (AKA the model) only representation of a game grid (where word planks or rows are placed).
      * This class is none UI.
      */
-    public class GameGrid : MonoBehaviour
+    public class GameGrid : GameElementBase
     {
         [field: SerializeField]
         [field: Min(1)]
@@ -23,6 +23,8 @@ namespace CrossClimbLite
         private List<int> rowNumToLockOnStart = new List<int>();
 
         private WordPlankRow[] wordPlankRowsInGrid;
+
+        public WordPlankRow currentPlankBeingSelected { get; private set; }
 
         public void InitGrid()
         {
@@ -67,6 +69,23 @@ namespace CrossClimbLite
                 {
                     Destroy(wordPlankRowsInGrid[i].gameObject);
                 }
+            }
+        }
+
+        public void SetCurrentPlankRowSelected(WordPlankRow selectedPlankRow)
+        {
+            if (!currentPlankBeingSelected)
+            {
+                currentPlankBeingSelected = selectedPlankRow;
+
+                return;
+            }
+
+            if (currentPlankBeingSelected && selectedPlankRow != currentPlankBeingSelected)
+            {
+                currentPlankBeingSelected.SetPlankRowSelectedStatus(false);
+
+                currentPlankBeingSelected = selectedPlankRow;
             }
         }
     }
