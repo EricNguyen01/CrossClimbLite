@@ -10,6 +10,8 @@ namespace CrossClimbLite
         //the non-UI plank letter slot model (where slot logic is stored)
         private PlankLetterSlot linkedPlankLetterSlot;
 
+        private Image letterSlotImage;
+
         private TMP_InputField inputField;
 
         private string letter;
@@ -20,18 +22,36 @@ namespace CrossClimbLite
         {
             base.Awake();
 
-            TryGetComponent<TMP_InputField>(out inputField);
+            if (!inputField)
+            {
+                if (!TryGetComponent<TMP_InputField>(out inputField))
+                {
+                    inputField = GetComponentInChildren<TMP_InputField>();
+                }
+            }
         }
 
-        protected override void InitGameElementUI<T>(T letterSlotToLink)
+        public override void InitGameElementUI(GameElementBase letterSlotToLink)
         {
-            base.InitGameElementUI<T>(letterSlotToLink);
+            base.InitGameElementUI(letterSlotToLink);
 
             if (!letterSlotToLink) return;
 
             if (letterSlotToLink is not PlankLetterSlot) return;
 
             linkedPlankLetterSlot = letterSlotToLink as PlankLetterSlot;
+
+            if (linkedPlankLetterSlot.isSlotLocked) OnGameElementLocked(true);
+
+            if (!inputField)
+            {
+                Debug.LogError("An TMP_InputField component ref is required for this plank letter slot UI: " + name +
+                               " but was not found! Disabling object...");
+
+                gameObject.SetActive(false);
+
+                enabled = false;
+            }
         }
 
         protected override void OnGameElementUpdated()
@@ -51,28 +71,53 @@ namespace CrossClimbLite
             }
         }
 
+        protected override void OnGameElementLocked(bool isLocked)
+        {
+            base.OnGameElementLocked(isLocked);
+
+            if (!enabled) return;
+
+            if (!elementCanvasGroup) return;
+
+            if (isLocked)
+            {
+                elementCanvasGroup.alpha = 0.2f;
+
+                return;
+            }
+
+            elementCanvasGroup.alpha = 1.0f;
+        }
+
         protected override void OnGameElementSelected(bool isSelected)
         {
+            base.OnGameElementSelected(isSelected);
+
             if (!enabled) return;
 
             if (!eventSystem) return;
 
             if (isSelected)
             {
-                eventSystem.SetSelectedGameObject(gameObject);
+                if (eventSystem.currentSelectedGameObject == inputField.gameObject) 
+                    return;
+
+                Debug.Log("ES Current Selected: " + eventSystem.currentSelectedGameObject.name);
+
+                //eventSystem.SetSelectedGameObject(gameObject);
 
                 return;
             }
 
-            if (eventSystem.currentSelectedGameObject == gameObject)
+            if (eventSystem.currentSelectedGameObject == inputField.gameObject)
             {
                 eventSystem.SetSelectedGameObject(null);
             }
         }
 
-        //UNITY TMP INPUT FIELD EVENT SUBS............................................................
+        //UNITY TMPro UI INPUT FIELD EVENT SUBS............................................................
 
-        protected void OnLetterSlotSelect(bool isSelected)
+        public void OnLetterSlotSelect(bool isSelected)
         {
             if (!enabled) return;
 
@@ -81,7 +126,7 @@ namespace CrossClimbLite
             linkedPlankLetterSlot.SetSlotSelectedStatus(isSelected);
         }
 
-        protected void OnLetterSlotValueChanged(string letter)
+        public void OnLetterSlotValueChanged(string letter)
         {
             if (!enabled) return;
 

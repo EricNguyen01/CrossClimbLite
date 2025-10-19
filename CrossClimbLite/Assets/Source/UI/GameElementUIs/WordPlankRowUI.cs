@@ -31,24 +31,28 @@ namespace CrossClimbLite
             }
         }
 
-        protected override void InitGameElementUI<T>(T wordPlankRowToLink)
+        public override void InitGameElementUI(GameElementBase wordPlankRowToLink)
         {
-            base.InitGameElementUI<T>(wordPlankRowToLink);
+            base.InitGameElementUI(wordPlankRowToLink);
 
-            if (!wordPlankRowLinked) return;
+            if (!wordPlankRowToLink) return;
 
             if (wordPlankRowToLink is not WordPlankRow) return;
 
             wordPlankRowLinked = wordPlankRowToLink as WordPlankRow;
+
+            if (wordPlankRowLinked.isPlankLocked) OnGameElementLocked(true);
         }
 
         protected override void OnGameElementUpdated()
         {
-            throw new System.NotImplementedException();
+            
         }
 
         protected override void OnGameElementSelected(bool isSelected)
         {
+            base.OnGameElementSelected(isSelected);
+
             if (!enabled) return;
 
             if (!wordPlankRowBackgroundImage) return;

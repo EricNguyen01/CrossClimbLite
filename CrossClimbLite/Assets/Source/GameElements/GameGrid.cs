@@ -21,8 +21,19 @@ namespace CrossClimbLite
         [field: Min(4)]
         public int columnNum { get; private set; } = 4;
 
+        [Space]
+
+        [field: HelpBox("Define the row number to lock on game start. Row num starts from 0 to RowNum - 1. " +
+                 "Should not contain duplicate row nums.",
+                 UnityEngine.UIElements.HelpBoxMessageType.Info)]
+
         [field: SerializeField]
         private List<int> rowNumToLockOnStart = new List<int>();
+
+        //use for rowNumToLockOnStart above list data validation - editor only and not gameplay related!
+        [SerializeField]
+        [HideInInspector]
+        private List<int> validRowNumToLock = new List<int>();
 
         [Space]
 
@@ -36,9 +47,24 @@ namespace CrossClimbLite
 
         private GameGridUI gameGridUIInstance;
 
-        private WordPlankRow[] wordPlankRowsInGrid;
+        [field: SerializeField]
+        [field: HideInInspector]
+        public WordPlankRow[] wordPlankRowsInGrid { get; private set; }
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
+
+        private void OnValidate()
+        {
+            ValidateRowNumToLockOnStartData();
+        }
+
+        private void Start()
+        {
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0)
+            {
+                InitGrid();
+            }
+        }
 
         public void InitGrid()
         {
@@ -50,8 +76,8 @@ namespace CrossClimbLite
             }
 
             wordPlankRowsInGrid = new WordPlankRow[rowNum];
-
-            for (int i = 0; i < rowNum; i++)
+            
+            for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
                 GameObject wordPlankRowObj = new GameObject("WordPlankRow_" + i);
 
@@ -74,7 +100,7 @@ namespace CrossClimbLite
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
             }
 
-            if (gameGridUIInstance) gameGridUIInstance.InitGridUIGameElements();
+            if (gameGridUIInstance) gameGridUIInstance.OnGameGridInitOrRemove();
         }
 
         public void RemoveGrid()
@@ -85,11 +111,15 @@ namespace CrossClimbLite
             {
                 if(wordPlankRowsInGrid[i])
                 {
-                    Destroy(wordPlankRowsInGrid[i].gameObject);
+                    if (Application.isEditor) DestroyImmediate(wordPlankRowsInGrid[i].gameObject);
+
+                    else if(Application.isPlaying) Destroy(wordPlankRowsInGrid[i].gameObject);
                 }
             }
 
-            if (gameGridUIInstance) gameGridUIInstance.RemoveGridUIGameElements();
+            wordPlankRowsInGrid = new WordPlankRow[rowNum];
+
+            if (gameGridUIInstance) gameGridUIInstance.OnGameGridInitOrRemove();
         }
 
         public void SetCurrentPlankRowSelected(WordPlankRow selectedPlankRow)
@@ -120,9 +150,148 @@ namespace CrossClimbLite
                 canvasToPlaceGameGridUI = FindAnyObjectByType<Canvas>();
             }
 
-            if (!canvasToPlaceGameGridUI) return;
+            if (!canvasToPlaceGameGridUI)
+            {
+                Debug.LogError("Could not find a valid UI Canvas to spawn the game grid layout under!");
+
+                return;
+            }
 
             gameGridUIInstance = Instantiate(gameGridUIPrefabToSpawn, canvasToPlaceGameGridUI.transform);
+
+            gameGridUIInstance.InitGameElementUI(this);
+        }
+
+        //EDITOR FUNCS...............................................................................................
+
+        private void ValidateRowNumToLockOnStartData()
+        {
+            if (rowNumToLockOnStart.Count == 0)
+            {
+                if (validRowNumToLock.Count != 0)
+                    validRowNumToLock.Clear();
+
+                return;
+            }
+
+            if (rowNumToLockOnStart.Count - validRowNumToLock.Count == 1)
+            {
+                if(rowNumToLockOnStart.Count == 1)
+                {
+                    if (validRowNumToLock.Count > 0) validRowNumToLock.Clear();
+
+                    validRowNumToLock.Add(rowNumToLockOnStart[rowNumToLockOnStart.Count - 1]);
+
+                    return;
+                }
+
+                int newRowNumToAdd = -1;
+
+                for(int i = 0; i < rowNum; i++)
+                {
+                    if (rowNumToLockOnStart.Contains(i)) continue;
+
+                    newRowNumToAdd = i;
+
+                    break;
+                }
+
+                if (newRowNumToAdd == -1)
+                {
+                    rowNumToLockOnStart.Clear();
+
+                    rowNumToLockOnStart.AddRange(validRowNumToLock);
+
+                    return;
+                }
+
+                rowNumToLockOnStart[rowNumToLockOnStart.Count - 1] = newRowNumToAdd;
+
+                validRowNumToLock.Add(rowNumToLockOnStart[rowNumToLockOnStart.Count - 1]);
+
+                return;
+            }
+
+            if (rowNumToLockOnStart.Count == 1 && validRowNumToLock.Count == 1)
+            {
+                if (rowNumToLockOnStart[0] < 0) rowNumToLockOnStart[0] = 0;
+
+                if (rowNumToLockOnStart[0] > rowNum - 1) rowNumToLockOnStart[0] = rowNum - 1;
+
+                if (validRowNumToLock[0] != rowNumToLockOnStart[0])
+                    validRowNumToLock[0] = rowNumToLockOnStart[0];
+
+                return;
+            }
+
+            if (rowNumToLockOnStart.Count < validRowNumToLock.Count)
+            {
+                validRowNumToLock.Clear();
+
+                validRowNumToLock.AddRange(rowNumToLockOnStart);
+
+                return;
+            }
+
+            List<int> temp = new List<int>();
+
+            for (int i = 0; i < rowNumToLockOnStart.Count; i++)
+            {
+                if (rowNumToLockOnStart[i] < 0) rowNumToLockOnStart[i] = 0;
+
+                if (rowNumToLockOnStart[i] > rowNum - 1) rowNumToLockOnStart[i] = rowNum - 1;
+
+                if (temp.Contains(rowNumToLockOnStart[i])) continue;
+
+                temp.Add(rowNumToLockOnStart[i]);
+            }
+
+            if(temp.Count > 0)
+            {
+                validRowNumToLock.Clear();
+
+                rowNumToLockOnStart.Clear();
+
+                validRowNumToLock.AddRange(temp);
+
+                rowNumToLockOnStart.AddRange(temp);
+            }
+        }
+
+        //EDITOR CLASS...............................................................................
+
+        [CustomEditor(typeof(GameGrid))]
+        private class GameGridEditor : Editor
+        {
+            private GameGrid gameGrid;
+
+            private void OnEnable()
+            {
+                gameGrid = (GameGrid)target;
+            }
+
+            public override void OnInspectorGUI()
+            {
+                DrawDefaultInspector();
+
+                EditorGUILayout.Space(12);
+
+                EditorGUILayout.HelpBox("Generating the grid removes the current game grid and its layout", MessageType.Info);
+
+                //Create a custom inspector button to execute the generation of the game grid layout in the editor.
+                using (new EditorGUI.DisabledGroupScope(Application.isPlaying))
+                {
+                    if (GUILayout.Button("Generate Grid Model and UI View"))//On Generate Grid button pressed:...
+                    {
+                        gameGrid.InitGrid();
+                    }
+
+                    if (GUILayout.Button("Remove Grid Layout and UI"))//On Generate Grid button pressed:...
+                    {
+                        gameGrid.RemoveGrid();
+                    }
+                }
+            }
         }
     }
 }

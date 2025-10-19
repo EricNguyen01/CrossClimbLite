@@ -200,7 +200,6 @@ GameObject:
   - component: {fileID: 7498484685025224074}
   - component: {fileID: 5673043557709213752}
   - component: {fileID: 2266470243844288269}
-  - component: {fileID: 8000971156755460864}
   m_Layer: 5
   m_Name: CharInput
   m_TagString: Untagged
@@ -334,7 +333,7 @@ MonoBehaviour:
   m_OnSelect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8000971156755460864}
+      - m_Target: {fileID: 6383469140206142761}
         m_TargetAssemblyTypeName: CrossClimbLite.PlankLetterSlotUI, Assembly-CSharp
         m_MethodName: OnLetterSlotSelect
         m_Mode: 6
@@ -349,7 +348,7 @@ MonoBehaviour:
   m_OnDeselect:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8000971156755460864}
+      - m_Target: {fileID: 6383469140206142761}
         m_TargetAssemblyTypeName: CrossClimbLite.PlankLetterSlotUI, Assembly-CSharp
         m_MethodName: OnLetterSlotSelect
         m_Mode: 6
@@ -370,7 +369,7 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 8000971156755460864}
+      - m_Target: {fileID: 6383469140206142761}
         m_TargetAssemblyTypeName: CrossClimbLite.PlankLetterSlotUI, Assembly-CSharp
         m_MethodName: OnLetterSlotValueChanged
         m_Mode: 5
@@ -415,18 +414,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!114 &8000971156755460864
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5333597109053822339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ec745500b04bb24f993cef2acfbbd33, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &8675781760501116763
 GameObject:
   m_ObjectHideFlags: 0
@@ -438,6 +425,7 @@ GameObject:
   - component: {fileID: 796570989633482778}
   - component: {fileID: 8636237465440463904}
   - component: {fileID: 4034783719559029871}
+  - component: {fileID: 6383469140206142761}
   m_Layer: 5
   m_Name: PlankSlot
   m_TagString: Untagged
@@ -460,9 +448,9 @@ RectTransform:
   - {fileID: 2377261035622517053}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 958.09985, y: -540}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8636237465440463904
@@ -503,3 +491,15 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6383469140206142761
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8675781760501116763}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ec745500b04bb24f993cef2acfbbd33, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

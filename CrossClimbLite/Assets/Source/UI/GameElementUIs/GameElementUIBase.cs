@@ -7,6 +7,14 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public abstract class GameElementUIBase : MonoBehaviour
     {
+        [SerializeField]
+        [ReadOnlyInspector]
+        private bool isSelected = false;
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        private bool isLocked = false;
+
         protected CanvasGroup elementCanvasGroup;
 
         protected EventSystem eventSystem;
@@ -28,9 +36,9 @@ namespace CrossClimbLite
             }
         }
 
-        protected virtual void InitGameElementUI<T>(T gameElementToLink) where T : GameElementBase
+        public virtual void InitGameElementUI(GameElementBase gameElementToLink)
         {
-            if (!gameElementLinked)
+            if (!gameElementToLink)
             {
                 gameObject.SetActive(false);
 
@@ -41,6 +49,8 @@ namespace CrossClimbLite
 
             gameElementLinked = gameElementToLink;
 
+            gameElementLinked.OnElementUpdated += OnGameElementUpdated;
+
             gameElementLinked.OnElementSelected += OnGameElementSelected;
 
             gameElementLinked.OnElementLocked += OnGameElementLocked;
@@ -50,6 +60,8 @@ namespace CrossClimbLite
         {
             if (gameElementLinked)
             {
+                gameElementLinked.OnElementUpdated -= OnGameElementUpdated;
+
                 gameElementLinked.OnElementSelected -= OnGameElementSelected;
 
                 gameElementLinked.OnElementLocked -= OnGameElementLocked;
@@ -58,11 +70,18 @@ namespace CrossClimbLite
 
         protected abstract void OnGameElementUpdated();
 
-        protected abstract void OnGameElementSelected(bool isSelected);
+        protected virtual void OnGameElementSelected(bool isSelected)
+        {
+            if (!enabled) return;
+
+            this.isSelected = isSelected;
+        }
 
         protected virtual void OnGameElementLocked(bool isLocked)
         {
             if (!enabled) return;
+
+            this.isLocked = isLocked;
 
             if (isLocked)
             {

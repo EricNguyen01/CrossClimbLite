@@ -1,11 +1,14 @@
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
     public class GameGridUI : GameElementUIBase
     {
+        [Header("Required Game UI Prefabs")]
+
         [SerializeField]
         private WordPlankRowUI wordPlankUIPrefabToSpawn;
 
@@ -16,9 +19,34 @@ namespace CrossClimbLite
 
         private List<PlankLetterSlotUI> letterSlotUISpawned = new List<PlankLetterSlotUI>();
 
+        [Header("Spawn Specifications")]
+
+        [SerializeField]
+        private VerticalLayoutGroup verticalGroupToSpawnPlanksUnder;
+
         private GameGrid gameGridLinked;
 
-        protected override void InitGameElementUI<T>(T gameGridToLink)
+        protected override void Awake()
+        {
+            base.Awake();
+
+            if (!verticalGroupToSpawnPlanksUnder)
+            {
+                TryGetComponent<VerticalLayoutGroup>(out verticalGroupToSpawnPlanksUnder);
+            }
+
+            if (!verticalGroupToSpawnPlanksUnder)
+            {
+                verticalGroupToSpawnPlanksUnder = GetComponentInChildren<VerticalLayoutGroup>();
+            }
+
+            if (!verticalGroupToSpawnPlanksUnder)
+            {
+                Debug.LogError("Warning, missing vertical layout group ref on: " + name + ". Game UI will not work correctly!");
+            }
+        }
+
+        public override void InitGameElementUI(GameElementBase gameGridToLink)
         {
             base.InitGameElementUI(gameGridToLink);
 
@@ -29,24 +57,89 @@ namespace CrossClimbLite
             gameGridLinked = gameGridToLink as GameGrid;
         }
 
-        public void InitGridUIGameElements()
-        {
-
-        }
-
-        public void RemoveGridUIGameElements()
-        {
-
-        }
-
-        protected override void OnGameElementSelected(bool isSelected)
-        {
-            
-        }
-
         protected override void OnGameElementUpdated()
         {
             
+        }
+
+        public void OnGameGridInitOrRemove()
+        {
+            if (!gameGridLinked) return;
+
+            if (gameGridLinked.wordPlankRowsInGrid == null || gameGridLinked.wordPlankRowsInGrid.Length == 0)
+            {
+                RemoveCurrentGridUILayout();
+
+                return;
+            }
+
+            if (gameGridLinked.wordPlankRowsInGrid != null && gameGridLinked.wordPlankRowsInGrid.Length > 0)
+            {
+                SpawnNewGridUILayoutFollowingGridLinkedLayout();
+            }
+        }
+
+        private void SpawnNewGridUILayoutFollowingGridLinkedLayout()
+        {
+            if (!verticalGroupToSpawnPlanksUnder) return;
+
+            if(plankUISpawned == null) plankUISpawned = new List<WordPlankRowUI>();
+
+            if (letterSlotUISpawned == null) letterSlotUISpawned = new List<PlankLetterSlotUI>();
+
+            if (plankUISpawned != null && plankUISpawned.Count > 0)
+            {
+                RemoveCurrentGridUILayout();
+            }
+
+            if (gameGridLinked.wordPlankRowsInGrid == null || gameGridLinked.wordPlankRowsInGrid.Length == 0) return;
+
+            for(int i = 0; i < gameGridLinked.wordPlankRowsInGrid.Length; i++)
+            {
+                if (!gameGridLinked.wordPlankRowsInGrid[i]) continue;
+
+                WordPlankRow rowModel = gameGridLinked.wordPlankRowsInGrid[i];
+
+                GameObject rowUIObj = Instantiate(wordPlankUIPrefabToSpawn.gameObject, verticalGroupToSpawnPlanksUnder.transform);
+
+                rowUIObj.name = rowUIObj.name + "_" + i;
+
+                WordPlankRowUI rowUI = rowUIObj.GetComponent<WordPlankRowUI>();
+
+                if (rowUI) rowUI.InitGameElementUI(rowModel);
+
+                if (gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank == null ||
+                    gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank.Length == 0) continue;
+
+                PlankLetterSlot[] letterSlotModels = gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank;
+
+                for (int j = 0; j < letterSlotModels.Length; j++)
+                {
+                    if (!letterSlotModels[j]) continue;
+
+                    GameObject letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, rowUI.transform);
+
+                    letterSlotUIObj.name = letterSlotUIObj.name + "_" + j;
+
+                    PlankLetterSlotUI letterSlotUI = letterSlotUIObj.GetComponent<PlankLetterSlotUI>();
+
+                    if(letterSlotUI) letterSlotUI.InitGameElementUI(letterSlotModels[j]);
+                }
+            }
+        }
+
+        private void RemoveCurrentGridUILayout()
+        {
+            if (plankUISpawned == null || plankUISpawned.Count == 0) return;
+
+            for (int i = 0; i < plankUISpawned.Count; i++)
+            {
+                if (!plankUISpawned[i]) continue;
+
+                if (Application.isEditor) DestroyImmediate(plankUISpawned[i]);
+
+                else if(Application.isPlaying) Destroy(plankUISpawned[i]);
+            }
         }
     }
 }
