@@ -93,12 +93,15 @@ namespace CrossClimbLite
         {
             if (!gameGridHoldingPlank) return;
 
+            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
+            if (isPlankRowSelected == isSelected) return;
+
+            isPlankRowSelected = isSelected;
+
             if (isSelected)
             {
                 gameGridHoldingPlank.SetCurrentPlankRowSelected(this);
             }
-
-            isPlankRowSelected = isSelected;
 
             InvokeOnElementSelectedEvent(isSelected);
         }
@@ -110,6 +113,9 @@ namespace CrossClimbLite
 
         public void SetPlankLockStatus(bool isLocked)
         {
+            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
+            if (isPlankLocked == isLocked) return;   
+
             isPlankLocked = isLocked;
 
             if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;

@@ -10,8 +10,6 @@ namespace CrossClimbLite
         //the non-UI plank letter slot model (where slot logic is stored)
         private PlankLetterSlot linkedPlankLetterSlot;
 
-        private Image letterSlotImage;
-
         private TMP_InputField inputField;
 
         private string letter;
@@ -97,20 +95,24 @@ namespace CrossClimbLite
 
             if (!eventSystem) return;
 
+            if (!inputField) return;
+
             if (isSelected)
             {
                 if (eventSystem.currentSelectedGameObject == inputField.gameObject) 
                     return;
 
-                Debug.Log("ES Current Selected: " + eventSystem.currentSelectedGameObject.name);
-
-                //eventSystem.SetSelectedGameObject(gameObject);
+                Debug.Log("Game Element UI Selected: " + name);
+                
+                eventSystem.SetSelectedGameObject(inputField.gameObject);
 
                 return;
             }
 
             if (eventSystem.currentSelectedGameObject == inputField.gameObject)
             {
+                Debug.Log("Game Element UI DeSelected: " + name);
+
                 eventSystem.SetSelectedGameObject(null);
             }
         }
@@ -123,28 +125,24 @@ namespace CrossClimbLite
 
             if (!linkedPlankLetterSlot) return;
 
+            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
+            if (this.isSelected == isSelected) return;
+            
             linkedPlankLetterSlot.SetSlotSelectedStatus(isSelected);
         }
 
-        public void OnLetterSlotValueChanged(string letter)
+        public void OnLetterSlotValueChanged()
         {
             if (!enabled) return;
 
-            this.letter = letter;
-
             if (!linkedPlankLetterSlot) return;
+
+            if (!inputField) return;
 
             if (letter == string.Empty || string.IsNullOrWhiteSpace(letter))
             {
-                if (inputField)
-                {
-                    linkedPlankLetterSlot.WriteLetterToSlot(inputField.text);
-
-                    return;
-                }
+                linkedPlankLetterSlot.WriteLetterToSlot(inputField.text);
             }
-
-            linkedPlankLetterSlot.WriteLetterToSlot(letter);
         }
     }
 }

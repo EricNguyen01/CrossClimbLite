@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using System.Collections.Generic;
 
 namespace CrossClimbLite
 {
@@ -9,11 +8,11 @@ namespace CrossClimbLite
     {
         [SerializeField]
         [ReadOnlyInspector]
-        private bool isSelected = false;
+        protected bool isSelected = false;
 
         [SerializeField]
         [ReadOnlyInspector]
-        private bool isLocked = false;
+        protected bool isLocked = false;
 
         protected CanvasGroup elementCanvasGroup;
 

@@ -47,17 +47,23 @@ namespace CrossClimbLite
 
         public void SetSlotSelectedStatus(bool isSelected)
         {
+            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
+            if (isSlotSelected == isSelected) return;
+
             isSlotSelected = isSelected;
 
             if (!wordPlankOfSlot) return;
 
-            if(!wordPlankOfSlot.isPlankRowSelected) wordPlankOfSlot.SetPlankRowSelectedStatus(true);
+            if(isSelected && !wordPlankOfSlot.isPlankRowSelected) wordPlankOfSlot.SetPlankRowSelectedStatus(true);
 
             InvokeOnElementSelectedEvent(isSelected);
         }
 
         public void SetSlotLockStatus(bool isLocked)
         {
+            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
+            if(isSlotLocked == isLocked) return;
+
             if (wordPlankOfSlot)
             {
                 if (!wordPlankOfSlot.isPlankLocked && isLocked) return;
