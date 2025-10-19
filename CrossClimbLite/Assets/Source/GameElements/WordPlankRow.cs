@@ -111,6 +111,15 @@ namespace CrossClimbLite
             plankRowOrder = rowOrder;
         }
 
+        public void SetCurrentLetterSlotIndex(int slotIndexToSet)
+        {
+            if (slotIndexToSet < 0) slotIndexToSet = 0;
+
+            if (slotIndexToSet >= totalLetterCountInPlank - 1) slotIndexToSet = totalLetterCountInPlank - 1;
+
+            currentLetterIndex = slotIndexToSet;
+        }
+
         public void SetPlankLockStatus(bool isLocked)
         {
             //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!

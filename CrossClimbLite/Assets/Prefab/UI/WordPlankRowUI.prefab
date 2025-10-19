@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 4877269766961845047}
   - component: {fileID: 2505475709865451877}
   m_Layer: 5
-  m_Name: WordPlankRowUIPrefab
+  m_Name: WordPlankRowUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

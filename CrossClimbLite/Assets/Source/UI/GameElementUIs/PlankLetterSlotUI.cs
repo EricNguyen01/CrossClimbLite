@@ -12,7 +12,7 @@ namespace CrossClimbLite
 
         private TMP_InputField inputField;
 
-        private string letter;
+        //private string letter;
 
         //INHERITED FUNCS..................................................................................
 
@@ -58,14 +58,11 @@ namespace CrossClimbLite
 
             if (!linkedPlankLetterSlot) return;
 
-            if(linkedPlankLetterSlot.letter != letter)
-            {
-                letter = linkedPlankLetterSlot.letter;
+            if (!inputField) return;
 
-                if (inputField)
-                {
-                    inputField.text = linkedPlankLetterSlot.letter;
-                }
+            if(inputField.text != linkedPlankLetterSlot.letter)
+            {
+                inputField.text = linkedPlankLetterSlot.letter;
             }
         }
 
@@ -102,19 +99,16 @@ namespace CrossClimbLite
                 if (eventSystem.currentSelectedGameObject == inputField.gameObject) 
                     return;
 
-                Debug.Log("Game Element UI Selected: " + name);
+                //Debug.Log("Game Element UI Selected: " + name);
+
+                inputField.Select();
                 
-                eventSystem.SetSelectedGameObject(inputField.gameObject);
+                //eventSystem.SetSelectedGameObject(inputField.gameObject);
 
                 return;
             }
 
-            if (eventSystem.currentSelectedGameObject == inputField.gameObject)
-            {
-                Debug.Log("Game Element UI DeSelected: " + name);
-
-                eventSystem.SetSelectedGameObject(null);
-            }
+            inputField.ReleaseSelection();
         }
 
         //UNITY TMPro UI INPUT FIELD EVENT SUBS............................................................
@@ -127,7 +121,7 @@ namespace CrossClimbLite
 
             //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
             if (this.isSelected == isSelected) return;
-            
+
             linkedPlankLetterSlot.SetSlotSelectedStatus(isSelected);
         }
 
@@ -138,11 +132,8 @@ namespace CrossClimbLite
             if (!linkedPlankLetterSlot) return;
 
             if (!inputField) return;
-
-            if (letter == string.Empty || string.IsNullOrWhiteSpace(letter))
-            {
-                linkedPlankLetterSlot.WriteLetterToSlot(inputField.text);
-            }
+           
+            linkedPlankLetterSlot.WriteLetterToSlot(inputField.text);
         }
     }
 }

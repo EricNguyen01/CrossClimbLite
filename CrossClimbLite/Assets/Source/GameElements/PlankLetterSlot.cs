@@ -56,6 +56,8 @@ namespace CrossClimbLite
 
             if(isSelected && !wordPlankOfSlot.isPlankRowSelected) wordPlankOfSlot.SetPlankRowSelectedStatus(true);
 
+            wordPlankOfSlot.SetCurrentLetterSlotIndex(slotIndexInPlank);
+
             InvokeOnElementSelectedEvent(isSelected);
         }
 

@@ -427,7 +427,7 @@ GameObject:
   - component: {fileID: 4034783719559029871}
   - component: {fileID: 6383469140206142761}
   m_Layer: 5
-  m_Name: PlankSlot
+  m_Name: PlankSlotUI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
