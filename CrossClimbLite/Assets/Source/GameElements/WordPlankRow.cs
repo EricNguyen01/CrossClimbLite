@@ -5,7 +5,7 @@ namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
     /*
-     * This class stores the code and data (AKA the model) only representation of a word plank (AKA a row of letter slots) in the game grid.
+     * This class stores the code and data (AKA the Modal) only representation of a word plank (AKA a row of letter slots) in the game grid.
      * This class is none UI.
      */
     public class WordPlankRow : GameElementBase
@@ -25,9 +25,14 @@ namespace CrossClimbLite
 
         public bool isPlankRowSelected { get; private set; } = false;
 
+        public bool isPlankKeyword { get; private set; } = false;
+
         public bool isPlankLocked { get; private set; } = false;
 
-        public void InitPlank(GameGrid parentGrid, int rowOrderOfPlank, int letterCountInPlank, bool isLocked = false)
+        //plank dragable is determined by whether it's locked or not
+        public bool isPlankDragable { get; private set; } = true;
+
+        public void InitPlank(GameGrid parentGrid, int rowOrderOfPlank, int letterCountInPlank, bool isKeyword = false, bool isLocked = false)
         {
             if (!parentGrid)
             {
@@ -64,6 +69,22 @@ namespace CrossClimbLite
             currentLetterIndex = 0;
 
             isPlankLocked = isLocked;
+
+            isPlankDragable = isLocked;
+
+            isPlankKeyword = isKeyword;
+
+            if (isKeyword)
+            {
+                if(gameElementUILinked && gameElementUILinked is WordPlankRowUI)
+                {
+                    WordPlankRowUI rowUI = gameElementUILinked as WordPlankRowUI;
+                    
+                    rowUI.UpdateUI_PlankModalIsKeyword(isKeyword);
+                }
+            }
+
+            if(isLocked) SetGameElementLockedStatus(true, false);
         }
 
         public void SelectNextLetterSlotIndexOnPreviousSlotFilled(int slotIndexToSet)
@@ -100,7 +121,7 @@ namespace CrossClimbLite
                 gameGridHoldingPlank.SetCurrentPlankRowSelected(this);
             }
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelSelected(isSelected);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
         }
 
         public void SetPlankRowNum(int rowOrder)
@@ -121,6 +142,8 @@ namespace CrossClimbLite
         {
             isPlankLocked = isLocked;
 
+            isPlankDragable = isLocked;
+
             if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
 
             for (int i = 0; i < letterSlotsInWordPlank.Length; i++)
@@ -130,7 +153,7 @@ namespace CrossClimbLite
                 letterSlotsInWordPlank[i].SetGameElementLockedStatus(isLocked, false);
             }
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelLocked(isLocked);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }
     }
 }

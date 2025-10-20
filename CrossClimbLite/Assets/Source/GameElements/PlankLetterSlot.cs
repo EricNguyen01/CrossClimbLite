@@ -5,7 +5,7 @@ namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
     /*
-     * This class stores the code and data (AKA the model) only representation of a letter slot within a word plank (AKA a row of letter slots) in the game grid.
+     * This class stores the code and data (AKA the Modal) only representation of a letter slot within a word plank (AKA a row of letter slots) in the game grid.
      * This class is none UI.
      */
     public class PlankLetterSlot : GameElementBase
@@ -50,7 +50,7 @@ namespace CrossClimbLite
                 {
                     PlankLetterSlotUI letterSlotUI = gameElementUILinked as PlankLetterSlotUI;
 
-                    letterSlotUI.UpdateUI_OnModelLetterChanged(letter);
+                    letterSlotUI.UpdateUI_OnModalLetterChanged(letter);
                 }
             }
         }
@@ -66,7 +66,7 @@ namespace CrossClimbLite
                 wordPlankOfSlot.SetCurrentLetterSlotIndex(slotIndexInPlank);
             }
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelSelected(isSelected);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
         }
 
         public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI)
@@ -80,7 +80,7 @@ namespace CrossClimbLite
 
             isSlotLocked = isLocked;
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelLocked(isLocked);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }   
     }
 }

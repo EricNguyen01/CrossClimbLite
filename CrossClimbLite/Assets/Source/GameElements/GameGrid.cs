@@ -1,12 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
+using Unity.Mathematics;
 
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
     /*
-     * This class stores the code and data (AKA the model) only representation of a game grid (where word planks or rows are placed).
+     * This class stores the code and data (AKA the Modal) only representation of a game grid (where word planks or rows are placed).
      * This class is none UI.
      */
     public class GameGrid : GameElementBase
@@ -23,17 +25,44 @@ namespace CrossClimbLite
 
         [Space]
 
-        [field: HelpBox("Define the row number to lock on game start. Row num starts from 0 to RowNum - 1. " +
-                 "Should not contain duplicate row nums.",
-                 UnityEngine.UIElements.HelpBoxMessageType.Info)]
+        [Tooltip("Modify the specified row num's data (isLocked, isKeyword, etc.) on start. " +
+                        "Row num starts from 0 to RowNum - 1. " +
+                        "Should not contain duplicate row nums.")]
 
-        [field: SerializeField]
-        private List<int> rowNumToLockOnStart = new List<int>();
+        [SerializeField]
+        private List<RowNumDataOnStart> rowNumDataToModifyOnStart = new List<RowNumDataOnStart>();
 
-        //use for rowNumToLockOnStart above list data validation - editor only and not gameplay related!
+        [Serializable]
+        private class RowNumDataOnStart
+        {
+            [field: SerializeField]
+            public int rowNum { get; private set; }
+
+            [field: SerializeField]
+            public bool isLocked { get; private set; } = true;
+
+            [field: SerializeField]
+            public bool isKeyword { get; private set; } = true;
+
+            public void SetRowNum(int num)
+            {
+                rowNum = num;
+            }
+
+            public void SetIsLocked(bool isLocked)
+            {
+                this.isLocked = isLocked;
+            }
+
+            public void SetIsKeyword(bool isKeyword)
+            {
+                this.isKeyword = isKeyword;
+            }
+        }
+
         [SerializeField]
         [HideInInspector]
-        private List<int> validRowNumToLock = new List<int>();
+        private List<int> validRowNum = new List<int>();
 
         [Space]
 
@@ -87,15 +116,34 @@ namespace CrossClimbLite
 
                 WordPlankRow wordPlankRowComp = wordPlankRowObj.AddComponent<WordPlankRow>();
 
-                wordPlankRowComp.InitPlank(this, i, columnNum);
+                bool alreadyInitWordPlankComp = false;
 
-                if (rowNumToLockOnStart != null && rowNumToLockOnStart.Count > 0)
+                if (rowNumDataToModifyOnStart != null && rowNumDataToModifyOnStart.Count > 0)
                 {
-                    if (rowNumToLockOnStart.Contains(i))
+                    List<RowNumDataOnStart> rowNumDataToModifyList = new List<RowNumDataOnStart>();
+
+                    rowNumDataToModifyList.AddRange(rowNumDataToModifyOnStart);
+
+                    for(int j = 0; j < rowNumDataToModifyList.Count; j++)
                     {
-                        wordPlankRowComp.SetGameElementLockedStatus(true, false);
+                        if (rowNumDataToModifyList[j].rowNum == i)
+                        {
+                            bool isKeyword = rowNumDataToModifyList[j].isKeyword;
+
+                            bool isLocked = rowNumDataToModifyList[j].isLocked;
+
+                            wordPlankRowComp.InitPlank(this, i, columnNum, isKeyword, isLocked);
+
+                            alreadyInitWordPlankComp = true;
+
+                            rowNumDataToModifyList.RemoveAt(j);
+
+                            break;
+                        }
                     }
                 }
+
+                if(!alreadyInitWordPlankComp) wordPlankRowComp.InitPlank(this, i, columnNum);
 
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
             }
@@ -170,95 +218,109 @@ namespace CrossClimbLite
 
         private void ValidateRowNumToLockOnStartData()
         {
-            if (rowNumToLockOnStart.Count == 0)
+            if (rowNumDataToModifyOnStart == null || rowNumDataToModifyOnStart.Count == 0)
             {
-                if (validRowNumToLock.Count != 0)
-                    validRowNumToLock.Clear();
+                validRowNum.Clear();
+            }
+
+            if (rowNum < 1)
+            {
+                rowNumDataToModifyOnStart.Clear();
+
+                validRowNum.Clear();
 
                 return;
             }
 
-            if (rowNumToLockOnStart.Count - validRowNumToLock.Count == 1)
+            if(rowNum == 1)
             {
-                if(rowNumToLockOnStart.Count == 1)
-                {
-                    if (validRowNumToLock.Count > 0) validRowNumToLock.Clear();
+                RowNumDataOnStart temp = new RowNumDataOnStart();
 
-                    validRowNumToLock.Add(rowNumToLockOnStart[rowNumToLockOnStart.Count - 1]);
+                temp.SetRowNum(rowNumDataToModifyOnStart[0].rowNum);
+
+                temp.SetIsLocked(rowNumDataToModifyOnStart[0].isLocked);
+
+                temp.SetIsKeyword(rowNumDataToModifyOnStart[0].isKeyword);
+
+                if(rowNumDataToModifyOnStart.Count > 1)
+                {
+                    rowNumDataToModifyOnStart.Clear();
+
+                    validRowNum.Clear();
+
+                    rowNumDataToModifyOnStart.Add(temp);
+
+                    validRowNum.Add(temp.rowNum);
+                }
+
+                return;
+            }
+
+            if(rowNumDataToModifyOnStart.Count - validRowNum.Count == 1)
+            {
+                if(validRowNum.Count == 0 && rowNumDataToModifyOnStart.Count == 1)
+                {
+                    validRowNum.Add(rowNumDataToModifyOnStart[0].rowNum);
 
                     return;
                 }
-
-                int newRowNumToAdd = -1;
 
                 for(int i = 0; i < rowNum; i++)
                 {
-                    if (rowNumToLockOnStart.Contains(i)) continue;
+                    if (validRowNum.Contains(i)) continue;
 
-                    newRowNumToAdd = i;
+                    rowNumDataToModifyOnStart[rowNumDataToModifyOnStart.Count - 1].SetRowNum(i);
 
-                    break;
-                }
-
-                if (newRowNumToAdd == -1)
-                {
-                    rowNumToLockOnStart.Clear();
-
-                    rowNumToLockOnStart.AddRange(validRowNumToLock);
+                    validRowNum.Add(i);
 
                     return;
                 }
 
-                rowNumToLockOnStart[rowNumToLockOnStart.Count - 1] = newRowNumToAdd;
-
-                validRowNumToLock.Add(rowNumToLockOnStart[rowNumToLockOnStart.Count - 1]);
+                rowNumDataToModifyOnStart.RemoveAt(rowNumDataToModifyOnStart.Count - 1);
 
                 return;
             }
 
-            if (rowNumToLockOnStart.Count == 1 && validRowNumToLock.Count == 1)
+            if(rowNumDataToModifyOnStart.Count < validRowNum.Count)
             {
-                if (rowNumToLockOnStart[0] < 0) rowNumToLockOnStart[0] = 0;
+                validRowNum.Clear();
 
-                if (rowNumToLockOnStart[0] > rowNum - 1) rowNumToLockOnStart[0] = rowNum - 1;
-
-                if (validRowNumToLock[0] != rowNumToLockOnStart[0])
-                    validRowNumToLock[0] = rowNumToLockOnStart[0];
+                for(int i = 0; i < rowNumDataToModifyOnStart.Count; i++)
+                {
+                    validRowNum.Add(rowNumDataToModifyOnStart[i].rowNum);
+                }
 
                 return;
             }
 
-            if (rowNumToLockOnStart.Count < validRowNumToLock.Count)
-            {
-                validRowNumToLock.Clear();
+            List<int> existingRowNum = new List<int>();
 
-                validRowNumToLock.AddRange(rowNumToLockOnStart);
+            for(int i = 0; i < rowNumDataToModifyOnStart.Count; i++)
+            {
+                if (!existingRowNum.Contains(rowNumDataToModifyOnStart[i].rowNum))
+                {
+                    existingRowNum.Add(rowNumDataToModifyOnStart[i].rowNum);
+
+                    continue;
+                }
+
+                rowNumDataToModifyOnStart.RemoveAt(i);
+            }
+
+            if (rowNumDataToModifyOnStart.Count == 0) return;
+
+            validRowNum.Clear();
+
+            if(rowNumDataToModifyOnStart.Count == 1)
+            {
+                validRowNum.Add(rowNumDataToModifyOnStart[0].rowNum);
 
                 return;
             }
 
-            List<int> temp = new List<int>();
-
-            for (int i = 0; i < rowNumToLockOnStart.Count; i++)
+            for(int i = 0; i < rowNumDataToModifyOnStart.Count; i++)
             {
-                if (rowNumToLockOnStart[i] < 0) rowNumToLockOnStart[i] = 0;
-
-                if (rowNumToLockOnStart[i] > rowNum - 1) rowNumToLockOnStart[i] = rowNum - 1;
-
-                if (temp.Contains(rowNumToLockOnStart[i])) continue;
-
-                temp.Add(rowNumToLockOnStart[i]);
-            }
-
-            if(temp.Count > 0)
-            {
-                validRowNumToLock.Clear();
-
-                rowNumToLockOnStart.Clear();
-
-                validRowNumToLock.AddRange(temp);
-
-                rowNumToLockOnStart.AddRange(temp);
+                validRowNum.Add(rowNumDataToModifyOnStart[i].rowNum);
             }
         }
 
@@ -285,7 +347,7 @@ namespace CrossClimbLite
                 //Create a custom inspector button to execute the generation of the game grid layout in the editor.
                 using (new EditorGUI.DisabledGroupScope(Application.isPlaying))
                 {
-                    if (GUILayout.Button("Generate Grid Model and UI View"))//On Generate Grid button pressed:...
+                    if (GUILayout.Button("Generate Grid Modal and UI View"))//On Generate Grid button pressed:...
                     {
                         gameGrid.InitGrid();
                     }

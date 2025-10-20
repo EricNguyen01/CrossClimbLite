@@ -51,14 +51,14 @@ namespace CrossClimbLite
             gameElementLinked.ConnectGameElementUI(this);
         }
 
-        public virtual void UpdateUI_OnGameElementModelSelected(bool isSelected)
+        public virtual void UpdateUI_OnGameElementModalSelected(bool isSelected)
         {
             if (!enabled) return;
 
             this.isSelected = isSelected;
         }
 
-        public virtual void UpdateUI_OnGameElementModelLocked(bool isLocked)
+        public virtual void UpdateUI_OnGameElementModalLocked(bool isLocked)
         {
             if (!enabled) return;
 

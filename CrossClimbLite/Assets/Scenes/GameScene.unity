@@ -1258,7 +1258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8338776688931614426, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
       propertyPath: m_Name
-      value: GameGridUIPanel
+      value: GameGridUIPanelTestOnly
       objectReference: {fileID: 0}
     - target: {fileID: 8338776688931614426, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
       propertyPath: m_IsActive
@@ -1328,6 +1328,42 @@ PrefabInstance:
       propertyPath: canvasToPlaceGameGridUI
       value: 
       objectReference: {fileID: 1564623858}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[1].rowNum
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[2].rowNum
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[3].rowNum
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[2].<rowNum>k__BackingField
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[3].<rowNum>k__BackingField
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[4].<rowNum>k__BackingField
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[5].<rowNum>k__BackingField
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[2].<isLocked>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: rowNumDataToModifyOnStart.Array.data[2].<isKeyword>k__BackingField
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5821454014742713630, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: m_Name
       value: GameGridModel

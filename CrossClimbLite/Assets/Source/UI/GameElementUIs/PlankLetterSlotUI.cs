@@ -7,7 +7,7 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public class PlankLetterSlotUI : GameElementUIBase
     {
-        //the non-UI plank letter slot model (where slot logic is stored)
+        //the non-UI plank letter slot Modal (where slot logic is stored)
         private PlankLetterSlot linkedPlankLetterSlot;
 
         private TMP_InputField inputField;
@@ -37,7 +37,7 @@ namespace CrossClimbLite
 
             linkedPlankLetterSlot = letterSlotToLink as PlankLetterSlot;
 
-            if (linkedPlankLetterSlot.isSlotLocked) UpdateUI_OnGameElementModelLocked(true);
+            if (linkedPlankLetterSlot.isSlotLocked) UpdateUI_OnGameElementModalLocked(true);
 
             if (!inputField)
             {
@@ -50,14 +50,14 @@ namespace CrossClimbLite
             }
         }
 
-        public void UpdateUI_OnModelLetterChanged(string newLetter)
+        public void UpdateUI_OnModalLetterChanged(string newLetter)
         {
             if(inputField) inputField.text = newLetter;
         }
 
-        public override void UpdateUI_OnGameElementModelSelected(bool isSelected)
+        public override void UpdateUI_OnGameElementModalSelected(bool isSelected)
         {
-            base.UpdateUI_OnGameElementModelSelected(isSelected);
+            base.UpdateUI_OnGameElementModalSelected(isSelected);
 
             if (!enabled) return;
 

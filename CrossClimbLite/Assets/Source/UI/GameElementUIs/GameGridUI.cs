@@ -114,7 +114,7 @@ namespace CrossClimbLite
             {
                 if (!gameGridLinked.wordPlankRowsInGrid[i]) continue;
 
-                WordPlankRow rowModel = gameGridLinked.wordPlankRowsInGrid[i];
+                WordPlankRow rowModal = gameGridLinked.wordPlankRowsInGrid[i];
 
                 GameObject rowUIObj = Instantiate(wordPlankUIPrefabToSpawn.gameObject, verticalGroupToSpawnPlanksUnder.transform);
 
@@ -122,16 +122,16 @@ namespace CrossClimbLite
 
                 WordPlankRowUI rowUI = rowUIObj.GetComponent<WordPlankRowUI>();
 
-                if (rowUI) rowUI.InitGameElementUI(rowModel);
+                if (rowUI) rowUI.InitGameElementUI(rowModal);
 
                 if (gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank == null ||
                     gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank.Length == 0) continue;
 
-                PlankLetterSlot[] letterSlotModels = gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank;
+                PlankLetterSlot[] letterSlotModals = gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank;
 
-                for (int j = 0; j < letterSlotModels.Length; j++)
+                for (int j = 0; j < letterSlotModals.Length; j++)
                 {
-                    if (!letterSlotModels[j]) continue;
+                    if (!letterSlotModals[j]) continue;
 
                     GameObject letterSlotUIObj = null;
 
@@ -149,7 +149,7 @@ namespace CrossClimbLite
 
                     PlankLetterSlotUI letterSlotUI = letterSlotUIObj.GetComponent<PlankLetterSlotUI>();
 
-                    if(letterSlotUI) letterSlotUI.InitGameElementUI(letterSlotModels[j]);
+                    if(letterSlotUI) letterSlotUI.InitGameElementUI(letterSlotModals[j]);
                 }
             }
         }
