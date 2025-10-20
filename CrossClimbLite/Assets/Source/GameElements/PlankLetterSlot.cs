@@ -36,13 +36,23 @@ namespace CrossClimbLite
             this.slotIndexInPlank = slotIndexInPlank;
         }
 
-        public void WriteLetterToSlot_FromUIOnly(string letter)
+        public void WriteLetterToSlot(string newLetter, bool isFromUI)
         {
             if (!wordPlankOfSlot) return;
 
-            this.letter = letter;
+            letter = newLetter;
 
             wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
+
+            if (!isFromUI && gameElementUILinked)
+            {
+                if(gameElementUILinked is PlankLetterSlotUI)
+                {
+                    PlankLetterSlotUI letterSlotUI = gameElementUILinked as PlankLetterSlotUI;
+
+                    letterSlotUI.UpdateUI_OnModelLetterChanged(letter);
+                }
+            }
         }
 
         public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI)

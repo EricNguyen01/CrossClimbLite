@@ -50,6 +50,11 @@ namespace CrossClimbLite
             }
         }
 
+        public void UpdateUI_OnModelLetterChanged(string newLetter)
+        {
+            if(inputField) inputField.text = newLetter;
+        }
+
         public override void UpdateUI_OnGameElementModelSelected(bool isSelected)
         {
             base.UpdateUI_OnGameElementModelSelected(isSelected);
@@ -96,7 +101,7 @@ namespace CrossClimbLite
 
             if (!inputField) return;
            
-            linkedPlankLetterSlot.WriteLetterToSlot_FromUIOnly(inputField.text);
+            linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, true);
         }
     }
 }
