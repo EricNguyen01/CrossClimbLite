@@ -93,7 +93,7 @@ namespace CrossClimbLite
                 {
                     if (rowNumToLockOnStart.Contains(i))
                     {
-                        wordPlankRowComp.SetPlankLockStatus(true);
+                        wordPlankRowComp.SetGameElementLockedStatus(true, false);
                     }
                 }
 
@@ -133,7 +133,7 @@ namespace CrossClimbLite
 
             if (currentPlankBeingSelected && selectedPlankRow != currentPlankBeingSelected)
             {
-                currentPlankBeingSelected.SetPlankRowSelectedStatus(false);
+                currentPlankBeingSelected.SetGameElementSelectionStatus(false, false);
 
                 currentPlankBeingSelected = selectedPlankRow;
             }
@@ -161,6 +161,10 @@ namespace CrossClimbLite
 
             gameGridUIInstance.InitGameElementUI(this);
         }
+
+        public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI) { }
+
+        public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI) { }
 
         //EDITOR FUNCS...............................................................................................
 

@@ -54,17 +54,12 @@ namespace CrossClimbLite
 
             wordPlankRowLinked = wordPlankRowToLink as WordPlankRow;
 
-            if (wordPlankRowLinked.isPlankLocked) OnGameElementLocked(true);
+            if (wordPlankRowLinked.isPlankLocked) UpdateUI_OnGameElementModelLocked(true);
         }
 
-        protected override void OnGameElementUpdated()
+        public override void UpdateUI_OnGameElementModelSelected(bool isSelected)
         {
-            
-        }
-
-        protected override void OnGameElementSelected(bool isSelected)
-        {
-            base.OnGameElementSelected(isSelected);
+            base.UpdateUI_OnGameElementModelSelected(isSelected);
 
             if (!enabled) return;
 
@@ -80,9 +75,9 @@ namespace CrossClimbLite
             wordPlankRowBackgroundImage.color = normalStateColor;
         }
 
-        protected override void OnGameElementLocked(bool isLocked)
+        public override void UpdateUI_OnGameElementModelLocked(bool isLocked)
         {
-            base.OnGameElementLocked(isLocked);
+            base.UpdateUI_OnGameElementModelLocked(isLocked);
 
             if (!enabled) return;
 

@@ -81,20 +81,17 @@ namespace CrossClimbLite
 
             if(currentLetterIndex != slotIndexToSet)
             {
-                letterSlotsInWordPlank[currentLetterIndex].SetSlotSelectedStatus(false);
+                letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, false);
 
                 currentLetterIndex = slotIndexToSet;
 
-                letterSlotsInWordPlank[currentLetterIndex].SetSlotSelectedStatus(true);
+                letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(true, false);
             }
         }
 
-        public void SetPlankRowSelectedStatus(bool isSelected)
+        public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI)
         {
             if (!gameGridHoldingPlank) return;
-
-            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
-            if (isPlankRowSelected == isSelected) return;
 
             isPlankRowSelected = isSelected;
 
@@ -103,7 +100,7 @@ namespace CrossClimbLite
                 gameGridHoldingPlank.SetCurrentPlankRowSelected(this);
             }
 
-            InvokeOnElementSelectedEvent(isSelected);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelSelected(isSelected);
         }
 
         public void SetPlankRowNum(int rowOrder)
@@ -120,11 +117,8 @@ namespace CrossClimbLite
             currentLetterIndex = slotIndexToSet;
         }
 
-        public void SetPlankLockStatus(bool isLocked)
+        public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI)
         {
-            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
-            if (isPlankLocked == isLocked) return;   
-
             isPlankLocked = isLocked;
 
             if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
@@ -133,10 +127,10 @@ namespace CrossClimbLite
             {
                 if (!letterSlotsInWordPlank[i]) continue;
 
-                letterSlotsInWordPlank[i].SetSlotLockStatus(isLocked);
+                letterSlotsInWordPlank[i].SetGameElementLockedStatus(isLocked, false);
             }
 
-            InvokeOnElementLockedEvent(isLocked);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelLocked(isLocked);
         }
     }
 }

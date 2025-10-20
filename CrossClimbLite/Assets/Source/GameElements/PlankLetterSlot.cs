@@ -36,7 +36,7 @@ namespace CrossClimbLite
             this.slotIndexInPlank = slotIndexInPlank;
         }
 
-        public void WriteLetterToSlot(string letter)
+        public void WriteLetterToSlot_FromUIOnly(string letter)
         {
             if (!wordPlankOfSlot) return;
 
@@ -45,27 +45,22 @@ namespace CrossClimbLite
             wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
         }
 
-        public void SetSlotSelectedStatus(bool isSelected)
+        public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI)
         {
-            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
-            if (isSlotSelected == isSelected) return;
-
             isSlotSelected = isSelected;
 
-            if (!wordPlankOfSlot) return;
+            if (wordPlankOfSlot)
+            {
+                if (isSelected && !wordPlankOfSlot.isPlankRowSelected) wordPlankOfSlot.SetGameElementSelectionStatus(true, false);
 
-            if(isSelected && !wordPlankOfSlot.isPlankRowSelected) wordPlankOfSlot.SetPlankRowSelectedStatus(true);
+                wordPlankOfSlot.SetCurrentLetterSlotIndex(slotIndexInPlank);
+            }
 
-            wordPlankOfSlot.SetCurrentLetterSlotIndex(slotIndexInPlank);
-
-            InvokeOnElementSelectedEvent(isSelected);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelSelected(isSelected);
         }
 
-        public void SetSlotLockStatus(bool isLocked)
+        public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI)
         {
-            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
-            if(isSlotLocked == isLocked) return;
-
             if (wordPlankOfSlot)
             {
                 if (!wordPlankOfSlot.isPlankLocked && isLocked) return;
@@ -75,7 +70,7 @@ namespace CrossClimbLite
 
             isSlotLocked = isLocked;
 
-            InvokeOnElementLockedEvent(isLocked);
+            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModelLocked(isLocked);
         }   
     }
 }

@@ -6,25 +6,17 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public abstract class GameElementBase : MonoBehaviour
     {
-        public event Action OnElementUpdated;
+        protected GameElementUIBase gameElementUILinked;
 
-        public event Action<bool> OnElementSelected;
-
-        public event Action<bool> OnElementLocked;
-
-        protected void InvokeOnElementUpdatedEvent()
+        public void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
         {
-            OnElementUpdated?.Invoke();
+            if (!gameElementUIToLinked) return;
+
+            gameElementUILinked = gameElementUIToLinked;
         }
 
-        protected void InvokeOnElementSelectedEvent(bool isSelected)
-        {
-            OnElementSelected?.Invoke(isSelected);
-        }
+        public abstract void SetGameElementSelectionStatus(bool isSelected, bool isFromUI);
 
-        protected void InvokeOnElementLockedEvent(bool isLocked)
-        {
-            OnElementLocked?.Invoke(isLocked);
-        }
+        public abstract void SetGameElementLockedStatus(bool isLocked, bool isFromUI);
     }
 }

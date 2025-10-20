@@ -48,35 +48,17 @@ namespace CrossClimbLite
 
             gameElementLinked = gameElementToLink;
 
-            gameElementLinked.OnElementUpdated += OnGameElementUpdated;
-
-            gameElementLinked.OnElementSelected += OnGameElementSelected;
-
-            gameElementLinked.OnElementLocked += OnGameElementLocked;
+            gameElementLinked.ConnectGameElementUI(this);
         }
 
-        protected virtual void OnDisable()
-        {
-            if (gameElementLinked)
-            {
-                gameElementLinked.OnElementUpdated -= OnGameElementUpdated;
-
-                gameElementLinked.OnElementSelected -= OnGameElementSelected;
-
-                gameElementLinked.OnElementLocked -= OnGameElementLocked;
-            }
-        }
-
-        protected abstract void OnGameElementUpdated();
-
-        protected virtual void OnGameElementSelected(bool isSelected)
+        public virtual void UpdateUI_OnGameElementModelSelected(bool isSelected)
         {
             if (!enabled) return;
 
             this.isSelected = isSelected;
         }
 
-        protected virtual void OnGameElementLocked(bool isLocked)
+        public virtual void UpdateUI_OnGameElementModelLocked(bool isLocked)
         {
             if (!enabled) return;
 

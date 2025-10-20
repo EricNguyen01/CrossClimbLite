@@ -12,8 +12,6 @@ namespace CrossClimbLite
 
         private TMP_InputField inputField;
 
-        //private string letter;
-
         //INHERITED FUNCS..................................................................................
 
         protected override void Awake()
@@ -39,7 +37,7 @@ namespace CrossClimbLite
 
             linkedPlankLetterSlot = letterSlotToLink as PlankLetterSlot;
 
-            if (linkedPlankLetterSlot.isSlotLocked) OnGameElementLocked(true);
+            if (linkedPlankLetterSlot.isSlotLocked) UpdateUI_OnGameElementModelLocked(true);
 
             if (!inputField)
             {
@@ -52,23 +50,9 @@ namespace CrossClimbLite
             }
         }
 
-        protected override void OnGameElementUpdated()
+        public override void UpdateUI_OnGameElementModelSelected(bool isSelected)
         {
-            if(!enabled) return;
-
-            if (!linkedPlankLetterSlot) return;
-
-            if (!inputField) return;
-
-            if(inputField.text != linkedPlankLetterSlot.letter)
-            {
-                inputField.text = linkedPlankLetterSlot.letter;
-            }
-        }
-
-        protected override void OnGameElementSelected(bool isSelected)
-        {
-            base.OnGameElementSelected(isSelected);
+            base.UpdateUI_OnGameElementModelSelected(isSelected);
 
             if (!enabled) return;
 
@@ -101,10 +85,7 @@ namespace CrossClimbLite
 
             if (!linkedPlankLetterSlot) return;
 
-            //if this line below is missing = CRAZY EVENT CALL INFINITE LOOP BUG!!!
-            if (this.isSelected == isSelected) return;
-
-            linkedPlankLetterSlot.SetSlotSelectedStatus(isSelected);
+            linkedPlankLetterSlot.SetGameElementSelectionStatus(isSelected, true);
         }
 
         public void OnLetterSlotValueChanged()
@@ -115,7 +96,7 @@ namespace CrossClimbLite
 
             if (!inputField) return;
            
-            linkedPlankLetterSlot.WriteLetterToSlot(inputField.text);
+            linkedPlankLetterSlot.WriteLetterToSlot_FromUIOnly(inputField.text);
         }
     }
 }
