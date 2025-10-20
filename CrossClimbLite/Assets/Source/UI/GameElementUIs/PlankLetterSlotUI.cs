@@ -66,24 +66,6 @@ namespace CrossClimbLite
             }
         }
 
-        protected override void OnGameElementLocked(bool isLocked)
-        {
-            base.OnGameElementLocked(isLocked);
-
-            if (!enabled) return;
-
-            if (!elementCanvasGroup) return;
-
-            if (isLocked)
-            {
-                elementCanvasGroup.alpha = 0.2f;
-
-                return;
-            }
-
-            elementCanvasGroup.alpha = 1.0f;
-        }
-
         protected override void OnGameElementSelected(bool isSelected)
         {
             base.OnGameElementSelected(isSelected);

@@ -117,7 +117,17 @@ namespace CrossClimbLite
                 {
                     if (!letterSlotModels[j]) continue;
 
-                    GameObject letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, rowUI.transform);
+                    GameObject letterSlotUIObj = null;
+
+                    if (rowUI)
+                    {
+                        if(rowUI.horizontalLayoutToSpawnLetterSlotsUnder) 
+                            letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, rowUI.horizontalLayoutToSpawnLetterSlotsUnder.transform);
+
+                        else letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, rowUI.transform);
+                    }
+
+                    if(!letterSlotUIObj) continue;
 
                     letterSlotUIObj.name = letterSlotUIObj.name + "_" + j;
 

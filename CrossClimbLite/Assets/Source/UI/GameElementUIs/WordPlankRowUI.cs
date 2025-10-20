@@ -15,6 +15,9 @@ namespace CrossClimbLite
         [SerializeField]
         private Color selectedColor = Color.magenta;
 
+        [field: SerializeField]
+        public HorizontalLayoutGroup horizontalLayoutToSpawnLetterSlotsUnder { get; private set; }
+
         [SerializeField]
         private Image wordPlankRowBackgroundImage;
 
@@ -28,6 +31,16 @@ namespace CrossClimbLite
             if (!wordPlankRowBackgroundImage)
             {
                 TryGetComponent<Image>(out wordPlankRowBackgroundImage);
+            }
+
+            if(!horizontalLayoutToSpawnLetterSlotsUnder)
+            {
+                horizontalLayoutToSpawnLetterSlotsUnder = GetComponent<HorizontalLayoutGroup>();
+
+                if (!horizontalLayoutToSpawnLetterSlotsUnder)
+                {
+                    horizontalLayoutToSpawnLetterSlotsUnder = GetComponentInChildren<HorizontalLayoutGroup>();
+                }
             }
         }
 
