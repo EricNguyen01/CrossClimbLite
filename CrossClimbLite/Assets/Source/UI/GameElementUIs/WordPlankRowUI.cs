@@ -1,11 +1,12 @@
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
+using UnityEngine.EventSystems;
 
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
-    public class WordPlankRowUI : GameElementUIBase
+    public class WordPlankRowUI : GameElementUIBase, IBeginDragHandler, IDragHandler, IEndDragHandler   
     {
         [Header("Plank State Colors")]
         [SerializeField]
@@ -255,6 +256,23 @@ namespace CrossClimbLite
                 else
                     wordPlankRowBackgroundImage.color = normalStateColor;
             }
+        }
+
+        // DRAG HANDLER INTERFACE FUNCS............................................................................................
+
+        public void OnBeginDrag(PointerEventData eventData)
+        {
+            
+        }
+
+        public void OnDrag(PointerEventData eventData)
+        {
+            
+        }
+
+        public void OnEndDrag(PointerEventData eventData)
+        {
+            
         }
     }
 }

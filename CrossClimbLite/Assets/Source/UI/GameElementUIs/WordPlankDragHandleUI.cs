@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
 namespace CrossClimbLite
 {
@@ -33,17 +32,17 @@ namespace CrossClimbLite
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            
+            if(parentWordPlank) parentWordPlank.OnBeginDrag(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            
+            if(parentWordPlank) parentWordPlank.OnDrag(eventData);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            
+            if(parentWordPlank) parentWordPlank.OnEndDrag(eventData);
         }
     }
 }
