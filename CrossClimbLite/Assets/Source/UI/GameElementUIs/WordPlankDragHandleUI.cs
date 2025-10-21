@@ -5,13 +5,13 @@ namespace CrossClimbLite
 {
     public class WordPlankDragHandleUI : GameElementUIBase, IBeginDragHandler, IDragHandler, IEndDragHandler
     {
-        private WordPlankRowUI parentWordPlank;
+        public WordPlankRowUI parentWordPlankUI { get; private set; }
 
         public void InitDragHandleUI(WordPlankRowUI wordPlankToLink)
         {
             if (!wordPlankToLink) return;
 
-            parentWordPlank = wordPlankToLink;
+            parentWordPlankUI = wordPlankToLink;
         }
 
         public override void UpdateUI_OnGameElementModalLocked(bool isLocked)
@@ -32,17 +32,17 @@ namespace CrossClimbLite
 
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if(parentWordPlank) parentWordPlank.OnBeginDrag(eventData);
+            if(parentWordPlankUI) parentWordPlankUI.OnBeginDrag(eventData);
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            if(parentWordPlank) parentWordPlank.OnDrag(eventData);
+            if(parentWordPlankUI) parentWordPlankUI.OnDrag(eventData);
         }
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            if(parentWordPlank) parentWordPlank.OnEndDrag(eventData);
+            if(parentWordPlankUI) parentWordPlankUI.OnEndDrag(eventData);
         }
     }
 }

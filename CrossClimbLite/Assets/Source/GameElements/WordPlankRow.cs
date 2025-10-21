@@ -21,7 +21,7 @@ namespace CrossClimbLite
         //the letter index that is right after the last filled letter slot and has not been filled yet.
         private int currentLetterIndex = 0;
 
-        private GameGrid gameGridHoldingPlank;
+        public GameGrid gameGridHoldingPlank { get; private set; }
 
         public bool isPlankRowSelected { get; private set; } = false;
 
@@ -154,6 +154,13 @@ namespace CrossClimbLite
             }
 
             if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+        }
+
+        public void PlankLetterSlotsSwapWith(WordPlankRow plankToSwap)
+        {
+            if (!plankToSwap) return;
+
+            if (this == plankToSwap) return;
         }
     }
 }

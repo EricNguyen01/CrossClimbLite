@@ -434,7 +434,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -461,7 +461,7 @@ CanvasGroup:
   m_Alpha: 1
   m_Interactable: 1
   m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 1
+  m_IgnoreParentGroups: 0
 --- !u!114 &2505475709865451877
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -476,13 +476,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   isLocked: 0
+  plankUISiblingIndex: 0
   normalStateColor: {r: 1, g: 1, b: 1, a: 1}
   lockedColor: {r: 0.6150943, g: 0.6150943, b: 0.6150943, a: 1}
   selectedColor: {r: 0.9607843, g: 0.7529412, b: 1, a: 1}
   keywordColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   wordPlankRowBackgroundImage: {fileID: 379848902463306467}
-  leftDragHandleImage: {fileID: 663520497229358313}
-  rightDragHandleImage: {fileID: 3765237878687856403}
+  leftDragHandleRoot: {fileID: 2285589636585136203}
+  rightDragHandleRoot: {fileID: 3173453635074290802}
   letterSlotUIPrefabToSpawn: {fileID: 6383469140206142761, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
   <horizontalLayoutToSpawnLetterSlotsUnder>k__BackingField: {fileID: 3518306500540246122}
 --- !u!1 &8004197859751542960

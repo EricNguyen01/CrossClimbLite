@@ -8,6 +8,10 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public class WordPlankRowUI : GameElementUIBase, IBeginDragHandler, IDragHandler, IEndDragHandler   
     {
+        [SerializeField]
+        [ReadOnlyInspector]
+        private int plankUISiblingIndex = 0;
+
         [Header("Plank State Colors")]
         [SerializeField]
         private Color normalStateColor = Color.white;
@@ -29,10 +33,10 @@ namespace CrossClimbLite
         [Header("Drag Handles Visuals")]
 
         [SerializeField]
-        private Image leftDragHandleImage;
+        private Image leftDragHandleRoot;
 
         [SerializeField]
-        private Image rightDragHandleImage;
+        private Image rightDragHandleRoot;
 
         [field: Header("Letter Slots Spawn Specifications")]
 
@@ -46,8 +50,6 @@ namespace CrossClimbLite
 
         //the non-UI word plank row Modal (where plank row logic is stored)
         private WordPlankRow wordPlankRowLinked;
-
-        private GameObject wordPlankDragVisualObject;
 
         private bool isKeyword = false;
 
@@ -83,6 +85,15 @@ namespace CrossClimbLite
 
             wordPlankRowLinked = wordPlankRowToLink as WordPlankRow;
 
+            if (!wordPlankRowLinked.gameGridHoldingPlank)
+            {
+                gameObject.SetActive(false);
+
+                enabled = false;
+
+                return;
+            }
+
             InitChildrenLetterSlotsUI();
 
             if (wordPlankRowLinked.isPlankLocked)
@@ -92,11 +103,11 @@ namespace CrossClimbLite
 
             WordPlankDragHandleUI dragHandleUI;
 
-            if (leftDragHandleImage)
+            if (leftDragHandleRoot)
             {
-                if (!leftDragHandleImage.GetComponent<WordPlankDragHandleUI>())
+                if (!leftDragHandleRoot.GetComponent<WordPlankDragHandleUI>())
                 {
-                    dragHandleUI = leftDragHandleImage.gameObject.AddComponent<WordPlankDragHandleUI>();
+                    dragHandleUI = leftDragHandleRoot.gameObject.AddComponent<WordPlankDragHandleUI>();
 
                     dragHandleUI.InitGameElementUI(wordPlankRowLinked);
 
@@ -106,11 +117,11 @@ namespace CrossClimbLite
                 }
             }
 
-            if (rightDragHandleImage)
+            if (rightDragHandleRoot)
             {
-                if (!rightDragHandleImage.GetComponent<WordPlankDragHandleUI>())
+                if (!rightDragHandleRoot.GetComponent<WordPlankDragHandleUI>())
                 {
-                    dragHandleUI = rightDragHandleImage.gameObject.AddComponent<WordPlankDragHandleUI>();
+                    dragHandleUI = rightDragHandleRoot.gameObject.AddComponent<WordPlankDragHandleUI>();
 
                     dragHandleUI.InitGameElementUI(wordPlankRowLinked);
 
@@ -119,6 +130,8 @@ namespace CrossClimbLite
                     if (wordPlankRowLinked.isPlankLocked) dragHandleUI.UpdateUI_OnGameElementModalLocked(true);
                 }
             }
+
+            plankUISiblingIndex = transform.GetSiblingIndex();
         }
 
         private void InitChildrenLetterSlotsUI()
@@ -274,14 +287,43 @@ namespace CrossClimbLite
 
         public void OnEndDrag(PointerEventData eventData)
         {
+            if(eventData == null || !eventData.pointerEnter) return;
+
+            WordPlankRowUI destinationPlank;  
             
+            eventData.pointerEnter.TryGetComponent<WordPlankRowUI>(out destinationPlank);
+
+            if (!destinationPlank)
+            {
+                WordPlankDragHandleUI destinationDragHandleUI;
+
+                if (eventData.pointerEnter.TryGetComponent<WordPlankDragHandleUI>(out destinationDragHandleUI))
+                {
+                    if (destinationDragHandleUI && destinationDragHandleUI.parentWordPlankUI)
+                        destinationPlank = destinationDragHandleUI.parentWordPlankUI;
+                }
+            }
+
+            if (!destinationPlank) return;
+
+            PlankSwapWith(destinationPlank);
         }
 
-        private void CreateDragVisualObject()
+        public void PlankSwapWith(WordPlankRowUI plankToSwap)
         {
-            if (wordPlankDragVisualObject) return;
+            if(!enabled) return;
 
+            if (!plankToSwap || !plankToSwap.wordPlankRowLinked) return;
 
+            if (plankToSwap.transform.parent != transform.parent) return;
+
+            if (this == plankToSwap) return;
+
+            if (wordPlankRowLinked.isPlankKeyword && !plankToSwap.wordPlankRowLinked.isPlankKeyword) return;
+
+            transform.SetSiblingIndex(plankToSwap.transform.GetSiblingIndex());
+
+            plankUISiblingIndex = transform.GetSiblingIndex();
         }
     }
 }
