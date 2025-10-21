@@ -47,6 +47,8 @@ namespace CrossClimbLite
         //the non-UI word plank row Modal (where plank row logic is stored)
         private WordPlankRow wordPlankRowLinked;
 
+        private GameObject wordPlankDragVisualObject;
+
         private bool isKeyword = false;
 
         private bool isDragable = false;
@@ -273,6 +275,13 @@ namespace CrossClimbLite
         public void OnEndDrag(PointerEventData eventData)
         {
             
+        }
+
+        private void CreateDragVisualObject()
+        {
+            if (wordPlankDragVisualObject) return;
+
+
         }
     }
 }
