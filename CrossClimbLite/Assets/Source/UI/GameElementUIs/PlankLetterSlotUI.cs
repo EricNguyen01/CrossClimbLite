@@ -52,7 +52,12 @@ namespace CrossClimbLite
 
         public void UpdateUI_OnModalLetterChanged(string newLetter)
         {
-            if(inputField) inputField.text = newLetter;
+            if (inputField)
+            {
+                inputField.text = newLetter;
+
+                inputField.text = inputField.text.ToUpper();
+            }
         }
 
         public override void UpdateUI_OnGameElementModalSelected(bool isSelected)
@@ -100,7 +105,9 @@ namespace CrossClimbLite
             if (!linkedPlankLetterSlot) return;
 
             if (!inputField) return;
-           
+
+            inputField.text = inputField.text.ToUpper();
+
             linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, true);
         }
     }

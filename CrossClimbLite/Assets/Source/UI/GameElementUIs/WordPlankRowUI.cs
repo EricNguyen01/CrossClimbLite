@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace CrossClimbLite
 {
@@ -32,7 +33,12 @@ namespace CrossClimbLite
         [SerializeField]
         private Image rightDragHandleImage;
 
-        [field: Header("Letter Slots Horizontal Layout Group")]
+        [field: Header("Letter Slots Spawn Specifications")]
+
+        [SerializeField]
+        private PlankLetterSlotUI letterSlotUIPrefabToSpawn;
+
+        private List<PlankLetterSlotUI> letterSlotsUISpawned = new List<PlankLetterSlotUI>();
 
         [field: SerializeField]
         public HorizontalLayoutGroup horizontalLayoutToSpawnLetterSlotsUnder { get; private set; }
@@ -74,7 +80,106 @@ namespace CrossClimbLite
 
             wordPlankRowLinked = wordPlankRowToLink as WordPlankRow;
 
-            if (wordPlankRowLinked.isPlankLocked) UpdateUI_OnGameElementModalLocked(true);
+            InitChildrenLetterSlotsUI();
+
+            if (wordPlankRowLinked.isPlankLocked)
+            {
+                UpdateUI_OnGameElementModalLocked(true);
+            }
+
+            WordPlankDragHandleUI dragHandleUI;
+
+            if (leftDragHandleImage)
+            {
+                if (!leftDragHandleImage.GetComponent<WordPlankDragHandleUI>())
+                {
+                    dragHandleUI = leftDragHandleImage.gameObject.AddComponent<WordPlankDragHandleUI>();
+
+                    dragHandleUI.InitGameElementUI(wordPlankRowLinked);
+
+                    dragHandleUI.InitDragHandleUI(this);
+
+                    if(wordPlankRowLinked.isPlankLocked) dragHandleUI.UpdateUI_OnGameElementModalLocked(true);
+                }
+            }
+
+            if (rightDragHandleImage)
+            {
+                if (!rightDragHandleImage.GetComponent<WordPlankDragHandleUI>())
+                {
+                    dragHandleUI = rightDragHandleImage.gameObject.AddComponent<WordPlankDragHandleUI>();
+
+                    dragHandleUI.InitGameElementUI(wordPlankRowLinked);
+
+                    dragHandleUI.InitDragHandleUI(this);
+
+                    if (wordPlankRowLinked.isPlankLocked) dragHandleUI.UpdateUI_OnGameElementModalLocked(true);
+                }
+            }
+        }
+
+        private void InitChildrenLetterSlotsUI()
+        {
+            if (!enabled) return;
+
+            if (!wordPlankRowLinked) return;
+
+            if (!letterSlotUIPrefabToSpawn)
+            {
+                Debug.LogError("Trying to spawn letter slot UI children for word plank row UI: " + name +
+                               " but no letter slot UI prefab ref is assigned! Cannot spawn letter slot UI children.");
+                return;
+            }
+
+            if (wordPlankRowLinked.letterSlotsInWordPlank == null || wordPlankRowLinked.letterSlotsInWordPlank.Length == 0) return;
+
+            if (letterSlotsUISpawned != null && letterSlotsUISpawned.Count > 0)
+            {
+                RemoveAllChildrenLetterSlotsUI();
+            }
+
+            if (letterSlotsUISpawned == null) letterSlotsUISpawned = new List<PlankLetterSlotUI>();
+
+            else letterSlotsUISpawned.Clear();
+
+            for (int i = 0; i < wordPlankRowLinked.letterSlotsInWordPlank.Length; i++)
+            {
+                if (!wordPlankRowLinked.letterSlotsInWordPlank[i]) continue;
+
+                GameObject letterSlotUIObj = null;
+
+                if (horizontalLayoutToSpawnLetterSlotsUnder)
+                    letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, horizontalLayoutToSpawnLetterSlotsUnder.transform);
+
+                else letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, transform);
+
+                if (!letterSlotUIObj) continue;
+
+                letterSlotUIObj.name = letterSlotUIObj.name + "_" + i;
+
+                PlankLetterSlotUI letterSlotUI = letterSlotUIObj.GetComponent<PlankLetterSlotUI>();
+
+                if (letterSlotUI)
+                {
+                    letterSlotUI.InitGameElementUI(wordPlankRowLinked.letterSlotsInWordPlank[i]);
+
+                    letterSlotsUISpawned.Add(letterSlotUI);
+                }
+            }
+        }
+
+        private void RemoveAllChildrenLetterSlotsUI()
+        {
+            if(letterSlotsUISpawned == null || letterSlotsUISpawned.Count == 0) return;
+
+            for (int i = 0; i < letterSlotsUISpawned.Count; i++)
+            {
+                if (!letterSlotsUISpawned[i]) continue;
+
+                if(Application.isEditor) DestroyImmediate(letterSlotsUISpawned[i].gameObject);
+
+                else if(Application.isPlaying) Destroy(letterSlotsUISpawned[i].gameObject);
+            }
         }
 
         public void UpdateUI_PlankModalIsKeyword(bool isKeyword)
@@ -134,30 +239,10 @@ namespace CrossClimbLite
 
             if (!enabled) return;
 
-            Color dragHandleColor;
-
             if (isLocked)
             {
                 if (wordPlankRowBackgroundImage)
                     wordPlankRowBackgroundImage.color = lockedColor;
-
-                if (rightDragHandleImage)
-                {
-                    dragHandleColor = rightDragHandleImage.color;
-
-                    dragHandleColor.a = 0.0f;
-
-                    rightDragHandleImage.color = dragHandleColor;
-                }
-
-                if (leftDragHandleImage)
-                {
-                    dragHandleColor = leftDragHandleImage.color;
-
-                    dragHandleColor.a = 0.0f;
-
-                    leftDragHandleImage.color = dragHandleColor;
-                }
 
                 return;
             }
@@ -169,24 +254,6 @@ namespace CrossClimbLite
 
                 else
                     wordPlankRowBackgroundImage.color = normalStateColor;
-            }
-
-            if (rightDragHandleImage)
-            {
-                dragHandleColor = rightDragHandleImage.color;
-
-                dragHandleColor.a = 255.0f;
-
-                rightDragHandleImage.color = dragHandleColor;
-            }
-
-            if (leftDragHandleImage)
-            {
-                dragHandleColor = leftDragHandleImage.color;
-
-                dragHandleColor.a = 255.0f;
-
-                leftDragHandleImage.color = dragHandleColor;
             }
         }
     }

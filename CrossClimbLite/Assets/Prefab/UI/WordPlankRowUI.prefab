@@ -479,9 +479,11 @@ MonoBehaviour:
   normalStateColor: {r: 1, g: 1, b: 1, a: 1}
   lockedColor: {r: 0.6150943, g: 0.6150943, b: 0.6150943, a: 1}
   selectedColor: {r: 0.9607843, g: 0.7529412, b: 1, a: 1}
+  keywordColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   wordPlankRowBackgroundImage: {fileID: 379848902463306467}
   leftDragHandleImage: {fileID: 663520497229358313}
   rightDragHandleImage: {fileID: 3765237878687856403}
+  letterSlotUIPrefabToSpawn: {fileID: 6383469140206142761, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
   <horizontalLayoutToSpawnLetterSlotsUnder>k__BackingField: {fileID: 3518306500540246122}
 --- !u!1 &8004197859751542960
 GameObject:

@@ -14,11 +14,6 @@ namespace CrossClimbLite
 
         private List<WordPlankRowUI> plankUISpawned = new List<WordPlankRowUI>();   
 
-        [SerializeField]
-        private PlankLetterSlotUI letterSlotUIPrefabToSpawn;
-
-        private List<PlankLetterSlotUI> letterSlotUISpawned = new List<PlankLetterSlotUI>();
-
         [Header("Spawn Specifications")]
 
         [SerializeField]
@@ -76,11 +71,17 @@ namespace CrossClimbLite
 
         private void SpawnNewGridUILayoutFollowingGridLinkedLayout()
         {
-            if (!verticalGroupToSpawnPlanksUnder) return;
+            if (!wordPlankUIPrefabToSpawn)
+            {
+                Debug.LogError("Trying to spawn word plank UI children for game grid layout: " + name + 
+                               " but no word plank UI prefab ref is assigned! Cannot spawn word plank UI children.");
+
+                return;
+            }
 
             if(plankUISpawned == null) plankUISpawned = new List<WordPlankRowUI>();
 
-            if (letterSlotUISpawned == null) letterSlotUISpawned = new List<PlankLetterSlotUI>();
+            else plankUISpawned.Clear();
 
             if (plankUISpawned != null && plankUISpawned.Count > 0)
             {
@@ -116,40 +117,22 @@ namespace CrossClimbLite
 
                 WordPlankRow rowModal = gameGridLinked.wordPlankRowsInGrid[i];
 
-                GameObject rowUIObj = Instantiate(wordPlankUIPrefabToSpawn.gameObject, verticalGroupToSpawnPlanksUnder.transform);
+                GameObject rowUIObj;
+
+                if(verticalGroupToSpawnPlanksUnder)
+                    rowUIObj = Instantiate(wordPlankUIPrefabToSpawn.gameObject, verticalGroupToSpawnPlanksUnder.transform);
+
+                else rowUIObj = Instantiate(wordPlankUIPrefabToSpawn.gameObject, transform);
 
                 rowUIObj.name = rowUIObj.name + "_" + i;
 
                 WordPlankRowUI rowUI = rowUIObj.GetComponent<WordPlankRowUI>();
 
-                if (rowUI) rowUI.InitGameElementUI(rowModal);
-
-                if (gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank == null ||
-                    gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank.Length == 0) continue;
-
-                PlankLetterSlot[] letterSlotModals = gameGridLinked.wordPlankRowsInGrid[i].letterSlotsInWordPlank;
-
-                for (int j = 0; j < letterSlotModals.Length; j++)
+                if (rowUI)
                 {
-                    if (!letterSlotModals[j]) continue;
+                    rowUI.InitGameElementUI(rowModal);
 
-                    GameObject letterSlotUIObj = null;
-
-                    if (rowUI)
-                    {
-                        if(rowUI.horizontalLayoutToSpawnLetterSlotsUnder) 
-                            letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, rowUI.horizontalLayoutToSpawnLetterSlotsUnder.transform);
-
-                        else letterSlotUIObj = Instantiate(letterSlotUIPrefabToSpawn.gameObject, rowUI.transform);
-                    }
-
-                    if(!letterSlotUIObj) continue;
-
-                    letterSlotUIObj.name = letterSlotUIObj.name + "_" + j;
-
-                    PlankLetterSlotUI letterSlotUI = letterSlotUIObj.GetComponent<PlankLetterSlotUI>();
-
-                    if(letterSlotUI) letterSlotUI.InitGameElementUI(letterSlotModals[j]);
+                    plankUISpawned.Add(rowUI);
                 }
             }
         }
