@@ -39,6 +39,8 @@ namespace CrossClimbLite
 
             linkedPlankLetterSlot = letterSlotToLink as PlankLetterSlot;
 
+            linkedPlankLetterSlot.ConnectGameElementUI(this);
+
             if (linkedPlankLetterSlot.isSlotLocked) UpdateUI_OnGameElementModalLocked(true);
 
             if (!inputField)
@@ -69,14 +71,11 @@ namespace CrossClimbLite
             if (!enabled) return;
 
             if (!eventSystem) return;
-
+            
             if (!inputField) return;
 
             if (isSelected)
             {
-                if (eventSystem.currentSelectedGameObject == inputField.gameObject) 
-                    return;
-
                 //Debug.Log("Game Element UI Selected: " + name);
 
                 inputField.Select();

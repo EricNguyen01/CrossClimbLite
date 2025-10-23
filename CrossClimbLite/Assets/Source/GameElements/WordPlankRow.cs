@@ -32,6 +32,8 @@ namespace CrossClimbLite
         //plank dragable is determined by whether it's locked or not
         public bool isPlankDragable { get; private set; } = true;
 
+        private WordPlankRowUI wordPlankRowUILinked;
+
         public void InitPlank(GameGrid parentGrid, int rowOrderOfPlank, int letterCountInPlank, bool isKeyword = false, bool isLocked = false)
         {
             if (!parentGrid)
@@ -87,6 +89,16 @@ namespace CrossClimbLite
             if(isLocked) SetGameElementLockedStatus(true, false);
         }
 
+        public override void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
+        {
+            base.ConnectGameElementUI(gameElementUIToLinked);
+
+            if(gameElementUILinked && gameElementUILinked is WordPlankRowUI)
+            {
+                wordPlankRowUILinked = gameElementUILinked as WordPlankRowUI;
+            }
+        }
+
         public void SelectNextLetterSlotIndexOnPreviousSlotFilled(int slotIndexToSet)
         {
             if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0)
@@ -121,7 +133,10 @@ namespace CrossClimbLite
                 gameGridHoldingPlank.SetCurrentPlankRowSelected(this);
             }
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
+            if (!isFromUI && wordPlankRowUILinked)
+            {
+                wordPlankRowUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
+            }
         }
 
         public void SetPlankRowNum(int rowOrder)
@@ -153,7 +168,7 @@ namespace CrossClimbLite
                 letterSlotsInWordPlank[i].SetGameElementLockedStatus(isLocked, false);
             }
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+            if (!isFromUI && wordPlankRowUILinked) wordPlankRowUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }
 
         public void PlankLetterSlotsSwapWith(WordPlankRow plankToSwap)

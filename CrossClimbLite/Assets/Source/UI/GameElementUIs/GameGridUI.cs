@@ -50,6 +50,8 @@ namespace CrossClimbLite
             if (gameGridToLink is not GameGrid) return;
 
             gameGridLinked = gameGridToLink as GameGrid;
+
+            gameGridLinked.ConnectGameElementUI(this);
         }
 
         public void OnGameGridInitOrRemove()
@@ -131,8 +133,6 @@ namespace CrossClimbLite
                 if (rowUI)
                 {
                     rowUI.InitGameElementUI(rowModal);
-
-                    rowUI.SetParentHoldingGridUI(this);
 
                     plankUISpawned.Add(rowUI);
                 }

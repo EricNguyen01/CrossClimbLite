@@ -426,6 +426,7 @@ GameObject:
   - component: {fileID: 8636237465440463904}
   - component: {fileID: 4034783719559029871}
   - component: {fileID: 6383469140206142761}
+  - component: {fileID: 3891502087014424116}
   m_Layer: 5
   m_Name: PlankSlotUI
   m_TagString: Untagged
@@ -505,3 +506,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   isLocked: 0
+--- !u!225 &3891502087014424116
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8675781760501116763}
+  m_Enabled: 1
+  m_Alpha: 1
+  m_Interactable: 1
+  m_BlocksRaycasts: 1
+  m_IgnoreParentGroups: 0

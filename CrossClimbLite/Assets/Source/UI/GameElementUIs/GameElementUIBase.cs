@@ -4,6 +4,7 @@ using UnityEngine.EventSystems;
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(RectTransform))]
     public abstract class GameElementUIBase : MonoBehaviour
     {
         [SerializeField]
@@ -14,6 +15,8 @@ namespace CrossClimbLite
         [ReadOnlyInspector]
         protected bool isLocked = false;
 
+        protected RectTransform gameElementUIRect;
+
         protected CanvasGroup elementCanvasGroup;
 
         protected EventSystem eventSystem;
@@ -22,6 +25,8 @@ namespace CrossClimbLite
 
         protected virtual void Awake()
         {
+            TryGetComponent<RectTransform>(out gameElementUIRect);
+
             if(!TryGetComponent<CanvasGroup>(out elementCanvasGroup))
             {
                 elementCanvasGroup = gameObject.AddComponent<CanvasGroup>();

@@ -20,6 +20,8 @@ namespace CrossClimbLite
 
         public bool isSlotLocked { get; private set; } = false;
 
+        private PlankLetterSlotUI letterSlotUILinked;
+
         public void InitSlot(WordPlankRow holdingWordPlank, int slotIndexInPlank)
         {
             if (!holdingWordPlank)
@@ -36,12 +38,22 @@ namespace CrossClimbLite
             this.slotIndexInPlank = slotIndexInPlank;
         }
 
+        public override void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
+        {
+            base.ConnectGameElementUI(gameElementUIToLinked);
+
+            if(gameElementUILinked && gameElementUILinked is PlankLetterSlotUI)
+            {
+                letterSlotUILinked = gameElementUILinked as PlankLetterSlotUI;
+            }
+        }
+
         public void WriteLetterToSlot(string newLetter, bool isFromUI)
         {
             if (!wordPlankOfSlot) return;
 
             letter = newLetter;
-
+            
             wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
 
             if (!isFromUI && gameElementUILinked)
@@ -61,12 +73,15 @@ namespace CrossClimbLite
 
             if (wordPlankOfSlot)
             {
-                if (isSelected && !wordPlankOfSlot.isPlankRowSelected) wordPlankOfSlot.SetGameElementSelectionStatus(true, false);
+                wordPlankOfSlot.SetGameElementSelectionStatus(isSelected, false);
 
                 wordPlankOfSlot.SetCurrentLetterSlotIndex(slotIndexInPlank);
             }
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
+            if (!isFromUI && letterSlotUILinked)
+            {
+                letterSlotUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
+            }
         }
 
         public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI)
@@ -80,7 +95,7 @@ namespace CrossClimbLite
 
             isSlotLocked = isLocked;
 
-            if (!isFromUI && gameElementUILinked) gameElementUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+            if (!isFromUI && letterSlotUILinked) letterSlotUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }   
     }
 }

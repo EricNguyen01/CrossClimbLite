@@ -8,7 +8,7 @@ namespace CrossClimbLite
     {
         protected GameElementUIBase gameElementUILinked;
 
-        public void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
+        public virtual void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
         {
             if (!gameElementUIToLinked) return;
 
