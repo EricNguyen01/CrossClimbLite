@@ -347,6 +347,15 @@ namespace CrossClimbLite
                 plankDragVisualObject.transform.localPosition = Vector3.zero;
             }
 
+            if (elementCanvasGroup)
+            {
+                elementCanvasGroup.alpha = 1.0f;
+
+                elementCanvasGroup.blocksRaycasts = true;
+
+                elementCanvasGroup.interactable = true;
+            }
+
             if (eventData == null || !eventData.pointerEnter) return;
 
             WordPlankRowUI destinationPlank;  
@@ -367,15 +376,6 @@ namespace CrossClimbLite
             if (!destinationPlank) return;
 
             PlankSwapWith(destinationPlank);
-
-            if (elementCanvasGroup)
-            {
-                elementCanvasGroup.alpha = 1.0f;
-
-                elementCanvasGroup.blocksRaycasts = true;
-
-                elementCanvasGroup.interactable = true;
-            }
         }
 
         public void PlankSwapWith(WordPlankRowUI plankToSwap)
