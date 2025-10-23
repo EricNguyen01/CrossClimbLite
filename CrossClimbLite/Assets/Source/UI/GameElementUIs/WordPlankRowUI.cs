@@ -313,7 +313,20 @@ namespace CrossClimbLite
                 }
             }
 
+            if (parentRootCanvas) plankDragVisualObject.transform.SetParent(parentRootCanvas.transform);
+
+            else plankDragVisualObject.transform.SetParent(null);
+
             plankDragVisualObject.gameObject.SetActive(true);
+
+            if (elementCanvasGroup)
+            {
+                elementCanvasGroup.alpha = 0.0f;
+
+                elementCanvasGroup.blocksRaycasts = false;
+
+                elementCanvasGroup.interactable = false;
+            }
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -354,6 +367,15 @@ namespace CrossClimbLite
             if (!destinationPlank) return;
 
             PlankSwapWith(destinationPlank);
+
+            if (elementCanvasGroup)
+            {
+                elementCanvasGroup.alpha = 1.0f;
+
+                elementCanvasGroup.blocksRaycasts = true;
+
+                elementCanvasGroup.interactable = true;
+            }
         }
 
         public void PlankSwapWith(WordPlankRowUI plankToSwap)
@@ -415,6 +437,8 @@ namespace CrossClimbLite
                 dragVisualCanvasGroup.blocksRaycasts = false;
 
                 dragVisualCanvasGroup.interactable = false;
+
+                dragVisualCanvasGroup.ignoreParentGroups = true;
             }
 
             WordPlankDragHandleUI[] dragHandleUIComps = plankDragVisualObject.GetComponentsInChildren<WordPlankDragHandleUI>(); 
