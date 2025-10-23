@@ -7,10 +7,10 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public class GameGridUI : GameElementUIBase
     {
-        [Header("Required Game UI Prefabs")]
+        [field: Header("Required Word Plank UI Prefabs")]
 
-        [SerializeField]
-        private WordPlankRowUI wordPlankUIPrefabToSpawn;
+        [field: SerializeField]
+        public WordPlankRowUI wordPlankUIPrefabToSpawn { get; private set; }
 
         private List<WordPlankRowUI> plankUISpawned = new List<WordPlankRowUI>();   
 
@@ -131,6 +131,8 @@ namespace CrossClimbLite
                 if (rowUI)
                 {
                     rowUI.InitGameElementUI(rowModal);
+
+                    rowUI.SetParentHoldingGridUI(this);
 
                     plankUISpawned.Add(rowUI);
                 }

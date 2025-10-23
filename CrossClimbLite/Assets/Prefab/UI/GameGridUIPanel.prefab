@@ -190,6 +190,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isSelected: 0
   isLocked: 0
-  wordPlankUIPrefabToSpawn: {fileID: 2505475709865451877, guid: d72e39dc32b8a4447bb1de8715de4bde, type: 3}
-  letterSlotUIPrefabToSpawn: {fileID: 6383469140206142761, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
+  <wordPlankUIPrefabToSpawn>k__BackingField: {fileID: 2505475709865451877, guid: d72e39dc32b8a4447bb1de8715de4bde, type: 3}
   verticalGroupToSpawnPlanksUnder: {fileID: 4912818356355110611}

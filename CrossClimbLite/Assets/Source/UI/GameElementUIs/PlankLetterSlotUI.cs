@@ -10,7 +10,7 @@ namespace CrossClimbLite
         //the non-UI plank letter slot Modal (where slot logic is stored)
         private PlankLetterSlot linkedPlankLetterSlot;
 
-        private TMP_InputField inputField;
+        public TMP_InputField inputField { get; private set; }
 
         //INHERITED FUNCS..................................................................................
 
@@ -20,7 +20,9 @@ namespace CrossClimbLite
 
             if (!inputField)
             {
-                if (!TryGetComponent<TMP_InputField>(out inputField))
+                inputField = GetComponent<TMP_InputField>();
+
+                if (!inputField)
                 {
                     inputField = GetComponentInChildren<TMP_InputField>();
                 }
