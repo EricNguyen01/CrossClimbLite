@@ -2,8 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
-using TMPro;
-using System.Runtime.CompilerServices;
 
 namespace CrossClimbLite
 {
@@ -55,7 +53,7 @@ namespace CrossClimbLite
 
         private GameGridUI parentGridUI;
 
-        private int plankUISiblingIndex = 0;
+        private RectTransform parentRect;
 
         private bool isKeyword = false;
 
@@ -64,6 +62,8 @@ namespace CrossClimbLite
         protected override void Awake()
         {
             base.Awake();
+
+            parentRect = transform.parent.GetComponent<RectTransform>();
 
             if (!wordPlankRowBackgroundImage)
             {
@@ -118,17 +118,24 @@ namespace CrossClimbLite
                 if (wordPlankRowLinked.isPlankLocked) rightDragHandleUIRoot.UpdateUI_OnGameElementModalLocked(true);
             }
 
-            plankUISiblingIndex = transform.GetSiblingIndex();
+            if (!parentHoldingUIToLink || parentHoldingUIToLink is not GameGridUI)
+            {
+                Debug.LogError("PlankRowUI: " + name + " doesnt have a valid ref to a GameGridUI parent. Disabling Plank Row!");
 
-            if (!parentHoldingUIToLink) return;
+                gameObject.SetActive(false);
 
-            if(parentHoldingUIToLink is not GameGridUI) return;
+                enabled = false;
+
+                return;
+            }
 
             parentGridUI = parentHoldingUIToLink as GameGridUI;
         }
 
         public void InitChildrenLetterSlotsUI()
         {
+            if(!enabled) return;
+
             if (!letterSlotUIPrefabToSpawn)
             {
                 Debug.LogError("Trying to spawn letter slot UI children for word plank row UI: " + name +
@@ -275,19 +282,13 @@ namespace CrossClimbLite
 
         // DRAG HANDLER INTERFACE FUNCS............................................................................................
 
-        private RectTransform vertLayoutParentRect;
-
-        private Vector2 dragVisualLocalPos;
-
-        private float mouseYLocalRectBeginDrag;
-
         public void OnBeginDrag(PointerEventData eventData)
         {
             if(!enabled) return;
 
-            CreatePlankDragVisualObject(false);
+            wordPlankRowLinked.SetGameElementSelectionStatus(true, true);
 
-            if (!plankDragVisualObject) return;
+            CreatePlankDragVisualObject(false);
 
             if (plankDragVisualObject.letterSlotsUISpawned != null && plankDragVisualObject.letterSlotsUISpawned.Count > 0)
             {
@@ -304,44 +305,47 @@ namespace CrossClimbLite
             if (parentGridUI)
             {
                 parentGridUI.SetAllPlankUIsCanvasGroupData(true, false, 1.0f, 1.0f);
+
+                if(parentGridUI.verticalGroupToSpawnPlanksUnder) parentGridUI.verticalGroupToSpawnPlanksUnder.enabled = false;
             }
+
+            plankDragVisualObject.transform.SetParent(transform.parent);
+
+            plankDragVisualObject.transform.localPosition = transform.localPosition;
 
             plankDragVisualObject.gameObject.SetActive(true);
 
-            if(!vertLayoutParentRect) vertLayoutParentRect = transform.parent.GetComponent<RectTransform>();
+            elementCanvasGroup.alpha = 0.0f;
 
-            Vector2 mousePosLocalInRect;
-
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(vertLayoutParentRect, eventData.position,
-                                                                    parentRootCanvas.worldCamera ? parentRootCanvas.worldCamera : Camera.main,
-                                                                    out mousePosLocalInRect);
-
-            mouseYLocalRectBeginDrag = mousePosLocalInRect.y;
+            if (!parentRect) parentRect = transform.parent.GetComponent<RectTransform>();
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            Vector2 mousePosLocalInRect;
+            if (!enabled) return;
 
-            RectTransformUtility.ScreenPointToLocalPointInRectangle(vertLayoutParentRect, eventData.position, 
-                                                                    parentRootCanvas.worldCamera ? parentRootCanvas.worldCamera : Camera.main, 
-                                                                    out mousePosLocalInRect);
+            Vector2 mousePosLocalRect;
 
-            float mouseYLocalRectDragOffset = mousePosLocalInRect.y - mouseYLocalRectBeginDrag;
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect,
+                                                                    Input.mousePosition,
+                                                                    parentRootCanvas.worldCamera ? parentRootCanvas.worldCamera : Camera.main,
+                                                                    out mousePosLocalRect);
 
-            plankDragVisualObject.transform.localPosition += new Vector3(0.0f, mouseYLocalRectDragOffset, 0.0f);
+            mousePosLocalRect = parentRect.TransformPoint(mousePosLocalRect);
 
-            Vector3 dragVisualLocalPosInParentVertLayout;
+            plankDragVisualObject.transform.position = new Vector3(plankDragVisualObject.transform.position.x, 
+                                                                   mousePosLocalRect.y,
+                                                                   plankDragVisualObject.transform.position.z);
 
-            dragVisualLocalPosInParentVertLayout = vertLayoutParentRect.transform.InverseTransformPoint(plankDragVisualObject.transform.position);
+            if (!parentGridUI) return;
 
-            if(dragVisualLocalPosInParentVertLayout.y > parentGridUI.plankUISpawned[0].transform.localPosition.y)
+            if(plankDragVisualObject.transform.position.y > parentGridUI.plankUISpawned[0].transform.position.y)
             {
-                plankDragVisualObject.transform.localPosition = plankDragVisualObject.transform.InverseTransformPoint(parentGridUI.plankUISpawned[0].transform.position);
+                plankDragVisualObject.transform.position = parentGridUI.plankUISpawned[0].transform.position;
             }
-            else if(dragVisualLocalPosInParentVertLayout.y < parentGridUI.plankUISpawned[parentGridUI.plankUISpawned.Count - 1].transform.localPosition.y)
+            else if(plankDragVisualObject.transform.position.y < parentGridUI.plankUISpawned[parentGridUI.plankUISpawned.Count - 1].transform.position.y)
             {
-                plankDragVisualObject.transform.localPosition = plankDragVisualObject.transform.InverseTransformPoint(parentGridUI.plankUISpawned[parentGridUI.plankUISpawned.Count - 1].transform.position);
+                plankDragVisualObject.transform.position = parentGridUI.plankUISpawned[parentGridUI.plankUISpawned.Count - 1].transform.position;
             }
         }
 
@@ -349,14 +353,9 @@ namespace CrossClimbLite
         {
             if (!enabled) return;
 
-            DestroyPlankDragVisualObject();
+            plankDragVisualObject.gameObject.SetActive(false);
 
-            if (parentGridUI)
-            {
-                parentGridUI.SetAllPlankUIsCanvasGroupData(true, true, 1.0f, 1.0f);
-            }
-
-            if (eventData == null || !eventData.pointerEnter) return;
+            if (eventData == null || !eventData.pointerEnter) goto UseEventSystemRaycast;
 
             WordPlankRowUI destinationPlank;  
             
@@ -373,12 +372,70 @@ namespace CrossClimbLite
                 }
             }
 
-            if (!destinationPlank) return;
+            if (destinationPlank)
+            {
+                PlankSwapWithPhysically(destinationPlank);
 
-            PlankSwapWith(destinationPlank);
+                goto FinalizeEndDrag;
+            }
+
+            //else
+
+        UseEventSystemRaycast:
+
+            if (EventSystem.current)
+            {
+                List<RaycastResult> results = new List<RaycastResult>();
+
+                PointerEventData pEventData = new PointerEventData(EventSystem.current);
+
+                if(parentRootCanvas && parentRootCanvas.worldCamera)
+                {
+                    pEventData.position = RectTransformUtility.WorldToScreenPoint(parentRootCanvas.worldCamera,
+                                                                                  plankDragVisualObject.transform.position);
+                }
+                else
+                {
+                    pEventData.position = RectTransformUtility.WorldToScreenPoint(Camera.main, plankDragVisualObject.transform.position);
+                }
+
+                EventSystem.current.RaycastAll(pEventData, results);
+                
+                if(results.Count > 0)
+                {
+                    for(int i = 0; i < results.Count; i++)
+                    {
+                        if (!results[i].isValid) continue;
+
+                        if (results[i].gameObject.transform.parent != transform.parent) continue;
+
+                        if (results[i].gameObject.transform == transform.parent.transform) continue;
+
+                        if (results[i].gameObject.TryGetComponent<WordPlankRowUI>(out destinationPlank))
+                        {
+                            PlankSwapWithPhysically(destinationPlank);
+
+                            break;
+                        }
+                    }
+                }
+            }
+
+        FinalizeEndDrag:
+
+            DestroyPlankDragVisualObject();
+
+            if (parentGridUI)
+            {
+                parentGridUI.SetAllPlankUIsCanvasGroupData(true, true, 1.0f, 1.0f);
+
+                if (parentGridUI.verticalGroupToSpawnPlanksUnder) parentGridUI.verticalGroupToSpawnPlanksUnder.enabled = true;
+            }
+
+            elementCanvasGroup.alpha = 1.0f;
         }
 
-        public void PlankSwapWith(WordPlankRowUI plankToSwap)
+        public void PlankSwapWithPhysically(WordPlankRowUI plankToSwap)
         {
             if(!enabled) return;
 
@@ -390,9 +447,15 @@ namespace CrossClimbLite
 
             if (wordPlankRowLinked.isPlankKeyword && !plankToSwap.wordPlankRowLinked.isPlankKeyword) return;
 
-            transform.SetSiblingIndex(plankToSwap.transform.GetSiblingIndex());
+            if(!wordPlankRowLinked.isPlankKeyword && plankToSwap.wordPlankRowLinked.isPlankKeyword ) return;
 
-            plankUISiblingIndex = transform.GetSiblingIndex();
+            int thisSiblingIndex = transform.GetSiblingIndex();
+
+            int plankToSwapSiblingIndex = plankToSwap.transform.GetSiblingIndex();
+
+            transform.SetSiblingIndex(plankToSwapSiblingIndex);
+
+            plankToSwap.transform.SetSiblingIndex(thisSiblingIndex);
         }
 
         private void CreatePlankDragVisualObject(bool activeOnCreated)

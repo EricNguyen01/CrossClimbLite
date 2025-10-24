@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace CrossClimbLite
@@ -15,8 +14,8 @@ namespace CrossClimbLite
             gameElementUILinked = gameElementUIToLinked;
         }
 
-        public abstract void SetGameElementSelectionStatus(bool isSelected, bool isFromUI);
+        public abstract void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI);
 
-        public abstract void SetGameElementLockedStatus(bool isLocked, bool isFromUI);
+        public abstract void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI);
     }
 }

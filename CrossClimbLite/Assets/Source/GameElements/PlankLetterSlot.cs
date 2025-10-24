@@ -48,7 +48,7 @@ namespace CrossClimbLite
             }
         }
 
-        public void WriteLetterToSlot(string newLetter, bool isFromUI)
+        public void WriteLetterToSlot(string newLetter, bool shouldUpdateUI)
         {
             if (!wordPlankOfSlot) return;
 
@@ -56,7 +56,7 @@ namespace CrossClimbLite
             
             wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
 
-            if (!isFromUI && gameElementUILinked)
+            if (shouldUpdateUI && gameElementUILinked)
             {
                 if(gameElementUILinked is PlankLetterSlotUI)
                 {
@@ -67,24 +67,24 @@ namespace CrossClimbLite
             }
         }
 
-        public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI)
+        public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI)
         {
             isSlotSelected = isSelected;
 
             if (wordPlankOfSlot)
             {
-                wordPlankOfSlot.SetGameElementSelectionStatus(isSelected, false);
+                wordPlankOfSlot.SetGameElementSelectionStatus(isSelected, true);
 
                 wordPlankOfSlot.SetCurrentLetterSlotIndex(slotIndexInPlank);
             }
 
-            if (!isFromUI && letterSlotUILinked)
+            if (shouldUpdateUI && letterSlotUILinked)
             {
                 letterSlotUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
             }
         }
 
-        public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI)
+        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI)
         {
             if (wordPlankOfSlot)
             {
@@ -95,7 +95,7 @@ namespace CrossClimbLite
 
             isSlotLocked = isLocked;
 
-            if (!isFromUI && letterSlotUILinked) letterSlotUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+            if (!shouldUpdateUI && letterSlotUILinked) letterSlotUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }   
     }
 }

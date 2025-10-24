@@ -2,7 +2,6 @@ using System;
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
-using Unity.Mathematics;
 
 namespace CrossClimbLite
 {
@@ -181,7 +180,7 @@ namespace CrossClimbLite
 
             if (currentPlankBeingSelected && selectedPlankRow != currentPlankBeingSelected)
             {
-                currentPlankBeingSelected.SetGameElementSelectionStatus(false, false);
+                currentPlankBeingSelected.SetGameElementSelectionStatus(false, true);
 
                 currentPlankBeingSelected = selectedPlankRow;
             }
@@ -210,9 +209,9 @@ namespace CrossClimbLite
             gameGridUIInstance.InitGameElementUI(this);
         }
 
-        public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI) { }
+        public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI) { }
 
-        public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI) { }
+        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI) { }
 
         //EDITOR FUNCS...............................................................................................
 

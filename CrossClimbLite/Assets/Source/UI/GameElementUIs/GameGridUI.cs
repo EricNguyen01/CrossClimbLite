@@ -17,7 +17,7 @@ namespace CrossClimbLite
         [Header("Spawn Specifications")]
 
         [SerializeField]
-        private VerticalLayoutGroup verticalGroupToSpawnPlanksUnder;
+        public VerticalLayoutGroup verticalGroupToSpawnPlanksUnder { get; private set; }
 
         private GameGrid gameGridLinked;
 
@@ -27,7 +27,7 @@ namespace CrossClimbLite
 
             if (!verticalGroupToSpawnPlanksUnder)
             {
-                TryGetComponent<VerticalLayoutGroup>(out verticalGroupToSpawnPlanksUnder);
+                verticalGroupToSpawnPlanksUnder = GetComponent<VerticalLayoutGroup>();
             }
 
             if (!verticalGroupToSpawnPlanksUnder)

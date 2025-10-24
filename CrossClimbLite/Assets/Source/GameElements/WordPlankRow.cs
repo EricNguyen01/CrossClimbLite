@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 namespace CrossClimbLite
@@ -86,7 +85,7 @@ namespace CrossClimbLite
                 }
             }
 
-            if(isLocked) SetGameElementLockedStatus(true, false);
+            if(isLocked) SetGameElementLockedStatus(true, true);
         }
 
         public override void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
@@ -114,15 +113,15 @@ namespace CrossClimbLite
 
             if(currentLetterIndex != slotIndexToSet)
             {
-                letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, false);
+                letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, true);
 
                 currentLetterIndex = slotIndexToSet;
 
-                letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(true, false);
+                letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(true, true);
             }
         }
 
-        public override void SetGameElementSelectionStatus(bool isSelected, bool isFromUI)
+        public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI)
         {
             if (!gameGridHoldingPlank) return;
 
@@ -133,7 +132,7 @@ namespace CrossClimbLite
                 gameGridHoldingPlank.SetCurrentPlankRowSelected(this);
             }
 
-            if (!isFromUI && wordPlankRowUILinked)
+            if (shouldUpdateUI && wordPlankRowUILinked)
             {
                 wordPlankRowUILinked.UpdateUI_OnGameElementModalSelected(isSelected);
             }
@@ -153,7 +152,7 @@ namespace CrossClimbLite
             currentLetterIndex = slotIndexToSet;
         }
 
-        public override void SetGameElementLockedStatus(bool isLocked, bool isFromUI)
+        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI)
         {
             isPlankLocked = isLocked;
 
@@ -168,7 +167,7 @@ namespace CrossClimbLite
                 letterSlotsInWordPlank[i].SetGameElementLockedStatus(isLocked, false);
             }
 
-            if (!isFromUI && wordPlankRowUILinked) wordPlankRowUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+            if (shouldUpdateUI && wordPlankRowUILinked) wordPlankRowUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }
 
         public void PlankLetterSlotsSwapWith(WordPlankRow plankToSwap)
