@@ -148,7 +148,7 @@ namespace CrossClimbLite
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
             }
 
-            if (gameGridUIInstance) gameGridUIInstance.OnGameGridInitOrRemove();
+            if (gameGridUIInstance) gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
         }
 
         public void RemoveGrid()
@@ -167,7 +167,7 @@ namespace CrossClimbLite
 
             wordPlankRowsInGrid = new WordPlankRow[rowNum];
 
-            if (gameGridUIInstance) gameGridUIInstance.OnGameGridInitOrRemove();
+            if (gameGridUIInstance) gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
         }
 
         public void SetCurrentPlankRowSelected(WordPlankRow selectedPlankRow)

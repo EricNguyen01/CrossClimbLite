@@ -21,7 +21,13 @@ namespace CrossClimbLite
 
         protected EventSystem eventSystem;
 
+        protected Canvas parentRootCanvas;
+
+        protected RectTransform parentRootCanvasRect;
+
         private GameElementBase gameElementLinked;
+
+        private GameElementUIBase parentHoldingUI;
 
         protected virtual void Awake()
         {
@@ -38,6 +44,12 @@ namespace CrossClimbLite
             {
                 Debug.LogWarning("GameElementUI: " + name + " couldnt find any EventSystem in the scene. It might not work!");
             }
+
+            parentRootCanvas = GetComponentInParent<Canvas>();
+
+            parentRootCanvas.TryGetComponent<RectTransform>(out parentRootCanvasRect);
+
+            if (!parentRootCanvas.worldCamera) parentRootCanvas.worldCamera = Camera.main;
         }
 
         public virtual void InitGameElementUI(GameElementBase gameElementToLink)
@@ -54,6 +66,15 @@ namespace CrossClimbLite
             gameElementLinked = gameElementToLink;
 
             gameElementLinked.ConnectGameElementUI(this);
+        }
+
+        public virtual void InitGameElementUI(GameElementBase gameElementToLink, GameElementUIBase parentHoldingUIToLink)
+        {
+            InitGameElementUI(gameElementToLink);
+
+            if (!parentHoldingUIToLink) return;
+
+            parentHoldingUI = parentHoldingUIToLink;
         }
 
         public virtual void UpdateUI_OnGameElementModalSelected(bool isSelected)

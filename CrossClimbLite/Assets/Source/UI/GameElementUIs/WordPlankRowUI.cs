@@ -3,14 +3,13 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine.EventSystems;
 using TMPro;
+using System.Runtime.CompilerServices;
 
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
     public class WordPlankRowUI : GameElementUIBase, IBeginDragHandler, IDragHandler, IEndDragHandler   
     {
-        private int plankUISiblingIndex = 0;
-
         [Header("Plank State Colors")]
         [SerializeField]
         private Color normalStateColor = Color.white;
@@ -54,7 +53,9 @@ namespace CrossClimbLite
 
         private WordPlankRowUI plankDragVisualObject;
 
-        private Canvas parentRootCanvas;
+        private GameGridUI parentGridUI;
+
+        private int plankUISiblingIndex = 0;
 
         private bool isKeyword = false;
 
@@ -78,11 +79,9 @@ namespace CrossClimbLite
                     horizontalLayoutToSpawnLetterSlotsUnder = GetComponentInChildren<HorizontalLayoutGroup>();
                 }
             }
-
-            parentRootCanvas = GetComponentInParent<Canvas>();
         }
 
-        public override void InitGameElementUI(GameElementBase wordPlankRowToLink)
+        public override void InitGameElementUI(GameElementBase wordPlankRowToLink, GameElementUIBase parentHoldingUIToLink)
         {
             base.InitGameElementUI(wordPlankRowToLink);
 
@@ -120,6 +119,12 @@ namespace CrossClimbLite
             }
 
             plankUISiblingIndex = transform.GetSiblingIndex();
+
+            if (!parentHoldingUIToLink) return;
+
+            if(parentHoldingUIToLink is not GameGridUI) return;
+
+            parentGridUI = parentHoldingUIToLink as GameGridUI;
         }
 
         public void InitChildrenLetterSlotsUI()
@@ -161,7 +166,7 @@ namespace CrossClimbLite
 
                 if (letterSlotUI)
                 {
-                    letterSlotUI.InitGameElementUI(wordPlankRowLinked.letterSlotsInWordPlank[i]);
+                    letterSlotUI.InitGameElementUI(wordPlankRowLinked.letterSlotsInWordPlank[i], this);
 
                     letterSlotsUISpawned.Add(letterSlotUI);
                 }
@@ -257,7 +262,24 @@ namespace CrossClimbLite
             }
         }
 
+        public void SetPlankUICanvasGroupData(bool blockRaycast, bool interactable, float enableAlpha = 1.0f, float disableAlpha = 0.0f)
+        {
+            if (!elementCanvasGroup) return;
+
+            elementCanvasGroup.alpha = enableAlpha;
+
+            elementCanvasGroup.blocksRaycasts = blockRaycast;
+
+            elementCanvasGroup.interactable = interactable;
+        }
+
         // DRAG HANDLER INTERFACE FUNCS............................................................................................
+
+        private RectTransform vertLayoutParentRect;
+
+        private Vector2 dragVisualLocalPos;
+
+        private float mouseYLocalRectBeginDrag;
 
         public void OnBeginDrag(PointerEventData eventData)
         {
@@ -279,25 +301,48 @@ namespace CrossClimbLite
                 }
             }
 
-            if (parentRootCanvas) plankDragVisualObject.transform.SetParent(parentRootCanvas.transform);
-
-            else plankDragVisualObject.transform.SetParent(null);
+            if (parentGridUI)
+            {
+                parentGridUI.SetAllPlankUIsCanvasGroupData(true, false, 1.0f, 1.0f);
+            }
 
             plankDragVisualObject.gameObject.SetActive(true);
 
-            if (elementCanvasGroup)
-            {
-                elementCanvasGroup.alpha = 0.0f;
+            if(!vertLayoutParentRect) vertLayoutParentRect = transform.parent.GetComponent<RectTransform>();
 
-                elementCanvasGroup.blocksRaycasts = false;
+            Vector2 mousePosLocalInRect;
 
-                elementCanvasGroup.interactable = false;
-            }
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(vertLayoutParentRect, eventData.position,
+                                                                    parentRootCanvas.worldCamera ? parentRootCanvas.worldCamera : Camera.main,
+                                                                    out mousePosLocalInRect);
+
+            mouseYLocalRectBeginDrag = mousePosLocalInRect.y;
         }
 
         public void OnDrag(PointerEventData eventData)
         {
-            
+            Vector2 mousePosLocalInRect;
+
+            RectTransformUtility.ScreenPointToLocalPointInRectangle(vertLayoutParentRect, eventData.position, 
+                                                                    parentRootCanvas.worldCamera ? parentRootCanvas.worldCamera : Camera.main, 
+                                                                    out mousePosLocalInRect);
+
+            float mouseYLocalRectDragOffset = mousePosLocalInRect.y - mouseYLocalRectBeginDrag;
+
+            plankDragVisualObject.transform.localPosition += new Vector3(0.0f, mouseYLocalRectDragOffset, 0.0f);
+
+            Vector3 dragVisualLocalPosInParentVertLayout;
+
+            dragVisualLocalPosInParentVertLayout = vertLayoutParentRect.transform.InverseTransformPoint(plankDragVisualObject.transform.position);
+
+            if(dragVisualLocalPosInParentVertLayout.y > parentGridUI.plankUISpawned[0].transform.localPosition.y)
+            {
+                plankDragVisualObject.transform.localPosition = plankDragVisualObject.transform.InverseTransformPoint(parentGridUI.plankUISpawned[0].transform.position);
+            }
+            else if(dragVisualLocalPosInParentVertLayout.y < parentGridUI.plankUISpawned[parentGridUI.plankUISpawned.Count - 1].transform.localPosition.y)
+            {
+                plankDragVisualObject.transform.localPosition = plankDragVisualObject.transform.InverseTransformPoint(parentGridUI.plankUISpawned[parentGridUI.plankUISpawned.Count - 1].transform.position);
+            }
         }
 
         public void OnEndDrag(PointerEventData eventData)
@@ -306,13 +351,9 @@ namespace CrossClimbLite
 
             DestroyPlankDragVisualObject();
 
-            if (elementCanvasGroup)
+            if (parentGridUI)
             {
-                elementCanvasGroup.alpha = 1.0f;
-
-                elementCanvasGroup.blocksRaycasts = true;
-
-                elementCanvasGroup.interactable = true;
+                parentGridUI.SetAllPlankUIsCanvasGroupData(true, true, 1.0f, 1.0f);
             }
 
             if (eventData == null || !eventData.pointerEnter) return;

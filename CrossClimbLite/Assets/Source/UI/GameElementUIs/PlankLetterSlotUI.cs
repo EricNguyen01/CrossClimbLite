@@ -12,6 +12,8 @@ namespace CrossClimbLite
 
         public TMP_InputField inputField { get; private set; }
 
+        private WordPlankRowUI parentPlankRowUI;
+
         //INHERITED FUNCS..................................................................................
 
         protected override void Awake()
@@ -29,7 +31,7 @@ namespace CrossClimbLite
             }
         }
 
-        public override void InitGameElementUI(GameElementBase letterSlotToLink)
+        public override void InitGameElementUI(GameElementBase letterSlotToLink, GameElementUIBase parentHoldingUIToLink)
         {
             base.InitGameElementUI(letterSlotToLink);
 
@@ -52,6 +54,12 @@ namespace CrossClimbLite
 
                 enabled = false;
             }
+
+            if(!parentHoldingUIToLink) return;
+
+            if(parentHoldingUIToLink is not WordPlankRowUI) return;
+
+            parentPlankRowUI = parentHoldingUIToLink as WordPlankRowUI;
         }
 
         public void UpdateUI_OnModalLetterChanged(string newLetter)

@@ -12,7 +12,7 @@ namespace CrossClimbLite
         [field: SerializeField]
         public WordPlankRowUI wordPlankUIPrefabToSpawn { get; private set; }
 
-        private List<WordPlankRowUI> plankUISpawned = new List<WordPlankRowUI>();   
+        public List<WordPlankRowUI> plankUISpawned { get; private set; } = new List<WordPlankRowUI>();
 
         [Header("Spawn Specifications")]
 
@@ -54,7 +54,7 @@ namespace CrossClimbLite
             gameGridLinked.ConnectGameElementUI(this);
         }
 
-        public void OnGameGridInitOrRemove()
+        public void UpdateUI_OnGameGridModalInitOrRemove()
         {
             if (!gameGridLinked) return;
 
@@ -68,6 +68,18 @@ namespace CrossClimbLite
             if (gameGridLinked.wordPlankRowsInGrid != null && gameGridLinked.wordPlankRowsInGrid.Length > 0)
             {
                 SpawnNewGridUILayoutFollowingGridLinkedLayout();
+            }
+        }
+
+        public void SetAllPlankUIsCanvasGroupData(bool blockRaycast, bool interactable, float enableAlpha = 1.0f, float disableAlpha = 0.0f)
+        {
+            if(plankUISpawned == null || plankUISpawned.Count == 0) return; 
+
+            for(int i = 0; i < plankUISpawned.Count; i++)
+            {
+                if (!plankUISpawned[i]) continue;
+
+                plankUISpawned[i].SetPlankUICanvasGroupData(blockRaycast, interactable, enableAlpha, disableAlpha);
             }
         }
 
@@ -132,7 +144,7 @@ namespace CrossClimbLite
 
                 if (rowUI)
                 {
-                    rowUI.InitGameElementUI(rowModal);
+                    rowUI.InitGameElementUI(rowModal, this);
 
                     plankUISpawned.Add(rowUI);
                 }
