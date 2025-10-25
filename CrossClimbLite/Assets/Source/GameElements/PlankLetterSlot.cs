@@ -53,6 +53,8 @@ namespace CrossClimbLite
             if (!wordPlankOfSlot) return;
 
             letter = newLetter;
+
+            wordPlankOfSlot.UpdatePlankTypedWordAtLetterSlot(this);
             
             wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
 

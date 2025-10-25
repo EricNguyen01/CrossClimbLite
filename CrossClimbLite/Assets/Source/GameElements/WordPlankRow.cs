@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+using System.Text;
 using UnityEngine;
 
 namespace CrossClimbLite
@@ -9,6 +11,18 @@ namespace CrossClimbLite
      */
     public class WordPlankRow : GameElementBase
     {
+        private StringBuilder plankTypedWordStrBuilder = new StringBuilder();
+
+        [SerializeField]
+        private string plankCorrectWord;
+
+        [ReadOnlyInspector]
+        [SerializeField]
+        private string plankTypedWord;
+
+        [SerializeField]
+        private string plankHint;
+
         //the row number of the plank in the game grid - starting from 0
         private int plankRowOrder = 0;
 
@@ -175,6 +189,65 @@ namespace CrossClimbLite
             if (!plankToSwap) return;
 
             if (this == plankToSwap) return;
+        }
+
+        public string GetPlankTypedWord()
+        {
+            return plankTypedWord;
+        }
+
+        public void SetPlankCorrectWord(string correctWord)
+        {
+            plankCorrectWord = correctWord;
+        }
+
+        public void UpdatePlankTypedWordAtLetterSlot(PlankLetterSlot letterSlot)
+        {
+            if (!letterSlot) return;
+
+            if(!letterSlot.wordPlankOfSlot || letterSlot.wordPlankOfSlot != this) return;
+
+            if(letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
+
+            if(plankTypedWordStrBuilder == null) plankTypedWordStrBuilder = new StringBuilder();
+
+            if(plankTypedWordStrBuilder.Length == 0)
+            {
+                char[] letters = new char[letterSlotsInWordPlank.Length];
+
+                for(int i = 0; i < letters.Length; i++)
+                {
+                    letters[i] = ' ';
+                }
+
+                plankTypedWordStrBuilder.Append(letters);
+            }
+            else if (plankTypedWordStrBuilder.Length > letterSlotsInWordPlank.Length)
+            {
+                int charDiff = plankTypedWordStrBuilder.Length - letterSlotsInWordPlank.Length;
+
+                plankTypedWordStrBuilder.Remove(plankTypedWordStrBuilder.Length - charDiff, charDiff);
+            }
+
+            if (letterSlot.slotIndexInPlank < plankTypedWordStrBuilder.Length)
+            {
+                if (letterSlot.letter != string.Empty && !string.IsNullOrWhiteSpace(letterSlot.letter))
+                {
+                    plankTypedWordStrBuilder[letterSlot.slotIndexInPlank] = letterSlot.letter[0];
+                }
+                else
+                {
+                    plankTypedWordStrBuilder[letterSlot.slotIndexInPlank] = ' ';
+                }
+
+                plankTypedWord = plankTypedWordStrBuilder.ToString();
+
+                return;
+            }
+            
+            plankTypedWordStrBuilder.Append(letterSlot.letter[0]);
+
+            plankTypedWord = plankTypedWordStrBuilder.ToString();
         }
     }
 }

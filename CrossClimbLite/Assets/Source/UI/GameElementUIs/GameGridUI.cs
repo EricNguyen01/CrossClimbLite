@@ -159,9 +159,9 @@ namespace CrossClimbLite
             {
                 if (!plankUISpawned[i]) continue;
 
-                if (Application.isEditor) DestroyImmediate(plankUISpawned[i]);
+                if (Application.isEditor) DestroyImmediate(plankUISpawned[i].gameObject);
 
-                else if(Application.isPlaying) Destroy(plankUISpawned[i]);
+                else if(Application.isPlaying) Destroy(plankUISpawned[i].gameObject);
             }
         }
     }

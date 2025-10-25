@@ -38,12 +38,15 @@ namespace CrossClimbLite
                 elementCanvasGroup = gameObject.AddComponent<CanvasGroup>();
             }
 
-            eventSystem = EventSystem.current;
-
-            if (!eventSystem)
+            if (!EventSystem.current)
             {
-                Debug.LogWarning("GameElementUI: " + name + " couldnt find any EventSystem in the scene. It might not work!");
+                if(Application.isPlaying)
+                {
+                    new GameObject("EventSystem").AddComponent<EventSystem>();
+                }
             }
+
+            eventSystem = EventSystem.current;
 
             parentRootCanvas = GetComponentInParent<Canvas>();
 

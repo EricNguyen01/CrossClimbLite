@@ -106,7 +106,8 @@ namespace CrossClimbLite
             linkedPlankLetterSlot.SetGameElementSelectionStatus(isSelected, false);
         }
 
-        public void OnLetterSlotValueChanged()
+        string previousSlotValue;
+        public void OnLetterSlotValueChanged()//Use this for TM_InputField's UnityEvent
         {
             if (!enabled) return;
 
@@ -116,11 +117,15 @@ namespace CrossClimbLite
 
             inputField.text = inputField.text.ToUpper();
 
+            if(inputField.text == previousSlotValue) return;
+
+            previousSlotValue = inputField.text;    
+
             linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, false);
         }
 
-        //Overload of the above func but do not use in letter slot UI's UnityEvent.
-        //Use for changing letters when swapping bt/ planks
+        //Overload of the above func but do not use in letter slot UI's TM_InputField's UnityEvent.
+        //USE ONLY for changing letters when swapping bt/ planks
         public void OnLetterSlotValueChanged(string newLetter)
         {
             if (!enabled) return;
