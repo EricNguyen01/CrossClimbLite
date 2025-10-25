@@ -1325,6 +1325,30 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: test.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: 'test.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: 'test.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: 'test.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: 'test.Array.data[3]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: 'test.Array.data[4]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: canvasToPlaceGameGridUI
       value: 
       objectReference: {fileID: 1564623858}
@@ -1339,6 +1363,30 @@ PrefabInstance:
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: rowNumDataToModifyOnStart.Array.data[3].rowNum
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: <wordPlankRowsInGrid>k__BackingField.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[0]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[1]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[2]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[3]'
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[4]'
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: rowNumDataToModifyOnStart.Array.data[2].<rowNum>k__BackingField

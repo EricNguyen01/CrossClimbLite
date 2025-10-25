@@ -57,8 +57,6 @@ namespace CrossClimbLite
 
         private bool isKeyword = false;
 
-        private bool isDragable = false;
-
         protected override void Awake()
         {
             base.Awake();
@@ -246,8 +244,6 @@ namespace CrossClimbLite
         public override void UpdateUI_OnGameElementModalLocked(bool isLocked)
         {
             base.UpdateUI_OnGameElementModalLocked(isLocked);
-
-            isDragable = isLocked;
 
             if (!enabled) return;
 

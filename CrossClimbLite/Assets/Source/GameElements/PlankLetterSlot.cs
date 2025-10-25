@@ -10,15 +10,29 @@ namespace CrossClimbLite
      */
     public class PlankLetterSlot : GameElementBase
     {
+        [field: Header("Plank Letter Slot Data")]
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         public string letter { get; private set; }
 
+        [field: Space]
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         public int slotIndexInPlank { get; private set; }
 
-        public WordPlankRow wordPlankOfSlot { get; private set; }
+        [field: Space]
 
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         public bool isSlotSelected { get; private set; }
 
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         public bool isSlotLocked { get; private set; } = false;
+
+        public WordPlankRow wordPlankOfSlot { get; private set; }
 
         private PlankLetterSlotUI letterSlotUILinked;
 

@@ -11,7 +11,7 @@ namespace CrossClimbLite
      */
     public class WordPlankRow : GameElementBase
     {
-        private StringBuilder plankTypedWordStrBuilder = new StringBuilder();
+        [Header("Plank Data")]
 
         [SerializeField]
         private string plankCorrectWord;
@@ -20,11 +20,30 @@ namespace CrossClimbLite
         [SerializeField]
         private string plankTypedWord;
 
+        private StringBuilder plankTypedWordStrBuilder = new StringBuilder();
+
         [SerializeField]
         private string plankHint;
 
+        [Space]
+
+        [ReadOnlyInspector, SerializeField]
         //the row number of the plank in the game grid - starting from 0
         private int plankRowOrder = 0;
+
+        [field: Space]
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
+        public bool isPlankKeyword { get; private set; } = false;
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
+        public bool isPlankRowSelected { get; private set; } = false;
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
+        public bool isPlankLocked { get; private set; } = false;
 
         //total number of letter slots in the plank - default is 4
         private int totalLetterCountInPlank = 4;
@@ -35,15 +54,6 @@ namespace CrossClimbLite
         private int currentLetterIndex = 0;
 
         public GameGrid gameGridHoldingPlank { get; private set; }
-
-        public bool isPlankRowSelected { get; private set; } = false;
-
-        public bool isPlankKeyword { get; private set; } = false;
-
-        public bool isPlankLocked { get; private set; } = false;
-
-        //plank dragable is determined by whether it's locked or not
-        public bool isPlankDragable { get; private set; } = true;
 
         private WordPlankRowUI wordPlankRowUILinked;
 
@@ -84,8 +94,6 @@ namespace CrossClimbLite
             currentLetterIndex = 0;
 
             isPlankLocked = isLocked;
-
-            isPlankDragable = isLocked;
 
             isPlankKeyword = isKeyword;
 
@@ -169,8 +177,6 @@ namespace CrossClimbLite
         public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI)
         {
             isPlankLocked = isLocked;
-
-            isPlankDragable = isLocked;
 
             if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
 

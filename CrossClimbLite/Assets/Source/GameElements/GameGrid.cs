@@ -1,7 +1,14 @@
 using System;
 using UnityEngine;
-using UnityEditor;
 using System.Collections.Generic;
+using UnityEngine.Serialization;
+
+
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace CrossClimbLite
 {
@@ -76,7 +83,6 @@ namespace CrossClimbLite
         private GameGridUI gameGridUIInstance;
 
         [field: SerializeField]
-        [field: HideInInspector]
         public WordPlankRow[] wordPlankRowsInGrid { get; private set; }
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
@@ -88,23 +94,31 @@ namespace CrossClimbLite
 
         private void Start()
         {
+            if (!Application.isPlaying) return;
+
             if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0)
             {
                 InitGrid();
+            }
+
+            if (!gameGridUIInstance)
+            {
+                SpawnGameGridUI_IfNull();
+
+                gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
             }
         }
 
         public void InitGrid()
         {
-            SpawnGameGridUI_IfNull();
-
             if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
             {
                 RemoveGrid();
             }
 
-            wordPlankRowsInGrid = new WordPlankRow[rowNum];
-            
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length != rowNum) 
+                wordPlankRowsInGrid = new WordPlankRow[rowNum];
+
             for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
                 GameObject wordPlankRowObj = new GameObject("WordPlankRow_" + i);
@@ -146,13 +160,24 @@ namespace CrossClimbLite
 
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
             }
-
-            if (gameGridUIInstance) gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
         }
 
         public void RemoveGrid()
         {
-            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0)
+            {
+                if(transform.childCount > 0)
+                {
+                    for(int i = 0; i < transform.childCount; i++)
+                    {
+                        if (Application.isEditor) DestroyImmediate(transform.GetChild(i).gameObject);
+
+                        else if (Application.isPlaying) Destroy(transform.GetChild(i).gameObject);
+                    }
+                }
+
+                return;
+            }
 
             for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
@@ -165,8 +190,6 @@ namespace CrossClimbLite
             }
 
             wordPlankRowsInGrid = new WordPlankRow[rowNum];
-
-            if (gameGridUIInstance) gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
         }
 
         public void SetCurrentPlankRowSelected(WordPlankRow selectedPlankRow)
@@ -214,6 +237,8 @@ namespace CrossClimbLite
         public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI) { }
 
         //EDITOR FUNCS...............................................................................................
+
+#if UNITY_EDITOR
 
         private void ValidateRowNumToLockOnStartData()
         {
@@ -358,5 +383,6 @@ namespace CrossClimbLite
                 }
             }
         }
+#endif
     }
 }
