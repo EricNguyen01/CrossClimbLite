@@ -22,7 +22,7 @@ namespace CrossClimbLite
         [field: Header("Game Grid Settings")]
 
         [field: SerializeField]
-        [field: Min(1)]
+        [field: Min(4)]
         public int rowNum { get; private set; } = 5;
 
         [field: SerializeField]
