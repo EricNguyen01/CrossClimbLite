@@ -69,13 +69,20 @@ namespace CrossClimbLite
             gameElementLinked = gameElementToLink;
 
             gameElementLinked.ConnectGameElementUI(this);
+
+            if(!parentHoldingUI) parentHoldingUI = transform.parent.GetComponentInParent<GameElementUIBase>();
         }
 
         public virtual void InitGameElementUI(GameElementBase gameElementToLink, GameElementUIBase parentHoldingUIToLink)
         {
             InitGameElementUI(gameElementToLink);
 
-            if (!parentHoldingUIToLink) return;
+            if (!parentHoldingUIToLink)
+            {
+                parentHoldingUI = transform.parent.GetComponentInParent<GameElementUIBase>();
+
+                return;
+            }
 
             parentHoldingUI = parentHoldingUIToLink;
         }

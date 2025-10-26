@@ -80,17 +80,44 @@ namespace CrossClimbLite
         [SerializeField]
         private Canvas canvasToPlaceGameGridUI;
 
+        [ReadOnlyInspector]
+        [SerializeField]
         private GameGridUI gameGridUIInstance;
 
+        //INTERNALS.................................................................
+
         [field: SerializeField]
+        [field: HideInInspector]
         public WordPlankRow[] wordPlankRowsInGrid { get; private set; }
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
 
+#if UNITY_EDITOR
         private void OnValidate()
         {
             ValidateRowNumToLockOnStartData();
+
+            if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
+            {
+                bool isAllEmptyElement = true;
+
+                for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+                {
+                    if (wordPlankRowsInGrid[i])
+                    {
+                        isAllEmptyElement = false;
+
+                        break;
+                    }
+                }
+
+                if(isAllEmptyElement)
+                {
+                    wordPlankRowsInGrid = null;
+                }
+            }
         }
+#endif
 
         private void Start()
         {
@@ -189,7 +216,7 @@ namespace CrossClimbLite
                 }
             }
 
-            wordPlankRowsInGrid = new WordPlankRow[rowNum];
+            wordPlankRowsInGrid = null;
         }
 
         public void SetCurrentPlankRowSelected(WordPlankRow selectedPlankRow)
@@ -374,11 +401,23 @@ namespace CrossClimbLite
                     if (GUILayout.Button("Generate Grid Modal and UI View"))//On Generate Grid button pressed:...
                     {
                         gameGrid.InitGrid();
+
+                        serializedObject.Update();
+
+                        serializedObject.ApplyModifiedProperties();
+
+                        EditorUtility.SetDirty(gameGrid);
                     }
 
                     if (GUILayout.Button("Remove Grid Layout and UI"))//On Generate Grid button pressed:...
                     {
                         gameGrid.RemoveGrid();
+
+                        serializedObject.Update();
+
+                        serializedObject.ApplyModifiedProperties();
+
+                        EditorUtility.SetDirty(gameGrid);
                     }
                 }
             }

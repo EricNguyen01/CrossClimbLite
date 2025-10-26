@@ -124,6 +124,56 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 6115313426919086431, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
   m_PrefabInstance: {fileID: 163710661175004622}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &22220343
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 22220344}
+  - component: {fileID: 22220345}
+  m_Layer: 0
+  m_Name: LetterSlot_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &22220344
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22220343}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 243301550}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &22220345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 22220343}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 0
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 243301549}
+  letterSlotUILinked: {fileID: 0}
 --- !u!1001 &105838666
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -221,6 +271,280 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
+--- !u!1 &128485785
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 128485786}
+  - component: {fileID: 128485787}
+  m_Layer: 0
+  m_Name: LetterSlot_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &128485786
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128485785}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 389892104}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &128485787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128485785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 2
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 389892103}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &243301548
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 243301550}
+  - component: {fileID: 243301549}
+  m_Layer: 0
+  m_Name: WordPlankRow_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &243301549
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243301548}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plankCorrectWord: 
+  plankTypedWord: 
+  plankHint: 
+  plankRowOrder: 1
+  <isPlankKeyword>k__BackingField: 0
+  <isPlankRowSelected>k__BackingField: 0
+  <isPlankLocked>k__BackingField: 0
+  <letterSlotsInWordPlank>k__BackingField:
+  - {fileID: 22220345}
+  - {fileID: 1489329213}
+  - {fileID: 1073258428}
+  - {fileID: 1239996064}
+  <gameGridHoldingPlank>k__BackingField: {fileID: 767092206}
+  wordPlankRowUILinked: {fileID: 0}
+--- !u!4 &243301550
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 243301548}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 22220344}
+  - {fileID: 1489329212}
+  - {fileID: 1073258427}
+  - {fileID: 1239996065}
+  m_Father: {fileID: 767092207}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &335247263
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 335247264}
+  - component: {fileID: 335247265}
+  m_Layer: 0
+  m_Name: LetterSlot_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &335247264
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335247263}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 389892104}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &335247265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 335247263}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 0
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 389892103}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &389892102
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 389892104}
+  - component: {fileID: 389892103}
+  m_Layer: 0
+  m_Name: WordPlankRow_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &389892103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389892102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plankCorrectWord: 
+  plankTypedWord: 
+  plankHint: 
+  plankRowOrder: 0
+  <isPlankKeyword>k__BackingField: 1
+  <isPlankRowSelected>k__BackingField: 0
+  <isPlankLocked>k__BackingField: 1
+  <letterSlotsInWordPlank>k__BackingField:
+  - {fileID: 335247265}
+  - {fileID: 504565231}
+  - {fileID: 128485787}
+  - {fileID: 1971201930}
+  <gameGridHoldingPlank>k__BackingField: {fileID: 767092206}
+  wordPlankRowUILinked: {fileID: 0}
+--- !u!4 &389892104
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 389892102}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 335247264}
+  - {fileID: 504565230}
+  - {fileID: 128485786}
+  - {fileID: 1971201931}
+  m_Father: {fileID: 767092207}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &411325774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 411325775}
+  - component: {fileID: 411325776}
+  m_Layer: 0
+  m_Name: LetterSlot_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &411325775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411325774}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 662439998}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &411325776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 411325774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 0
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 662439997}
+  letterSlotUILinked: {fileID: 0}
 --- !u!224 &431144189 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 5688574978513987172, guid: d72e39dc32b8a4447bb1de8715de4bde, type: 3}
@@ -231,6 +555,56 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 796570989633482778, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
   m_PrefabInstance: {fileID: 1315347090}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &504565229
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 504565230}
+  - component: {fileID: 504565231}
+  m_Layer: 0
+  m_Name: LetterSlot_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &504565230
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504565229}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 389892104}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &504565231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 504565229}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 1
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 389892103}
+  letterSlotUILinked: {fileID: 0}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -527,6 +901,68 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &637507090
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 637507092}
+  - component: {fileID: 637507091}
+  m_Layer: 0
+  m_Name: WordPlankRow_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &637507091
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637507090}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plankCorrectWord: 
+  plankTypedWord: 
+  plankHint: 
+  plankRowOrder: 2
+  <isPlankKeyword>k__BackingField: 0
+  <isPlankRowSelected>k__BackingField: 0
+  <isPlankLocked>k__BackingField: 0
+  <letterSlotsInWordPlank>k__BackingField:
+  - {fileID: 791223906}
+  - {fileID: 1758709424}
+  - {fileID: 1380439951}
+  - {fileID: 970355031}
+  <gameGridHoldingPlank>k__BackingField: {fileID: 767092206}
+  wordPlankRowUILinked: {fileID: 0}
+--- !u!4 &637507092
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 637507090}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 791223905}
+  - {fileID: 1758709423}
+  - {fileID: 1380439950}
+  - {fileID: 970355032}
+  m_Father: {fileID: 767092207}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &658754045
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -624,6 +1060,346 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
+--- !u!1 &662439996
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 662439998}
+  - component: {fileID: 662439997}
+  m_Layer: 0
+  m_Name: WordPlankRow_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &662439997
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662439996}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plankCorrectWord: 
+  plankTypedWord: 
+  plankHint: 
+  plankRowOrder: 3
+  <isPlankKeyword>k__BackingField: 0
+  <isPlankRowSelected>k__BackingField: 0
+  <isPlankLocked>k__BackingField: 0
+  <letterSlotsInWordPlank>k__BackingField:
+  - {fileID: 411325776}
+  - {fileID: 1931676476}
+  - {fileID: 1811851598}
+  - {fileID: 1573671276}
+  <gameGridHoldingPlank>k__BackingField: {fileID: 767092206}
+  wordPlankRowUILinked: {fileID: 0}
+--- !u!4 &662439998
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 662439996}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 411325775}
+  - {fileID: 1931676475}
+  - {fileID: 1811851597}
+  - {fileID: 1573671277}
+  m_Father: {fileID: 767092207}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &682126492
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 682126494}
+  - component: {fileID: 682126493}
+  m_Layer: 0
+  m_Name: WordPlankRow_4
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &682126493
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682126492}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plankCorrectWord: 
+  plankTypedWord: 
+  plankHint: 
+  plankRowOrder: 4
+  <isPlankKeyword>k__BackingField: 1
+  <isPlankRowSelected>k__BackingField: 0
+  <isPlankLocked>k__BackingField: 1
+  <letterSlotsInWordPlank>k__BackingField:
+  - {fileID: 802611829}
+  - {fileID: 1333735291}
+  - {fileID: 706474317}
+  - {fileID: 1361762936}
+  <gameGridHoldingPlank>k__BackingField: {fileID: 767092206}
+  wordPlankRowUILinked: {fileID: 0}
+--- !u!4 &682126494
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 682126492}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 802611828}
+  - {fileID: 1333735290}
+  - {fileID: 706474316}
+  - {fileID: 1361762937}
+  m_Father: {fileID: 767092207}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &706474315
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 706474316}
+  - component: {fileID: 706474317}
+  m_Layer: 0
+  m_Name: LetterSlot_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &706474316
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706474315}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682126494}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &706474317
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 706474315}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 2
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 682126493}
+  letterSlotUILinked: {fileID: 0}
+--- !u!114 &767092206 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+  m_PrefabInstance: {fileID: 1440237412846873325}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06a8adda6b5b513478100a3f83570a4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &767092207 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3749734794930966467, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+  m_PrefabInstance: {fileID: 1440237412846873325}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &791223904
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 791223905}
+  - component: {fileID: 791223906}
+  m_Layer: 0
+  m_Name: LetterSlot_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &791223905
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791223904}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 637507092}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &791223906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 791223904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 0
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 637507091}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &802611827
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 802611828}
+  - component: {fileID: 802611829}
+  m_Layer: 0
+  m_Name: LetterSlot_0
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &802611828
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802611827}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682126494}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &802611829
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 802611827}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 0
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 682126493}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &970355030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 970355032}
+  - component: {fileID: 970355031}
+  m_Layer: 0
+  m_Name: LetterSlot_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &970355031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970355030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 3
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 637507091}
+  letterSlotUILinked: {fileID: 0}
+--- !u!4 &970355032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 970355030}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 637507092}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1030909079
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -721,6 +1497,56 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
+--- !u!1 &1073258426
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1073258427}
+  - component: {fileID: 1073258428}
+  m_Layer: 0
+  m_Name: LetterSlot_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1073258427
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073258426}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 243301550}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1073258428
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1073258426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 2
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 243301549}
+  letterSlotUILinked: {fileID: 0}
 --- !u!1 &1169917312
 GameObject:
   m_ObjectHideFlags: 0
@@ -799,6 +1625,56 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1239996063
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1239996065}
+  - component: {fileID: 1239996064}
+  m_Layer: 0
+  m_Name: LetterSlot_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1239996064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239996063}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 3
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 243301549}
+  letterSlotUILinked: {fileID: 0}
+--- !u!4 &1239996065
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1239996063}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 243301550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1275428683 stripped
 RectTransform:
@@ -902,11 +1778,161 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
+--- !u!1 &1333735289
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1333735290}
+  - component: {fileID: 1333735291}
+  m_Layer: 0
+  m_Name: LetterSlot_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1333735290
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333735289}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682126494}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1333735291
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1333735289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 1
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 682126493}
+  letterSlotUILinked: {fileID: 0}
 --- !u!224 &1345976321 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7752755234251593934, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
   m_PrefabInstance: {fileID: 163710661175004622}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1361762935
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1361762937}
+  - component: {fileID: 1361762936}
+  m_Layer: 0
+  m_Name: LetterSlot_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1361762936
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361762935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 3
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 682126493}
+  letterSlotUILinked: {fileID: 0}
+--- !u!4 &1361762937
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1361762935}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 682126494}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1380439949
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1380439950}
+  - component: {fileID: 1380439951}
+  m_Layer: 0
+  m_Name: LetterSlot_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1380439950
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380439949}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 637507092}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1380439951
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1380439949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 2
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 637507091}
+  letterSlotUILinked: {fileID: 0}
 --- !u!224 &1464810973 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 796570989633482778, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
@@ -917,6 +1943,56 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 796570989633482778, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
   m_PrefabInstance: {fileID: 1030909079}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1489329211
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1489329212}
+  - component: {fileID: 1489329213}
+  m_Layer: 0
+  m_Name: LetterSlot_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1489329212
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489329211}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 243301550}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1489329213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1489329211}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 1
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 243301549}
+  letterSlotUILinked: {fileID: 0}
 --- !u!1 &1564623854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,6 +2110,56 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!1 &1573671275
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1573671277}
+  - component: {fileID: 1573671276}
+  m_Layer: 0
+  m_Name: LetterSlot_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1573671276
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573671275}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 3
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 662439997}
+  letterSlotUILinked: {fileID: 0}
+--- !u!4 &1573671277
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1573671275}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 662439998}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!224 &1607600482 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 796570989633482778, guid: d18ab1794b690aa4da4b399034868a9f, type: 3}
@@ -1168,6 +2294,206 @@ PrefabInstance:
       addedObject: {fileID: 1469842626}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d72e39dc32b8a4447bb1de8715de4bde, type: 3}
+--- !u!1 &1758709422
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1758709423}
+  - component: {fileID: 1758709424}
+  m_Layer: 0
+  m_Name: LetterSlot_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1758709423
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758709422}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 637507092}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1758709424
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1758709422}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 1
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 637507091}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &1811851596
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1811851597}
+  - component: {fileID: 1811851598}
+  m_Layer: 0
+  m_Name: LetterSlot_2
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1811851597
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811851596}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 662439998}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1811851598
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1811851596}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 2
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 662439997}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &1931676474
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1931676475}
+  - component: {fileID: 1931676476}
+  m_Layer: 0
+  m_Name: LetterSlot_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1931676475
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931676474}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 662439998}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1931676476
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1931676474}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 1
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 0
+  <wordPlankOfSlot>k__BackingField: {fileID: 662439997}
+  letterSlotUILinked: {fileID: 0}
+--- !u!1 &1971201929
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1971201931}
+  - component: {fileID: 1971201930}
+  m_Layer: 0
+  m_Name: LetterSlot_3
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1971201930
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971201929}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1cf9ae6beedf43f4389509e662a13759, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <letter>k__BackingField: 
+  <slotIndexInPlank>k__BackingField: 3
+  <isSlotSelected>k__BackingField: 0
+  <isSlotLocked>k__BackingField: 1
+  <wordPlankOfSlot>k__BackingField: {fileID: 389892103}
+  letterSlotUILinked: {fileID: 0}
+--- !u!4 &1971201931
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1971201929}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 389892104}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &163710661175004622
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1366,28 +2692,28 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: <wordPlankRowsInGrid>k__BackingField.Array.size
-      value: 0
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[0]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 389892103}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[1]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 243301549}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[2]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 637507091}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[3]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 662439997}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[4]'
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 682126493}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: rowNumDataToModifyOnStart.Array.data[2].<rowNum>k__BackingField
       value: 3
@@ -1418,7 +2744,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 3749734794930966467, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 389892104}
+    - targetCorrespondingSourceObject: {fileID: 3749734794930966467, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 243301550}
+    - targetCorrespondingSourceObject: {fileID: 3749734794930966467, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 637507092}
+    - targetCorrespondingSourceObject: {fileID: 3749734794930966467, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 662439998}
+    - targetCorrespondingSourceObject: {fileID: 3749734794930966467, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 682126494}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
 --- !u!1001 &6147836811266872441

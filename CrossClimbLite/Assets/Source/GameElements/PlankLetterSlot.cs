@@ -32,8 +32,14 @@ namespace CrossClimbLite
         [field: SerializeField]
         public bool isSlotLocked { get; private set; } = false;
 
+        [field: Space]
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         public WordPlankRow wordPlankOfSlot { get; private set; }
 
+        [ReadOnlyInspector]
+        [SerializeField]
         private PlankLetterSlotUI letterSlotUILinked;
 
         public void InitSlot(WordPlankRow holdingWordPlank, int slotIndexInPlank)
@@ -65,7 +71,7 @@ namespace CrossClimbLite
         public void WriteLetterToSlot(string newLetter, bool shouldUpdateUI)
         {
             if (!wordPlankOfSlot) return;
-
+            
             letter = newLetter;
 
             wordPlankOfSlot.UpdatePlankTypedWordAtLetterSlot(this);
@@ -86,7 +92,7 @@ namespace CrossClimbLite
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI)
         {
             isSlotSelected = isSelected;
-
+            
             if (wordPlankOfSlot)
             {
                 wordPlankOfSlot.SetGameElementSelectionStatus(isSelected, true);

@@ -48,13 +48,21 @@ namespace CrossClimbLite
         //total number of letter slots in the plank - default is 4
         private int totalLetterCountInPlank = 4;
 
+        [field: SerializeField]
+        [field: HideInInspector]
         public PlankLetterSlot[] letterSlotsInWordPlank { get; private set; }
 
         //the letter index that is right after the last filled letter slot and has not been filled yet.
         private int currentLetterIndex = 0;
 
+        [field: Space]
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         public GameGrid gameGridHoldingPlank { get; private set; }
 
+        [ReadOnlyInspector]
+        [SerializeField]
         private WordPlankRowUI wordPlankRowUILinked;
 
         public void InitPlank(GameGrid parentGrid, int rowOrderOfPlank, int letterCountInPlank, bool isKeyword = false, bool isLocked = false)

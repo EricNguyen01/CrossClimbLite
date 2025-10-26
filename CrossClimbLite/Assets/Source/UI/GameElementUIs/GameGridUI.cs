@@ -14,9 +14,9 @@ namespace CrossClimbLite
 
         public List<WordPlankRowUI> plankUISpawned { get; private set; } = new List<WordPlankRowUI>();
 
-        [Header("Spawn Specifications")]
+        [field: Header("Required Plank UIs Spawn Vertical Group")]
 
-        [SerializeField]
+        [field: SerializeField]
         public VerticalLayoutGroup verticalGroupToSpawnPlanksUnder { get; private set; }
 
         private GameGrid gameGridLinked;
@@ -52,6 +52,16 @@ namespace CrossClimbLite
             gameGridLinked = gameGridToLink as GameGrid;
 
             gameGridLinked.ConnectGameElementUI(this);
+
+            if (!verticalGroupToSpawnPlanksUnder)
+            {
+                verticalGroupToSpawnPlanksUnder = GetComponent<VerticalLayoutGroup>();
+            }
+
+            if (!verticalGroupToSpawnPlanksUnder)
+            {
+                verticalGroupToSpawnPlanksUnder = GetComponentInChildren<VerticalLayoutGroup>();
+            }
         }
 
         public void UpdateUI_OnGameGridModalInitOrRemove()

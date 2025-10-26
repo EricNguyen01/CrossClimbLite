@@ -102,7 +102,7 @@ namespace CrossClimbLite
             if (!enabled) return;
 
             if (!linkedPlankLetterSlot) return;
-
+            
             linkedPlankLetterSlot.SetGameElementSelectionStatus(isSelected, false);
         }
 
@@ -119,8 +119,8 @@ namespace CrossClimbLite
 
             if(inputField.text == previousSlotValue) return;
 
-            previousSlotValue = inputField.text;    
-
+            previousSlotValue = inputField.text;
+            
             linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, false);
         }
 
