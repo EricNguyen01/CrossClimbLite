@@ -7,7 +7,7 @@ namespace CrossClimbLite
     public class PlankLetterSlotUI : GameElementUIBase
     {
         //the non-UI plank letter slot Modal (where slot logic is stored)
-        private PlankLetterSlot linkedPlankLetterSlot;
+        public PlankLetterSlot linkedPlankLetterSlot {  get; private set; }
 
         public TMP_InputField inputField { get; private set; }
 

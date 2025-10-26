@@ -350,9 +350,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plankCorrectWord: 
+  <plankCorrectWord>k__BackingField: 
   plankTypedWord: 
-  plankHint: 
+  <plankHint>k__BackingField: 
   plankRowOrder: 1
   <isPlankKeyword>k__BackingField: 0
   <isPlankRowSelected>k__BackingField: 0
@@ -462,9 +462,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plankCorrectWord: 
+  <plankCorrectWord>k__BackingField: 
   plankTypedWord: 
-  plankHint: 
+  <plankHint>k__BackingField: 
   plankRowOrder: 0
   <isPlankKeyword>k__BackingField: 1
   <isPlankRowSelected>k__BackingField: 0
@@ -930,9 +930,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plankCorrectWord: 
+  <plankCorrectWord>k__BackingField: 
   plankTypedWord: 
-  plankHint: 
+  <plankHint>k__BackingField: 
   plankRowOrder: 2
   <isPlankKeyword>k__BackingField: 0
   <isPlankRowSelected>k__BackingField: 0
@@ -1089,9 +1089,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plankCorrectWord: 
+  <plankCorrectWord>k__BackingField: 
   plankTypedWord: 
-  plankHint: 
+  <plankHint>k__BackingField: 
   plankRowOrder: 3
   <isPlankKeyword>k__BackingField: 0
   <isPlankRowSelected>k__BackingField: 0
@@ -1151,9 +1151,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 447e2dbd274369b44bd298bec90a3bcc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  plankCorrectWord: 
+  <plankCorrectWord>k__BackingField: 
   plankTypedWord: 
-  plankHint: 
+  <plankHint>k__BackingField: 
   plankRowOrder: 4
   <isPlankKeyword>k__BackingField: 1
   <isPlankRowSelected>k__BackingField: 0

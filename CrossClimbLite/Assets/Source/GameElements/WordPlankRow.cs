@@ -11,10 +11,10 @@ namespace CrossClimbLite
      */
     public class WordPlankRow : GameElementBase
     {
-        [Header("Plank Data")]
+        [field: Header("Plank Data")]
 
-        [SerializeField]
-        private string plankCorrectWord;
+        [field: SerializeField]
+        public string plankCorrectWord { get; private set; }
 
         [ReadOnlyInspector]
         [SerializeField]
@@ -22,8 +22,8 @@ namespace CrossClimbLite
 
         private StringBuilder plankTypedWordStrBuilder = new StringBuilder();
 
-        [SerializeField]
-        private string plankHint;
+        [field: SerializeField]
+        public string plankHint { get; private set; }
 
         [Space]
 
@@ -64,6 +64,14 @@ namespace CrossClimbLite
         [ReadOnlyInspector]
         [SerializeField]
         private WordPlankRowUI wordPlankRowUILinked;
+
+        private void Awake()
+        {
+            if (plankHint == string.Empty || string.IsNullOrEmpty(plankHint))
+            {
+                plankHint = "Plank Row_" + plankRowOrder + "'s Hint";
+            }
+        }
 
         public void InitPlank(GameGrid parentGrid, int rowOrderOfPlank, int letterCountInPlank, bool isKeyword = false, bool isLocked = false)
         {
@@ -116,6 +124,11 @@ namespace CrossClimbLite
             }
 
             if(isLocked) SetGameElementLockedStatus(true, true);
+
+            if(plankHint == string.Empty || string.IsNullOrEmpty(plankHint))
+            {
+                plankHint = "Plank Row_" + plankRowOrder + "'s Hint";
+            }
         }
 
         public override void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
@@ -160,6 +173,12 @@ namespace CrossClimbLite
             if (isSelected)
             {
                 gameGridHoldingPlank.SetCurrentPlankRowSelected(this);
+
+                if (HintBoxUI.hintBoxUIInstance) HintBoxUI.hintBoxUIInstance.SetHintTextToDisplay(plankHint);
+            }
+            else
+            {
+                if (HintBoxUI.hintBoxUIInstance) HintBoxUI.hintBoxUIInstance.RemoveHintText();
             }
 
             if (shouldUpdateUI && wordPlankRowUILinked)

@@ -19,7 +19,7 @@ namespace CrossClimbLite
         [field: SerializeField]
         public VerticalLayoutGroup verticalGroupToSpawnPlanksUnder { get; private set; }
 
-        private GameGrid gameGridLinked;
+        public GameGrid gameGridLinked { get; private set; }
 
         protected override void Awake()
         {

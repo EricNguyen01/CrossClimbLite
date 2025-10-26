@@ -39,7 +39,7 @@ namespace CrossClimbLite
         [SerializeField]
         private PlankLetterSlotUI letterSlotUIPrefabToSpawn;
 
-        private List<PlankLetterSlotUI> letterSlotsUISpawned = new List<PlankLetterSlotUI>();
+        public List<PlankLetterSlotUI> letterSlotsUISpawned { get; private set; } = new List<PlankLetterSlotUI>();
 
         [field: Header("Letter Slots Spawn Specifications")]
 
@@ -47,15 +47,13 @@ namespace CrossClimbLite
         public HorizontalLayoutGroup horizontalLayoutToSpawnLetterSlotsUnder { get; private set; }
 
         //the non-UI word plank row Modal (where plank row logic is stored)
-        private WordPlankRow wordPlankRowLinked;
+        public WordPlankRow wordPlankRowLinked { get; private set; }
 
         private WordPlankRowUI plankDragVisualObject;
 
         private GameGridUI parentGridUI;
 
         private RectTransform parentRect;
-
-        private bool isKeyword = false;
 
         protected override void Awake()
         {
@@ -128,6 +126,24 @@ namespace CrossClimbLite
             }
 
             parentGridUI = parentHoldingUIToLink as GameGridUI;
+
+            if(!wordPlankRowLinked.isPlankLocked && !wordPlankRowLinked.isPlankKeyword)
+            {
+                if (parentGridUI.gameGridLinked && !parentGridUI.gameGridLinked.currentPlankBeingSelected)
+                {
+                    if(letterSlotsUISpawned != null && letterSlotsUISpawned.Count > 0)
+                    {
+                        for(int i = 0; i < letterSlotsUISpawned.Count; i++)
+                        {
+                            if (!letterSlotsUISpawned[i] || !letterSlotsUISpawned[i].linkedPlankLetterSlot) continue;
+
+                            letterSlotsUISpawned[i].linkedPlankLetterSlot.SetGameElementSelectionStatus(true, true);
+
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         public void InitChildrenLetterSlotsUI()
@@ -194,8 +210,6 @@ namespace CrossClimbLite
 
         public void UpdateUI_PlankModalIsKeyword(bool isKeyword)
         {
-            this.isKeyword = isKeyword;
-
             if (!wordPlankRowBackgroundImage) return;
 
             if (isLocked)
@@ -451,7 +465,11 @@ namespace CrossClimbLite
 
             transform.SetSiblingIndex(plankToSwapSiblingIndex);
 
+            wordPlankRowLinked.transform.SetSiblingIndex(transform.GetSiblingIndex());
+
             plankToSwap.transform.SetSiblingIndex(thisSiblingIndex);
+
+            plankToSwap.wordPlankRowLinked.transform.SetSiblingIndex(plankToSwap.transform.GetSiblingIndex());
         }
 
         private void CreatePlankDragVisualObject(bool activeOnCreated)

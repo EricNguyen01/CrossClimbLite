@@ -216,6 +216,8 @@ namespace CrossClimbLite
                 }
             }
 
+            currentPlankBeingSelected = null;
+
             wordPlankRowsInGrid = null;
         }
 
