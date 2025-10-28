@@ -408,7 +408,7 @@ namespace CrossClimbLite
 
                         serializedObject.ApplyModifiedProperties();
 
-                        EditorUtility.SetDirty(gameGrid);
+                        EditorUtility.SetDirty(this);
                     }
 
                     if (GUILayout.Button("Remove Grid Layout and UI"))//On Generate Grid button pressed:...
@@ -419,7 +419,7 @@ namespace CrossClimbLite
 
                         serializedObject.ApplyModifiedProperties();
 
-                        EditorUtility.SetDirty(gameGrid);
+                        EditorUtility.SetDirty(this);
                     }
                 }
             }

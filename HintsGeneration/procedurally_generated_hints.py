@@ -1,12 +1,14 @@
 # ============================================================
-# procedurally_generated_hints_v7.py
+# procedurally_generated_hints_v8.py
 # ------------------------------------------------------------
 # Offline crossword-style hint generator (definition-only version)
 # Improvements:
-# - Loads removable meta-phrases from an external file (meta_phrases.txt)
+# - Removes markdown-style bold (**) and italic (*) markers
+# - Removes parts of speech labels like "Noun", "Adjective", "Verb", etc.
 # - Keeps only the first numbered/main definition
 # - Removes self-references and meta-language
 # - Never cuts sentences mid-way
+# - Loads meta-phrases externally
 # ============================================================
 
 import pandas as pd
@@ -17,21 +19,29 @@ from pathlib import Path
 
 # ---------- CONFIG ----------
 INPUT_CSV = "Filtered_WordDB_ModernNoNames.csv"
-OUTPUT_CSV = "Filtered_WordDB_Procedural_Hints.csv"
-META_FILE = "meta_phrases.txt"     # External file for meta-phrases
-MAX_WORDS = 50                     # Soft limit; may extend to sentence end
+OUTPUT_CSV = "Filtered_WordDB_Procedural_Hints.csv"  # ✅ Preferred naming
+META_FILE = "meta_phrases.txt"
+MAX_WORDS = 60
 
 # ---------- BASIC CLEANING ----------
 def clean_definition(text):
+    """Clean and normalize definition text."""
     if not isinstance(text, str) or not text.strip():
         return ""
     text = re.sub(r"[•→/\\\-;<>•]+", " ", text)
     text = re.sub(r"\s+", " ", text.strip())
+
+    # Remove markdown bold/italic markers (** or *)
+    text = re.sub(r"\*{1,2}", "", text)
+    text = re.sub(r"_+", "", text)
+
+    # Remove stray double asterisks left behind
+    text = re.sub(r"\*+", "", text)
+
     return text.strip(string.punctuation + " ")
 
 # ---------- META-PHRASE LOADING ----------
 def load_meta_phrases(filepath=META_FILE):
-    """Load meta-phrase regex patterns from an external text file."""
     defaults = [
         r"\bhas (a couple of|several|multiple|a few) meanings\b.*?(?=[.:\n]|$)",
         r"\bcan have (several|multiple) meanings\b.*?(?=[.:\n]|$)",
