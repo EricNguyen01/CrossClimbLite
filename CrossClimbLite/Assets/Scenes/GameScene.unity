@@ -2730,6 +2730,20 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1919187188950364402, guid: 6566bb3b16231a34f8d052fec2731c81, type: 3}
+      propertyPath: m_text
+      value: '
+
+'
+      objectReference: {fileID: 0}
+    - target: {fileID: 1919187188950364402, guid: 6566bb3b16231a34f8d052fec2731c81, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 1919187188950364402, guid: 6566bb3b16231a34f8d052fec2731c81, type: 3}
+      propertyPath: m_enableAutoSizing
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6499519912993419098, guid: 6566bb3b16231a34f8d052fec2731c81, type: 3}
       propertyPath: m_Name
       value: HintBoxUIPanel

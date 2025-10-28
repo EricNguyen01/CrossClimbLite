@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -315,6 +314,8 @@ namespace CrossClimbLite
                 serializedObject.ApplyModifiedProperties();
             }
 
+            private Vector2 scrollPos;
+
             private void DrawReadOnlyList(SerializedProperty listProp, int entriesToShow, ref bool foldout)
             {
                 if(entriesToShow < 1) entriesToShow = 1;
@@ -338,6 +339,10 @@ namespace CrossClimbLite
                 }
 
                 int maxDisplay = Mathf.Min(size, entriesToShow);
+
+                // Begin scrollable view
+                //scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(500));
+                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(EditorGUIUtility.currentViewWidth));
 
                 for (int i = 0; i < maxDisplay; i++)
                 {
@@ -372,8 +377,10 @@ namespace CrossClimbLite
 
                 if (size > maxDisplay)
                 {
-                    EditorGUILayout.HelpBox($"Showing first {maxDisplay} of {size} entries for performance.", MessageType.Info);
+                    EditorGUILayout.HelpBox($"Showing first {maxDisplay} of {size} entries.", MessageType.Info);
                 }
+
+                EditorGUILayout.EndScrollView();
 
                 EditorGUI.indentLevel--;
             }
@@ -386,7 +393,15 @@ namespace CrossClimbLite
 
                 if (multiLine)
                 {
-                    EditorGUILayout.TextArea(value ?? string.Empty, GUILayout.MinHeight(40));
+                    // Wrap text manually inside a word-wrapped area
+                    var textStyle = new GUIStyle(EditorStyles.textArea)
+                    {
+                        wordWrap = true,
+
+                        fixedHeight = 0,
+                    };
+
+                    EditorGUILayout.TextArea(value ?? string.Empty, textStyle, GUILayout.MinHeight(40));
                 }
                 else
                 {
