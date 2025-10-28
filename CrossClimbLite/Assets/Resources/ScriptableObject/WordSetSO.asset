@@ -16,7 +16,7 @@ MonoBehaviour:
   wordColumnName: WORD
   hintColumnName: HINT
   charactersColumnName: CHARACTERS
-  entriesToShow: 30
+  entriesToShow: 20
   wordHintList:
   - word: abode
     hint: The word ____ is a noun that refers to a place of residence or a home.

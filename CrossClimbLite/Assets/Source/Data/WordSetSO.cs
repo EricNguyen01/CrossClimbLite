@@ -33,10 +33,13 @@ namespace CrossClimbLite
         [Header("Words Hints List")]
 
         [SerializeField]
+        [Min(1)]
         [FormerlySerializedAs("entriesToShow")]
         private int entriesToShow = 40;
 
         [SerializeField]
+        [HideInInspector]
+        [FormerlySerializedAs("wordHintList")]
         private List<WordHintStruct> wordHintList = new List<WordHintStruct>();
 
         [Serializable]
@@ -103,47 +106,79 @@ namespace CrossClimbLite
                 return;
             }
 
-            // Create WordHintStruct for each data row and add to wordHintList
-            for (int i = 1; i < lines.Length; i++)
+            try
             {
-                var cells = SafelyParseCSVLine(lines[i]);
-
-                if (cells.Count <= Mathf.Max(wordIndex, hintIndex, charIndex))
-                    continue;
-
-                string word = cells[wordIndex].Trim();
-
-                string hint = cells[hintIndex].Trim();
-
-                string charValue = cells[charIndex].Trim();
-
-                if (string.IsNullOrEmpty(word))
-                    continue;
-
-                // Remove any non-digit characters just in case (quotes, spaces, etc.)
-                //charValue = new string(charValue.Where(char.IsDigit).ToArray());
-
-                int wordLength = word.Length;
-                
-                /*if (!string.IsNullOrEmpty(charValue))
-                    int.TryParse(charValue, out wordLength);
-
-                if (wordLength != word.Length)
+                if(lines.Length > 251)
                 {
-                    wordLength = word.Length;
-                }*/
+                    int total = lines.Length - 1;
 
-                wordHintList.Add(new WordHintStruct
+                    for (int i = 1; i < lines.Length; i++)
+                    {
+                        // Show progress bar every 250 rows (so it doesn’t slow parsing)
+                        if (i % 250 == 0)
+                        {
+                            float progress = (float)i / total;
+
+                            EditorUtility.DisplayProgressBar(
+                                "Parsing CSV...",
+                                $"Processing row {i} of {total}",
+                                progress
+                            );
+                        }
+                    }
+                }
+
+                // Create WordHintStruct for each data row and add to wordHintList
+                for (int i = 1; i < lines.Length; i++)
                 {
-                    word = word,
+                    var cells = SafelyParseCSVLine(lines[i]);
 
-                    hint = hint,
+                    if (cells.Count <= Mathf.Max(wordIndex, hintIndex, charIndex))
+                        continue;
 
-                    wordLength = wordLength
-                });
+                    string word = cells[wordIndex].Trim();
+
+                    string hint = cells[hintIndex].Trim();
+
+                    string charValue = cells[charIndex].Trim();
+
+                    if (string.IsNullOrEmpty(word))
+                        continue;
+
+                    // Remove any non-digit characters just in case (quotes, spaces, etc.)
+                    //charValue = new string(charValue.Where(char.IsDigit).ToArray());
+
+                    int wordLength = word.Length;
+
+                    /*if (!string.IsNullOrEmpty(charValue))
+                        int.TryParse(charValue, out wordLength);
+
+                    if (wordLength != word.Length)
+                    {
+                        wordLength = word.Length;
+                    }*/
+
+                    wordHintList.Add(new WordHintStruct
+                    {
+                        word = word,
+
+                        hint = hint,
+
+                        wordLength = wordLength
+                    });
+                }
+
+                Debug.Log($"Successfully parsed {wordHintList.Count} entries from CSV.");
             }
-
-            Debug.Log($"Successfully parsed {wordHintList.Count} entries from CSV.");
+            catch (System.Exception ex)
+            {
+                Debug.LogError("Error while parsing CSV: " + ex.Message);
+            }
+            finally
+            {
+                // Always clear the progress bar even if an error occurs
+                EditorUtility.ClearProgressBar();
+            }
         }
 
         /// <summary>
@@ -222,6 +257,10 @@ namespace CrossClimbLite
 
             private SerializedProperty entriesToShowProp;
 
+            private SerializedProperty wordHintListProp;
+
+            private bool isWordHintListFoldoutOpened = true;
+
             private void OnEnable()
             {
                 wordSetSO = target as WordSetSO;
@@ -235,6 +274,8 @@ namespace CrossClimbLite
                 charactersColumnNameProp = serializedObject.FindProperty("charactersColumnName");
 
                 entriesToShowProp = serializedObject.FindProperty("entriesToShow");
+
+                wordHintListProp = serializedObject.FindProperty("wordHintList");
             }
 
             public override void OnInspectorGUI()
@@ -255,7 +296,7 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space();
 
-                DrawReadOnlyList(wordSetSO.wordHintList, wordSetSO.entriesToShow);
+                DrawReadOnlyList(wordHintListProp, wordSetSO.entriesToShow, ref isWordHintListFoldoutOpened);
 
                 EditorGUILayout.Space(15);
 
@@ -274,28 +315,85 @@ namespace CrossClimbLite
                 serializedObject.ApplyModifiedProperties();
             }
 
-            private void DrawReadOnlyList(List<WordHintStruct> list, int entriesToShow = 40)
+            private void DrawReadOnlyList(SerializedProperty listProp, int entriesToShow, ref bool foldout)
             {
-                EditorGUILayout.LabelField("Parsed Entries", EditorStyles.boldLabel);
+                if(entriesToShow < 1) entriesToShow = 1;
+
+                // Toggle foldout
+                foldout = EditorGUILayout.Foldout(foldout, $"Parsed Word Hint List ({listProp.arraySize} entries)", true);
+
+                if (!foldout) return;
 
                 EditorGUI.indentLevel++;
 
-                if (list == null || list.Count == 0)
-                {
-                    EditorGUILayout.LabelField("No data parsed yet.");
-                }
-                else
-                {
-                    foreach (var item in list.Take(entriesToShow)) // Show first 20 for performance
-                    {
-                        EditorGUILayout.LabelField($"Word: {item.word}, Length: ({item.wordLength}), Hint: {item.hint}");
-                    }
+                int size = listProp.arraySize;
 
-                    if (list.Count > entriesToShow)
-                        EditorGUILayout.LabelField($"...and {list.Count - entriesToShow} more entries.", EditorStyles.miniLabel);
+                if (size == 0)
+                {
+                    EditorGUILayout.LabelField("No entries parsed yet.");
+
+                    EditorGUI.indentLevel--;
+
+                    return;
+                }
+
+                int maxDisplay = Mathf.Min(size, entriesToShow);
+
+                for (int i = 0; i < maxDisplay; i++)
+                {
+                    var element = listProp.GetArrayElementAtIndex(i);
+
+                    if (element == null) continue;
+
+                    // Find subfields
+                    var wordProp = element.FindPropertyRelative("word");
+
+                    var hintProp = element.FindPropertyRelative("hint");
+
+                    var lengthProp = element.FindPropertyRelative("wordLength");
+
+                    // Draw box-like element
+                    EditorGUILayout.BeginVertical("box");
+
+                    EditorGUILayout.LabelField($"Element {i}", EditorStyles.boldLabel);
+
+                    EditorGUI.indentLevel++;
+
+                    DrawReadOnlyField("Word", wordProp?.stringValue);
+
+                    DrawReadOnlyField("Hint", hintProp?.stringValue, true); // multi-line
+
+                    DrawReadOnlyField("Word Length", lengthProp?.intValue.ToString());
+
+                    EditorGUI.indentLevel--;
+
+                    EditorGUILayout.EndVertical();
+                }
+
+                if (size > maxDisplay)
+                {
+                    EditorGUILayout.HelpBox($"Showing first {maxDisplay} of {size} entries for performance.", MessageType.Info);
                 }
 
                 EditorGUI.indentLevel--;
+            }
+
+            private void DrawReadOnlyField(string label, string value, bool multiLine = false)
+            {
+                EditorGUILayout.LabelField(label, EditorStyles.miniBoldLabel);
+
+                GUI.enabled = false; // make it look read-only
+
+                if (multiLine)
+                {
+                    EditorGUILayout.TextArea(value ?? string.Empty, GUILayout.MinHeight(40));
+                }
+                else
+                {
+                    EditorGUILayout.TextField(value ?? string.Empty);
+                }
+
+                GUI.enabled = true; // restore GUI state
             }
         }
     }
