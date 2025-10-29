@@ -293,6 +293,23 @@ namespace CrossClimbLite
             }
         }
 
+        public void SwapPlankOrderInWordPlanksArray(WordPlankRow plankFrom, WordPlankRow plankTo)
+        {
+            if(!plankFrom || !plankTo) return;
+
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            if(!wordPlankRowsInGrid.Contains(plankFrom) || !wordPlankRowsInGrid.Contains(plankTo)) return;
+
+            int plankFromIndex = Array.IndexOf(wordPlankRowsInGrid, plankFrom);
+
+            int plankToIndex = Array.IndexOf(wordPlankRowsInGrid, plankTo); 
+
+            wordPlankRowsInGrid[plankFromIndex] = plankTo;
+
+            wordPlankRowsInGrid[plankToIndex] = plankFrom;
+        }
+
         private void SpawnGameGridUI_IfNull()
         {
             if (!gameGridUIPrefabToSpawn) return;
