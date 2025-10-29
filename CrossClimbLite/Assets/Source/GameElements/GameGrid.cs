@@ -192,7 +192,7 @@ namespace CrossClimbLite
         {
             if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
 
-            List<WordPlankRow> wordPlankRowsNoKeywords = new List<WordPlankRow>();
+            List<int> wordPlankRowsNoKeywordsIndexes = new List<int>();
 
             for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
@@ -204,14 +204,16 @@ namespace CrossClimbLite
 
                 if (wordPlankRowsInGrid[i].isPlankKeyword) continue;
 
-                wordPlankRowsNoKeywords.Add(wordPlankRowsInGrid[i]);
+                wordPlankRowsNoKeywordsIndexes.Add(i);
             }
 
-            if(wordPlankRowsNoKeywords == null || wordPlankRowsNoKeywords.Count == 0) return;
+            if(wordPlankRowsNoKeywordsIndexes == null || wordPlankRowsNoKeywordsIndexes.Count == 0) return;
 
-            for(int i = 0; i < wordPlankRowsNoKeywords.Count; i++)
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
-                if (wordPlankRowsNoKeywords[i] == null) continue;
+                if (wordPlankRowsInGrid[i] == null) continue;
+
+                if (wordPlankRowsInGrid[i].isPlankKeyword) continue;
 
                 int randOrderToSwap = i;
 
@@ -219,26 +221,26 @@ namespace CrossClimbLite
 
                 while(randOrderToSwap == i && count <= 5)
                 {
-                    randOrderToSwap = UnityEngine.Random.Range(0, wordPlankRowsNoKeywords.Count);
+                    randOrderToSwap = wordPlankRowsNoKeywordsIndexes[UnityEngine.Random.Range(0, wordPlankRowsNoKeywordsIndexes.Count)];
 
                     count++;
                 }
 
-                WordPlankRow plankToSwap = wordPlankRowsNoKeywords[randOrderToSwap];
+                WordPlankRow plankToSwap = wordPlankRowsInGrid[randOrderToSwap];
 
                 if(plankToSwap == null) continue;
 
-                int currentPlankSiblingIndex = wordPlankRowsNoKeywords[i].transform.GetSiblingIndex();
+                int currentPlankSiblingIndex = wordPlankRowsInGrid[i].transform.GetSiblingIndex();
 
-                int plankToSwapSiblingIndex = wordPlankRowsNoKeywords[randOrderToSwap].transform.GetSiblingIndex();
+                int plankToSwapSiblingIndex = wordPlankRowsInGrid[randOrderToSwap].transform.GetSiblingIndex();
 
-                wordPlankRowsNoKeywords[i].transform.SetSiblingIndex(plankToSwapSiblingIndex);
+                wordPlankRowsInGrid[i].transform.SetSiblingIndex(plankToSwapSiblingIndex);
 
-                wordPlankRowsNoKeywords[i].SetPlankHint("");
+                wordPlankRowsInGrid[randOrderToSwap].transform.SetSiblingIndex(currentPlankSiblingIndex);
 
-                wordPlankRowsNoKeywords[randOrderToSwap].transform.SetSiblingIndex(currentPlankSiblingIndex);
+                wordPlankRowsInGrid[randOrderToSwap] = wordPlankRowsInGrid[i];
 
-                wordPlankRowsNoKeywords[randOrderToSwap].SetPlankHint("");
+                wordPlankRowsInGrid[i] = plankToSwap;
             }
         }
 

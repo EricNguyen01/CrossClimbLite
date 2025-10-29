@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Text;
 using UnityEngine;
 
@@ -288,12 +287,16 @@ namespace CrossClimbLite
 
                 plankTypedWord = plankTypedWordStrBuilder.ToString();
 
+                if (wordPlankRowUILinked) wordPlankRowUILinked.UpdateUIInternalData_UpdatePlankUILetter(plankTypedWord);
+
                 return;
             }
             
             plankTypedWordStrBuilder.Append(letterSlot.letter[0]);
 
             plankTypedWord = plankTypedWordStrBuilder.ToString();
+
+            if (wordPlankRowUILinked) wordPlankRowUILinked.UpdateUIInternalData_UpdatePlankUILetter(plankTypedWord);
         }
     }
 }

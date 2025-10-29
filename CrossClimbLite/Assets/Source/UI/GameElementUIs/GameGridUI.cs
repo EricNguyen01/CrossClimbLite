@@ -150,13 +150,11 @@ namespace CrossClimbLite
 
                 WordPlankRowUI rowUI = rowUIObj.GetComponent<WordPlankRowUI>();
 
-                rowUIObj.name = rowUIObj.name + "_" + i;
+                rowUIObj.name = rowUIObj.name + "_" + rowModal.plankRowOrder;
 
                 if (rowUI)
                 {
                     rowUI.InitGameElementUI(rowModal, this);
-
-                    //rowUIObj.name = rowUIObj.name + "_" + rowUI.wordPlankRowLinked.plankRowOrder;
 
                     plankUISpawned.Add(rowUI);
                 }

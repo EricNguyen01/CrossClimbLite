@@ -46,6 +46,18 @@ namespace CrossClimbLite
         [field: SerializeField]
         public HorizontalLayoutGroup horizontalLayoutToSpawnLetterSlotsUnder { get; private set; }
 
+        [Header("Plank Modal Linked Data")]
+
+        [ReadOnlyInspector]
+        [SerializeField]
+        private int plankRowOrder = 0;
+
+        [ReadOnlyInspector]
+        [SerializeField]
+        private string plankLetter;
+
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         //the non-UI word plank row Modal (where plank row logic is stored)
         public WordPlankRow wordPlankRowLinked { get; private set; }
 
@@ -88,6 +100,8 @@ namespace CrossClimbLite
             wordPlankRowLinked = wordPlankRowToLink as WordPlankRow;
 
             wordPlankRowLinked.ConnectGameElementUI(this);
+
+            plankRowOrder = wordPlankRowLinked.plankRowOrder;
 
             InitChildrenLetterSlotsUI();
 
@@ -206,6 +220,13 @@ namespace CrossClimbLite
 
                 else if(Application.isPlaying) Destroy(letterSlotsUISpawned[i].gameObject);
             }
+        }
+
+        public void UpdateUIInternalData_UpdatePlankUILetter(string letter)
+        {
+            if(letter == string.Empty || string.IsNullOrEmpty(letter)) return;
+
+            plankLetter = letter;
         }
 
         public void UpdateUI_PlankModalIsKeyword(bool isKeyword)
