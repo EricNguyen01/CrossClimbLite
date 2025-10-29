@@ -1,9 +1,7 @@
 using System;
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Serialization;
-
-
+using System.Linq;
 
 
 #if UNITY_EDITOR
@@ -87,7 +85,6 @@ namespace CrossClimbLite
         //INTERNALS.................................................................
 
         [field: SerializeField]
-        [field: HideInInspector]
         public WordPlankRow[] wordPlankRowsInGrid { get; private set; }
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
@@ -127,6 +124,8 @@ namespace CrossClimbLite
             {
                 InitGrid();
             }
+
+            ShuffleWordPlankOrderInGrid();
 
             if (!gameGridUIInstance)
             {
@@ -186,6 +185,60 @@ namespace CrossClimbLite
                 if(!alreadyInitWordPlankComp) wordPlankRowComp.InitPlank(this, i, columnNum);
 
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
+            }
+        }
+
+        private void ShuffleWordPlankOrderInGrid()
+        {
+            if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            List<WordPlankRow> wordPlankRowsNoKeywords = new List<WordPlankRow>();
+
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) continue;
+
+                wordPlankRowsInGrid[i].SetPlankRowOrder(i);
+
+                wordPlankRowsInGrid[i].SetPlankHint("");
+
+                if (wordPlankRowsInGrid[i].isPlankKeyword) continue;
+
+                wordPlankRowsNoKeywords.Add(wordPlankRowsInGrid[i]);
+            }
+
+            if(wordPlankRowsNoKeywords == null || wordPlankRowsNoKeywords.Count == 0) return;
+
+            for(int i = 0; i < wordPlankRowsNoKeywords.Count; i++)
+            {
+                if (wordPlankRowsNoKeywords[i] == null) continue;
+
+                int randOrderToSwap = i;
+
+                int count = 0;
+
+                while(randOrderToSwap == i && count <= 5)
+                {
+                    randOrderToSwap = UnityEngine.Random.Range(0, wordPlankRowsNoKeywords.Count);
+
+                    count++;
+                }
+
+                WordPlankRow plankToSwap = wordPlankRowsNoKeywords[randOrderToSwap];
+
+                if(plankToSwap == null) continue;
+
+                int currentPlankSiblingIndex = wordPlankRowsNoKeywords[i].transform.GetSiblingIndex();
+
+                int plankToSwapSiblingIndex = wordPlankRowsNoKeywords[randOrderToSwap].transform.GetSiblingIndex();
+
+                wordPlankRowsNoKeywords[i].transform.SetSiblingIndex(plankToSwapSiblingIndex);
+
+                wordPlankRowsNoKeywords[i].SetPlankHint("");
+
+                wordPlankRowsNoKeywords[randOrderToSwap].transform.SetSiblingIndex(currentPlankSiblingIndex);
+
+                wordPlankRowsNoKeywords[randOrderToSwap].SetPlankHint("");
             }
         }
 

@@ -148,16 +148,29 @@ namespace CrossClimbLite
 
                 else rowUIObj = Instantiate(wordPlankUIPrefabToSpawn.gameObject, transform);
 
-                rowUIObj.name = rowUIObj.name + "_" + i;
-
                 WordPlankRowUI rowUI = rowUIObj.GetComponent<WordPlankRowUI>();
+
+                rowUIObj.name = rowUIObj.name + "_" + i;
 
                 if (rowUI)
                 {
                     rowUI.InitGameElementUI(rowModal, this);
 
+                    //rowUIObj.name = rowUIObj.name + "_" + rowUI.wordPlankRowLinked.plankRowOrder;
+
                     plankUISpawned.Add(rowUI);
                 }
+            }
+
+            if (plankUISpawned == null || plankUISpawned.Count == 0) return;
+
+            for(int i = 0; i < plankUISpawned.Count; i++)
+            {
+                if (!plankUISpawned[i]) continue;
+
+                if (!plankUISpawned[i].wordPlankRowLinked) continue;
+
+                plankUISpawned[i].transform.SetSiblingIndex(plankUISpawned[i].wordPlankRowLinked.transform.GetSiblingIndex());
             }
         }
 

@@ -25,11 +25,12 @@ namespace CrossClimbLite
         [field: SerializeField]
         public string plankHint { get; private set; }
 
-        [Space]
+        [field: Space]
 
-        [ReadOnlyInspector, SerializeField]
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
         //the row number of the plank in the game grid - starting from 0
-        private int plankRowOrder = 0;
+        public int plankRowOrder { get; private set; } = 0;
 
         [field: Space]
 
@@ -187,7 +188,7 @@ namespace CrossClimbLite
             }
         }
 
-        public void SetPlankRowNum(int rowOrder)
+        public void SetPlankRowOrder(int rowOrder)
         {
             plankRowOrder = rowOrder;
         }
@@ -232,6 +233,18 @@ namespace CrossClimbLite
         public void SetPlankCorrectWord(string correctWord)
         {
             plankCorrectWord = correctWord;
+        }
+
+        public void SetPlankHint(string hint)
+        {
+            if (hint == string.Empty || string.IsNullOrEmpty(hint) || hint == "")
+            {
+                plankHint = "Plank Row_" + plankRowOrder + "'s Hint";
+
+                return;
+            }
+
+            plankHint = hint;
         }
 
         public void UpdatePlankTypedWordAtLetterSlot(PlankLetterSlot letterSlot)

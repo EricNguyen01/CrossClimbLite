@@ -467,9 +467,13 @@ namespace CrossClimbLite
 
             wordPlankRowLinked.transform.SetSiblingIndex(transform.GetSiblingIndex());
 
+            wordPlankRowLinked.SetPlankRowOrder(transform.GetSiblingIndex());
+
             plankToSwap.transform.SetSiblingIndex(thisSiblingIndex);
 
             plankToSwap.wordPlankRowLinked.transform.SetSiblingIndex(plankToSwap.transform.GetSiblingIndex());
+
+            plankToSwap.wordPlankRowLinked.SetPlankRowOrder(plankToSwap.transform.GetSiblingIndex());
         }
 
         private void CreatePlankDragVisualObject(bool activeOnCreated)

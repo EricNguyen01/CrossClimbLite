@@ -76,6 +76,10 @@ namespace CrossClimbLite
                 return;
             }
 
+            float timeStart = Time.realtimeSinceStartup;
+
+            float timeTook = 0.0f;
+
             // Get first row (line) -> split by commas -> add splitted words (column headers) to list
             // Get index of the required WORD, HINT, and CHARACTERS columns in the headers list and if any index returns -1, log error and return
             var headers = lines[0].Trim().Split(',').Select(h => h.Trim().ToUpper()).ToList();
@@ -167,11 +171,15 @@ namespace CrossClimbLite
                     });
                 }
 
-                Debug.Log($"Successfully parsed {wordHintList.Count} entries from CSV.");
+                timeTook = Time.realtimeSinceStartup - timeStart;
+
+                Debug.Log($"Successfully parsed {wordHintList.Count} entries from CSV. Time took: {timeTook}s");
             }
             catch (System.Exception ex)
             {
-                Debug.LogError("Error while parsing CSV: " + ex.Message);
+                timeTook = Time.realtimeSinceStartup - timeStart;
+
+                Debug.LogError("Error while parsing CSV: " + ex.Message + $" Time took: {timeTook}s");
             }
             finally
             {
@@ -398,10 +406,19 @@ namespace CrossClimbLite
                     {
                         wordWrap = true,
 
-                        fixedHeight = 0,
+                        stretchHeight = true,
                     };
 
-                    EditorGUILayout.TextArea(value ?? string.Empty, textStyle, GUILayout.MinHeight(40));
+                    if (string.IsNullOrEmpty(value)) value = string.Empty;
+
+                    float textHeight = textStyle.CalcHeight(new GUIContent(value), EditorGUIUtility.currentViewWidth - 35);
+
+                    float clampedHeight = Mathf.Min(textHeight + 14, 400); // max 300px
+
+                    EditorGUILayout.TextArea(value ?? string.Empty, textStyle, 
+                                             GUILayout.MinHeight(40), 
+                                             GUILayout.Height(clampedHeight),
+                                             GUILayout.ExpandHeight(true));
                 }
                 else
                 {
