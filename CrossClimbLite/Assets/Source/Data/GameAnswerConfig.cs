@@ -15,7 +15,7 @@ namespace CrossClimbLite
             GameAnswerConfig.wordPlankAnswersInOrder = wordPlankAnswersInOrder;
         }
 
-        public static bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare)
+        public static bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)
         {
             if (!gridWithPlanksToCompare) return false;
 
@@ -31,9 +31,13 @@ namespace CrossClimbLite
 
                 if (!gridWithPlanksToCompare.wordPlankRowsInGrid[i]) break;
 
+                if(!shouldCheckKeyword && gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword) continue;
+
                 if (wordPlankAnswersInOrder[i] != gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord()) break;
 
-                if(i == wordPlankAnswersInOrder.Length - 1 && wordPlankAnswersInOrder[i] == gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord())
+                if(i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder) break;
+
+                if (i == wordPlankAnswersInOrder.Length - 1 && wordPlankAnswersInOrder[i] == gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord())
                 {
                     isMatched = true;
                 }

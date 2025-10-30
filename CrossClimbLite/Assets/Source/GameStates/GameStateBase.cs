@@ -1,16 +1,13 @@
 using UnityEngine;
 
-public class GameStateBase : MonoBehaviour
+namespace CrossClimbLite
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public abstract class GameStateBase : MonoBehaviour
     {
-        
-    }
+        public abstract void OnStateEnter();
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public abstract void OnStateUpdate();
+
+        public abstract void OnStateExit();
     }
 }
