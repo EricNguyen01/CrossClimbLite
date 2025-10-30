@@ -478,9 +478,9 @@ namespace CrossClimbLite
 
                         serializedObject.Update();
 
-                        serializedObject.ApplyModifiedProperties();
-
                         EditorUtility.SetDirty(this);
+
+                        serializedObject.ApplyModifiedProperties();
                     }
 
                     if (GUILayout.Button("Remove Grid Layout and UI"))//On Generate Grid button pressed:...
@@ -489,9 +489,9 @@ namespace CrossClimbLite
 
                         serializedObject.Update();
 
-                        serializedObject.ApplyModifiedProperties();
-
                         EditorUtility.SetDirty(this);
+
+                        serializedObject.ApplyModifiedProperties();
                     }
                 }
             }

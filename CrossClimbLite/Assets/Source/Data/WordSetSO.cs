@@ -41,6 +41,11 @@ namespace CrossClimbLite
         [FormerlySerializedAs("wordHintList")]
         private List<WordHintStruct> wordHintList = new List<WordHintStruct>();
 
+        [SerializeField]
+        [HideInInspector]
+        [FormerlySerializedAs("randomWordSet")]
+        private List<WordHintStruct> randomWordSet = new List<WordHintStruct>();
+
         [Serializable]
         private struct WordHintStruct
         {
@@ -54,7 +59,7 @@ namespace CrossClimbLite
             public int wordLength;
         }
 
-        private void GenerateWordSetsListFromCSV()
+        private void GenerateWordsListFromCSV()
         {
             if(!wordHintCSV)
             {
@@ -64,6 +69,12 @@ namespace CrossClimbLite
             } 
 
             wordHintList.Clear();
+
+            float timeStart = Time.realtimeSinceStartup;
+
+            float timeTook = 0.0f;
+
+            //PROCESS AND VALIDATE CSV FILE CONTENT.............................................................................................................
 
             // Check for empty csv or data rows
             // if csv only has less than 1 line (row), then it only has a header row or is empty, thus log warning and return
@@ -75,10 +86,6 @@ namespace CrossClimbLite
 
                 return;
             }
-
-            float timeStart = Time.realtimeSinceStartup;
-
-            float timeTook = 0.0f;
 
             // Get first row (line) -> split by commas -> add splitted words (column headers) to list
             // Get index of the required WORD, HINT, and CHARACTERS columns in the headers list and if any index returns -1, log error and return
@@ -108,6 +115,8 @@ namespace CrossClimbLite
 
                 return;
             }
+
+            //BEGIN GENERATING WORD HINT LIST...............................................................................................................
 
             try
             {
@@ -148,18 +157,7 @@ namespace CrossClimbLite
                     if (string.IsNullOrEmpty(word))
                         continue;
 
-                    // Remove any non-digit characters just in case (quotes, spaces, etc.)
-                    //charValue = new string(charValue.Where(char.IsDigit).ToArray());
-
                     int wordLength = word.Length;
-
-                    /*if (!string.IsNullOrEmpty(charValue))
-                        int.TryParse(charValue, out wordLength);
-
-                    if (wordLength != word.Length)
-                    {
-                        wordLength = word.Length;
-                    }*/
 
                     wordHintList.Add(new WordHintStruct
                     {
@@ -171,21 +169,38 @@ namespace CrossClimbLite
                     });
                 }
 
-                timeTook = Time.realtimeSinceStartup - timeStart;
-
-                Debug.Log($"Successfully parsed {wordHintList.Count} entries from CSV. Time took: {timeTook}s");
+                Debug.Log($"Successfully parsed {wordHintList.Count} entries from CSV.");
             }
             catch (System.Exception ex)
             {
-                timeTook = Time.realtimeSinceStartup - timeStart;
-
-                Debug.LogError("Error while parsing CSV: " + ex.Message + $" Time took: {timeTook}s");
+                Debug.LogError("Error while parsing CSV: " + ex.Message);
             }
             finally
             {
                 // Always clear the progress bar even if an error occurs
                 EditorUtility.ClearProgressBar();
             }
+
+            //SORT WORD HINT LIST BY WORD LENGTH.................................................................................................................
+
+            try
+            {
+                EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 0.0f);
+
+                SortWordHintListByLength();
+
+                EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 1.0f);
+            }
+            finally
+            {
+                EditorUtility.ClearProgressBar();
+            }
+
+            timeTook = Time.realtimeSinceStartup - timeStart;
+
+            timeTook = (float)Math.Round(timeTook, 2);
+
+            Debug.Log($"Finished generating Word Hint list from CSV. Time took: {timeTook}s");
         }
 
         /// <summary>
@@ -231,6 +246,7 @@ namespace CrossClimbLite
                 else if (c == ',' && !inQuotes)
                 {
                     result.Add(current.Trim());
+
                     current = "";
                 }
                 else
@@ -245,7 +261,30 @@ namespace CrossClimbLite
             return result;
         }
 
-        //EDITOR....................................................................................................................
+        private void SortWordHintListByLength()
+        {
+            if (wordHintList == null || wordHintList.Count == 0)
+            {
+                Debug.LogWarning("Cannot sort list by word length - word hint list is empty or uninitialized.");
+
+                return;
+            }
+
+            wordHintList.Sort((a, b) =>
+            {
+                int compare = a.wordLength.CompareTo(b.wordLength);
+
+                // Optional: stable tie-breaker (alphabetical by word)
+                if (compare == 0)
+                    compare = string.Compare(a.word, b.word, System.StringComparison.OrdinalIgnoreCase);
+
+                return compare;
+            });
+
+            Debug.Log("Successfully sorted Word hint list by word length (shortest to longest).");
+        }
+
+        //EDITOR..................................................................................................................................................
 
 #if UNITY_EDITOR
 
@@ -266,7 +305,11 @@ namespace CrossClimbLite
 
             private SerializedProperty wordHintListProp;
 
+            private SerializedProperty randomWordSetProp;
+
             private bool isWordHintListFoldoutOpened = true;
+
+            private bool isRandomWordSetFoldoutOpened = true;
 
             private void OnEnable()
             {
@@ -283,6 +326,8 @@ namespace CrossClimbLite
                 entriesToShowProp = serializedObject.FindProperty("entriesToShow");
 
                 wordHintListProp = serializedObject.FindProperty("wordHintList");
+
+                randomWordSetProp = serializedObject.FindProperty("randomWordSet");
             }
 
             public override void OnInspectorGUI()
@@ -305,6 +350,10 @@ namespace CrossClimbLite
 
                 DrawReadOnlyList(wordHintListProp, wordSetSO.entriesToShow, ref isWordHintListFoldoutOpened);
 
+                EditorGUILayout.Space(12);
+
+                DrawReadOnlyList(randomWordSetProp, 5, ref isRandomWordSetFoldoutOpened);
+
                 EditorGUILayout.Space(15);
 
                 EditorGUILayout.HelpBox("Use the button to validate and generate words and hints list from the CSV file.", MessageType.Info);
@@ -313,7 +362,7 @@ namespace CrossClimbLite
                 {
                     if (GUILayout.Button("Generate Words List From CSV"))//On Generate Grid button pressed:...
                     {
-                        wordSetSO.GenerateWordSetsListFromCSV();
+                        wordSetSO.GenerateWordsListFromCSV();
 
                         EditorUtility.SetDirty(this);
                     }
@@ -329,7 +378,7 @@ namespace CrossClimbLite
                 if(entriesToShow < 1) entriesToShow = 1;
 
                 // Toggle foldout
-                foldout = EditorGUILayout.Foldout(foldout, $"Parsed Word Hint List ({listProp.arraySize} entries)", true);
+                foldout = EditorGUILayout.Foldout(foldout, $"{listProp.displayName} ({listProp.arraySize} entries)", true);
 
                 if (!foldout) return;
 
@@ -339,7 +388,7 @@ namespace CrossClimbLite
 
                 if (size == 0)
                 {
-                    EditorGUILayout.LabelField("No entries parsed yet.");
+                    EditorGUILayout.LabelField("List is empty.");
 
                     EditorGUI.indentLevel--;
 
