@@ -2,29 +2,66 @@ using System;
 using System.Reflection;
 using System.Collections;
 using UnityEngine;
+using System.Diagnostics.CodeAnalysis;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace CrossClimbLite
 {
     public class GameStateManager : MonoBehaviour
     {
-        public static GameStateManager gameStateManagerInstance;
+        [Header("Game State Data")]
+
+        [SerializeField]
+        [NotNull, DisallowNull]
+        private GameStateBase initState;
+
+        private List<GameStateBase> allGameStates = new List<GameStateBase>();
 
         private GameStateBase currentGameState;
 
         private bool hasRunStateUpdateCoroutine = false;
 
-        private void Awake()
+        private void OnEnable()
         {
-            if (gameStateManagerInstance)
+            if (!initState)
             {
-                Destroy(gameObject);
+                Debug.LogError($"Game State Manager: {name} is missing its InitState ref. State Manager wont work and will be disabled!");
+
+                gameObject.SetActive(false);
+
+                enabled = false;
 
                 return;
             }
-            
-            gameStateManagerInstance = this;
 
-            DontDestroyOnLoad(gameObject);
+            if(allGameStates == null) allGameStates = new List<GameStateBase>();
+
+            if(allGameStates.Count == 0)
+            {
+                allGameStates = GetComponentsInChildren<GameStateBase>(true).ToList();
+            }
+
+            bool hasInitStateInList = false;
+
+            for(int i = 0; i < allGameStates.Count; i++)
+            {
+                if (!allGameStates[i]) continue;
+
+                allGameStates[i].InitializeState(this);
+
+                if(allGameStates[i] == initState)
+                {
+                    hasInitStateInList = true;
+                }
+            }
+            
+            if(!hasInitStateInList)
+            {
+                allGameStates.Add(initState);
+
+                initState.InitializeState(this);
+            }
         }
 
         private void OnDisable()
@@ -34,6 +71,8 @@ namespace CrossClimbLite
 
         public void SetCurrentGameState(GameStateBase newGameState)
         {
+            if (!enabled) return;
+
             if (!newGameState)
             {
                 if(currentGameState) currentGameState.OnStateExit();
@@ -65,6 +104,8 @@ namespace CrossClimbLite
 
         private void RunStateUpdateIfHasUpdateFunc()
         {
+            if (!enabled) return;
+
             Type stateDerivedType = currentGameState.GetType();
 
             MethodInfo updateMethodInDerived = stateDerivedType.GetMethod("OnStateUpdate");
@@ -88,9 +129,11 @@ namespace CrossClimbLite
 
         private IEnumerator StateUpdateCoroutine()
         {
-            if(!currentGameState) yield break;
+            if (!enabled) yield break;
 
-            while (hasRunStateUpdateCoroutine)
+            if (!currentGameState) yield break;
+
+            while (hasRunStateUpdateCoroutine || enabled || currentGameState)
             {
                 currentGameState.OnStateUpdate();
 
