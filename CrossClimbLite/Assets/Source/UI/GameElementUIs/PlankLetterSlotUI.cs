@@ -120,7 +120,12 @@ namespace CrossClimbLite
             if(inputField.text == previousSlotValue) return;
 
             previousSlotValue = inputField.text;
-            
+
+            if(inputField.textComponent.fontStyle == TMPro.FontStyles.Strikethrough)
+            {
+                inputField.textComponent.fontStyle = TMPro.FontStyles.Normal;
+            }
+
             linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, false);
         }
 

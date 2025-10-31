@@ -38,9 +38,9 @@ namespace CrossClimbLite
         [field: SerializeField]
         public WordPlankRow wordPlankOfSlot { get; private set; }
 
-        [ReadOnlyInspector]
-        [SerializeField]
-        private PlankLetterSlotUI letterSlotUILinked;
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
+        public PlankLetterSlotUI letterSlotUILinked { get; private set; }
 
         public void InitSlot(WordPlankRow holdingWordPlank, int slotIndexInPlank)
         {
