@@ -12,6 +12,8 @@ namespace CrossClimbLite
     {
         [Header("CSV Source")]
 
+        [Space(10)]
+
         [HelpBox("Make sure the CSV contains the WORD, HINT, and CHARACTERS column with the exact names.", UnityEngine.UIElements.HelpBoxMessageType.Warning)]
         [SerializeField]
         [FormerlySerializedAs("wordHintCSV")]
@@ -31,20 +33,52 @@ namespace CrossClimbLite
 
         [Header("Words Hints List")]
 
+        [Space(10)]
+
         [SerializeField]
         [Min(1)]
-        [FormerlySerializedAs("entriesToShow")]
-        private int entriesToShow = 40;
+        [FormerlySerializedAs("wordHintEntriesToShow")]
+        private int wordHintEntriesToShow = 40;
 
         [SerializeField]
         [HideInInspector]
         [FormerlySerializedAs("wordHintList")]
         private List<WordHintStruct> wordHintList = new List<WordHintStruct>();
 
+        [Header("Word Sets List")]
+
+        [Space(10)]
+
+        [SerializeField]
+        [Min(1)]
+        [FormerlySerializedAs("wordSetsEntriesToShow")]
+        private int wordSetsEntriesToShow = 20;
+
+        [SerializeField]
+        private List<List<WordHintStruct>> allWordChains = new List<List<WordHintStruct>>();
+
+        [Serializable]
+        private class SingleWordChainWrapper
+        {
+            [SerializeField]
+            [FormerlySerializedAs("singleWordChains")]
+            private List<WordHintStruct> singleWordChains = new List<WordHintStruct>();
+
+            public SingleWordChainWrapper(List<WordHintStruct> singleWordChains)
+            {
+                this.singleWordChains = singleWordChains;
+            }
+        }
+
         [SerializeField]
         [HideInInspector]
-        [FormerlySerializedAs("randomWordSet")]
-        private List<WordHintStruct> randomWordSet = new List<WordHintStruct>();
+        [FormerlySerializedAs("allWordSetsList")]
+        private List<SingleWordChainWrapper> allWordSetsList = new List<SingleWordChainWrapper>();
+
+        [SerializeField]
+        [HideInInspector]
+        [FormerlySerializedAs("runtimeRandomWordSet")]
+        private List<WordHintStruct> runtimeRandomWordSet = new List<WordHintStruct>();
 
         [Serializable]
         private struct WordHintStruct
@@ -59,16 +93,20 @@ namespace CrossClimbLite
             public int wordLength;
         }
 
-        private void GenerateWordsListFromCSV()
+        private bool GenerateWordsListFromCSV()
         {
+            Debug.Log("Begins Generating Word Hint List from CSV");
+
             if(!wordHintCSV)
             {
                 Debug.LogWarning("WordSetSO: No CSV file assigned.");
 
-                return;
-            } 
+                return false;
+            }
 
-            wordHintList.Clear();
+            if (wordHintList == null) wordHintList = new List<WordHintStruct>();
+
+            else wordHintList.Clear();
 
             float timeStart = Time.realtimeSinceStartup;
 
@@ -84,7 +122,7 @@ namespace CrossClimbLite
             {
                 Debug.LogWarning("CSV file appears empty or has no data rows.");
 
-                return;
+                return false;
             }
 
             // Get first row (line) -> split by commas -> add splitted words (column headers) to list
@@ -113,29 +151,34 @@ namespace CrossClimbLite
             {
                 Debug.LogError("Invalid CSV file. Required columns: WORD, HINT, CHARACTERS.");
 
-                return;
+                return false;
             }
 
             //BEGIN GENERATING WORD HINT LIST...............................................................................................................
 
+            bool successfullyGenerated = true;
+
             try
             {
-                if(lines.Length > 251)
+                if(Application.isEditor)
                 {
-                    int total = lines.Length - 1;
-
-                    for (int i = 1; i < lines.Length; i++)
+                    if (lines.Length > 251)
                     {
-                        // Show progress bar every 250 rows (so it doesn’t slow parsing)
-                        if (i % 250 == 0)
-                        {
-                            float progress = (float)i / total;
+                        int total = lines.Length - 1;
 
-                            EditorUtility.DisplayProgressBar(
-                                "Parsing CSV...",
-                                $"Processing row {i} of {total}",
-                                progress
-                            );
+                        for (int i = 1; i < lines.Length; i++)
+                        {
+                            // Show progress bar every 250 rows (so it doesn’t slow parsing)
+                            if (i % 250 == 0)
+                            {
+                                float progress = (float)i / total;
+
+                                EditorUtility.DisplayProgressBar(
+                                    "Parsing CSV...",
+                                    $"Processing row {i} of {total}",
+                                    progress
+                                );
+                            }
                         }
                     }
                 }
@@ -174,26 +217,31 @@ namespace CrossClimbLite
             catch (System.Exception ex)
             {
                 Debug.LogError("Error while parsing CSV: " + ex.Message);
+
+                successfullyGenerated = false;
             }
             finally
             {
                 // Always clear the progress bar even if an error occurs
-                EditorUtility.ClearProgressBar();
+                if (Application.isEditor) EditorUtility.ClearProgressBar();
             }
 
             //SORT WORD HINT LIST BY WORD LENGTH.................................................................................................................
 
-            try
+            if (successfullyGenerated)
             {
-                EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 0.0f);
+                try
+                {
+                    if (Application.isEditor) EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 0.0f);
 
-                SortWordHintListByLength();
+                    SortWordHintListByLength();
 
-                EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 1.0f);
-            }
-            finally
-            {
-                EditorUtility.ClearProgressBar();
+                    if (Application.isEditor) EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 1.0f);
+                }
+                finally
+                {
+                    if (Application.isEditor) EditorUtility.ClearProgressBar();
+                }
             }
 
             timeTook = Time.realtimeSinceStartup - timeStart;
@@ -201,6 +249,8 @@ namespace CrossClimbLite
             timeTook = (float)Math.Round(timeTook, 2);
 
             Debug.Log($"Finished generating Word Hint list from CSV. Time took: {timeTook}s");
+
+            return successfullyGenerated;
         }
 
         /// <summary>
@@ -284,6 +334,225 @@ namespace CrossClimbLite
             Debug.Log("Successfully sorted Word hint list by word length (shortest to longest).");
         }
 
+        private void GenerateWordChainsList()
+        {
+            float startTime = Time.realtimeSinceStartup;
+
+            float timeTook = 0.0f;
+
+            Debug.Log("Begins Generating All Word Sets List");
+
+            if(wordHintList == null || wordHintList.Count == 0)
+            {
+                if (!GenerateWordsListFromCSV()) return;
+            }
+
+            allWordChains.Clear();
+
+            allWordChains = GroupByOneCharacterChains();
+
+            if (allWordChains == null || allWordChains.Count == 0)
+            {
+                Debug.LogError("No Word Chains Could Be Generated. Please check error logs for more info.");
+
+                timeTook = Time.realtimeSinceStartup - startTime;
+
+                timeTook = (float)Math.Round(timeTook, 2);
+
+                Debug.Log($"Word Sets List Generation Complete With Errors. Time took: {timeTook}");
+
+                return;
+            }
+
+            if (allWordSetsList == null) allWordSetsList = new List<SingleWordChainWrapper>();
+
+            else allWordSetsList.Clear();
+
+            for(int i = 0; i < allWordChains.Count; i++)
+            {
+                if (allWordChains[i] == null || allWordChains[i].Count == 0) continue;
+
+                allWordSetsList.Add(new SingleWordChainWrapper(allWordChains[i]));
+            }
+
+            timeTook = Time.realtimeSinceStartup - startTime;
+
+            timeTook = (float)Math.Round(timeTook, 2);
+
+            Debug.Log($"Word Sets List Generation Complete Successfully. Time took: {timeTook}");
+        }
+
+        /// <summary>
+        /// Returns a list of lists (chains) where each sub-list or chain contains words that differ by only 1-char. 
+        /// Each chain also has words that have the same number of characters length.
+        /// </summary>
+        /// <returns></returns>
+        private List<List<WordHintStruct>> GroupByOneCharacterChains()
+        {
+            if (wordHintList == null || wordHintList.Count == 0)
+            {
+                Debug.LogWarning("Word list is empty — cannot form chains.");
+
+                return new List<List<WordHintStruct>>();
+            }
+
+            //Group by word length
+            var grouped = wordHintList.GroupBy(w => w.wordLength).OrderBy(g => g.Key).ToList();
+
+            var allChains = new List<List<WordHintStruct>>();
+
+            int totalGroups = grouped.Count;
+
+            int processedGroups = 0;
+
+            try
+            {
+                //iterates through each word length group (e.g group of 4 chars words then group of 5 chars words)
+                foreach (var group in grouped)
+                {
+                    processedGroups++;
+
+                    string currentGroupLog = $"Processing chars length group: {group.Key} chars words";
+
+                    float progress = (float)processedGroups / totalGroups;
+
+                    if (Application.isEditor) EditorUtility.DisplayProgressBar("Generating Word Chains", currentGroupLog, progress);
+
+                    //init a list of WordHintStruct from the current word length group 
+                    var words = new List<WordHintStruct>(group);
+
+                    //init a hash set (no duplicate) of all the unique words in the current word length group
+                    var unvisited = new HashSet<string>(words.Select(w => w.word));
+
+                    //init a list of chains of words that differ by 1 char (each chain is a list and all chains are put in a bigger list)
+                    //this chains list is only for this current word length iteration
+                    var chainsForThisLength = new List<List<WordHintStruct>>();
+
+                    //iterate through the unvisited words
+                    while (unvisited.Count > 0)
+                    {
+                        // Start a new chain from the first univisited word
+                        var startWord = words.FirstOrDefault(w => unvisited.Contains(w.word));
+
+                        //unvisited words hash set is empty -> break and go to next word length group iteration
+                        if (string.IsNullOrEmpty(startWord.word)) break;
+
+                        //init the chain list for the picked univisited word 
+                        var currentChain = new List<WordHintStruct> { startWord };
+
+                        //remove picked word as its now visited
+                        unvisited.Remove(startWord.word);
+
+                        bool addedNew;
+
+                        do
+                        {
+                            addedNew = false;//reset addedNew's status to avoid infinite while loop
+
+                            WordHintStruct? nextWord = null;
+
+                            //iterate through all the words in the wordhint list to find valid words with 1 char diff from the picked word above
+                            foreach (var candidate in words)
+                            {
+                                //if current word already visited -> go next
+                                if (!unvisited.Contains(candidate.word))
+                                    continue;
+
+                                /*
+                                 * The ComputeEditDistance function below uses Levenshtein Distance algorithm (edit distance)
+                                 * That is:
+                                 * The minimum number of single-character insertions, deletions, or substitutions required to transform one word into another.
+                                 * A distance of 1 means the words differ by exactly one character.
+                                 * If for a current word being processed, no other words have a distance of 1 (differ by 1 char) to the current word,
+                                 * the word-chain of that word is now finished and a new chain is started.
+                                 */
+
+                                //currentChain[^1] = currentChain[currentChain.Count - 1]
+                                if (ComputeEditDistance(currentChain[^1].word, candidate.word) == 1)
+                                {
+                                    nextWord = candidate;//valid 1-char diff word found -> exit loop
+
+                                    break;
+                                }
+                            }
+
+                            //if a valid next word with distance of 1 (differ by 1 char) is found from above iteration ^
+                            if (nextWord.HasValue)
+                            {
+                                currentChain.Add(nextWord.Value);//add to current chain of the word being processed
+
+                                unvisited.Remove(nextWord.Value.word);//remove from visited words hash
+
+                                addedNew = true;
+                            }
+
+                        } while (addedNew);//if previously added a new word to the current chain successfully -> continue loop
+
+                        //else
+
+                        //current chain has finished with all the possible 1-char diff words for the picked word
+                        //add current chain to the list of chains for the current word length group and starts next chain for the next unvisited word
+                        chainsForThisLength.Add(currentChain);
+                    }
+
+                    //once all chains for the current word length group are found and processed -> add to the all chains list
+                    //start next word length group iteration to find chains for next word length group
+                    allChains.AddRange(chainsForThisLength);
+
+                    Debug.Log($"Found {chainsForThisLength.Count} chain(s) for word length {group.Key}.");
+                }
+
+                Debug.Log($"Completed: {allChains.Count} total one-character-difference chains created.");
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Error while generating chains: {ex.Message}");
+            }
+            finally
+            {
+                // Always clear progress bar
+                if (Application.isEditor) EditorUtility.ClearProgressBar();
+            }
+
+            return allChains;
+        }
+
+        /// <summary>
+        /// Checks the number of chars diff bt/ word string "a" and "b"
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        private int ComputeEditDistance(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a) || string.IsNullOrEmpty(b))
+                return int.MaxValue;
+
+            if (Mathf.Abs(a.Length - b.Length) > 1)
+                return int.MaxValue; // Early reject if lengths differ too much
+
+            int[,] dp = new int[a.Length + 1, b.Length + 1];
+
+            for (int i = 0; i <= a.Length; i++) dp[i, 0] = i;
+
+            for (int j = 0; j <= b.Length; j++) dp[0, j] = j;
+
+            for (int i = 1; i <= a.Length; i++)
+            {
+                for (int j = 1; j <= b.Length; j++)
+                {
+                    int cost = (a[i - 1] == b[j - 1]) ? 0 : 1;
+
+                    dp[i, j] = Mathf.Min(
+                        Mathf.Min(dp[i - 1, j] + 1, dp[i, j - 1] + 1),
+                        dp[i - 1, j - 1] + cost
+                    );
+                }
+            }
+
+            return dp[a.Length, b.Length];
+        }
+
         //EDITOR..................................................................................................................................................
 
 #if UNITY_EDITOR
@@ -301,13 +570,19 @@ namespace CrossClimbLite
 
             private SerializedProperty charactersColumnNameProp;
 
-            private SerializedProperty entriesToShowProp;
+            private SerializedProperty wordHintEntriesToShowProp;
 
             private SerializedProperty wordHintListProp;
 
-            private SerializedProperty randomWordSetProp;
+            private SerializedProperty wordSetsEntriesToShowProp;
+
+            private SerializedProperty allWordSetsListProp;
+
+            private SerializedProperty runtimeRandomWordSetProp;
 
             private bool isWordHintListFoldoutOpened = true;
+
+            private bool isAllWordSetsFoldoutOpened = true;
 
             private bool isRandomWordSetFoldoutOpened = true;
 
@@ -323,11 +598,15 @@ namespace CrossClimbLite
 
                 charactersColumnNameProp = serializedObject.FindProperty("charactersColumnName");
 
-                entriesToShowProp = serializedObject.FindProperty("entriesToShow");
+                wordHintEntriesToShowProp = serializedObject.FindProperty("wordHintEntriesToShow");
 
                 wordHintListProp = serializedObject.FindProperty("wordHintList");
 
-                randomWordSetProp = serializedObject.FindProperty("randomWordSet");
+                wordSetsEntriesToShowProp = serializedObject.FindProperty("wordSetsEntriesToShow");
+
+                allWordSetsListProp = serializedObject.FindProperty("allWordSetsList");
+
+                runtimeRandomWordSetProp = serializedObject.FindProperty("runtimeRandomWordSet");
             }
 
             public override void OnInspectorGUI()
@@ -344,15 +623,11 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space();
 
-                if (entriesToShowProp != null) EditorGUILayout.PropertyField(entriesToShowProp);
+                if (wordHintEntriesToShowProp != null) EditorGUILayout.PropertyField(wordHintEntriesToShowProp);
 
                 EditorGUILayout.Space();
 
-                DrawReadOnlyList(wordHintListProp, wordSetSO.entriesToShow, ref isWordHintListFoldoutOpened);
-
-                EditorGUILayout.Space(12);
-
-                DrawReadOnlyList(randomWordSetProp, 5, ref isRandomWordSetFoldoutOpened);
+                DrawReadOnlyList(wordHintListProp, wordSetSO.wordHintEntriesToShow, true, ref isWordHintListFoldoutOpened);
 
                 EditorGUILayout.Space(15);
 
@@ -368,14 +643,44 @@ namespace CrossClimbLite
                     }
                 }
 
+                EditorGUILayout.Space(15);
+
+                if (wordSetsEntriesToShowProp != null) EditorGUILayout.PropertyField(wordSetsEntriesToShowProp);
+
+                EditorGUILayout.Space();
+
+                DrawReadOnlyList(allWordSetsListProp, wordSetSO.wordSetsEntriesToShow, true, ref isAllWordSetsFoldoutOpened);
+
+                EditorGUILayout.Space(15);
+
+                EditorGUILayout.HelpBox("Use the button below to generate all possible word sets " +
+                                        "where each set has words that differ by only 1 character from one another.",
+                                        MessageType.Info);
+
+                using (new EditorGUI.DisabledGroupScope(Application.isPlaying))
+                {
+                    if (GUILayout.Button("Generate All Word Sets"))//On Generate Grid button pressed:...
+                    {
+                        wordSetSO.GenerateWordChainsList();
+
+                        EditorUtility.SetDirty(this);
+                    }
+                }
+
+                EditorGUILayout.Space(15);
+
+                DrawReadOnlyList(runtimeRandomWordSetProp, 5, true, ref isRandomWordSetFoldoutOpened);
+
                 serializedObject.ApplyModifiedProperties();
             }
 
             private Vector2 scrollPos;
 
-            private void DrawReadOnlyList(SerializedProperty listProp, int entriesToShow, ref bool foldout)
+            private void DrawReadOnlyList(SerializedProperty listProp, int entriesToShow, bool canScroll, ref bool foldout)
             {
-                if(entriesToShow < 1) entriesToShow = 1;
+                if (listProp == null) return;
+
+                if(entriesToShow < 1) entriesToShow = listProp.arraySize;
 
                 // Toggle foldout
                 foldout = EditorGUILayout.Foldout(foldout, $"{listProp.displayName} ({listProp.arraySize} entries)", true);
@@ -399,13 +704,21 @@ namespace CrossClimbLite
 
                 // Begin scrollable view
                 //scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(500));
-                scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(EditorGUIUtility.currentViewWidth));
+                if(canScroll) 
+                    scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(EditorGUIUtility.currentViewWidth));
 
                 for (int i = 0; i < maxDisplay; i++)
                 {
                     var element = listProp.GetArrayElementAtIndex(i);
 
                     if (element == null) continue;
+
+                    if (element.isArray)
+                    {
+                        DrawReadOnlyList(element, element.arraySize, false, ref foldout);
+
+                        continue;
+                    }
 
                     // Find subfields
                     var wordProp = element.FindPropertyRelative("word");
@@ -414,6 +727,8 @@ namespace CrossClimbLite
 
                     var lengthProp = element.FindPropertyRelative("wordLength");
 
+                    var singleWordChainsProp = element.FindPropertyRelative("singleWordChains");
+
                     // Draw box-like element
                     EditorGUILayout.BeginVertical("box");
 
@@ -421,11 +736,13 @@ namespace CrossClimbLite
 
                     EditorGUI.indentLevel++;
 
-                    DrawReadOnlyField("Word", wordProp?.stringValue);
+                    if(wordProp != null) DrawReadOnlyField("Word", wordProp?.stringValue);
 
-                    DrawReadOnlyField("Hint", hintProp?.stringValue, true); // multi-line
+                    if (hintProp != null) DrawReadOnlyField("Hint", hintProp?.stringValue, true); // multi-line
 
-                    DrawReadOnlyField("Word Length", lengthProp?.intValue.ToString());
+                    if(lengthProp != null) DrawReadOnlyField("Word Length", lengthProp?.intValue.ToString());
+
+                    if(singleWordChainsProp != null) DrawReadOnlyList(singleWordChainsProp, singleWordChainsProp.arraySize, false, ref foldout);
 
                     EditorGUI.indentLevel--;
 
@@ -437,7 +754,7 @@ namespace CrossClimbLite
                     EditorGUILayout.HelpBox($"Showing first {maxDisplay} of {size} entries.", MessageType.Info);
                 }
 
-                EditorGUILayout.EndScrollView();
+                if(canScroll) EditorGUILayout.EndScrollView();
 
                 EditorGUI.indentLevel--;
             }
