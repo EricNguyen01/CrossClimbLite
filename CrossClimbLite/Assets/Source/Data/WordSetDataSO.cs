@@ -7,8 +7,8 @@ using UnityEngine.Serialization;
 
 namespace CrossClimbLite
 {
-    [CreateAssetMenu(fileName = "WordSetSO", menuName = "Scriptable Objects/WordSetSO")]
-    public class WordSetSO : ScriptableObject
+    [CreateAssetMenu(fileName = "WordSetDataSO", menuName = "Scriptable Objects/WordSetDataSO")]
+    public class WordSetDataSO : ScriptableObject
     {
         [Header("CSV Source")]
 
@@ -555,10 +555,10 @@ namespace CrossClimbLite
 
 #if UNITY_EDITOR
 
-        [CustomEditor(typeof(WordSetSO))]
-        private class WordSetSOEditor : Editor
+        [CustomEditor(typeof(WordSetDataSO))]
+        private class WordSetDataSOEditor : Editor
         {
-            private WordSetSO wordSetSO;
+            private WordSetDataSO wordSetDataSO;
 
             private SerializedProperty csvFileProp;
 
@@ -590,7 +590,7 @@ namespace CrossClimbLite
 
             private void OnEnable()
             {
-                wordSetSO = target as WordSetSO;
+                wordSetDataSO = target as WordSetDataSO;
 
                 csvFileProp = serializedObject.FindProperty("wordHintCSV");
 
@@ -630,7 +630,7 @@ namespace CrossClimbLite
                 EditorGUILayout.Space();
 
                 DrawReadOnlyList(wordHintListProp, 
-                                 wordSetSO.wordHintEntriesToShow, 
+                                 wordSetDataSO.wordHintEntriesToShow, 
                                  true, 
                                  ref wordHintListScrollPos, 
                                  ref isWordHintListFoldoutOpened);
@@ -643,9 +643,9 @@ namespace CrossClimbLite
                 {
                     if (GUILayout.Button("Generate Words List From CSV"))//On Generate Grid button pressed:...
                     {
-                        wordSetSO.GenerateWordsListFromCSV();
+                        wordSetDataSO.GenerateWordsListFromCSV();
 
-                        EditorUtility.SetDirty(this);
+                        EditorUtility.SetDirty(wordSetDataSO);
                     }
                 }
 
@@ -656,7 +656,7 @@ namespace CrossClimbLite
                 EditorGUILayout.Space();
 
                 DrawReadOnlyList(allWordSetsListProp, 
-                                 wordSetSO.wordSetsEntriesToShow, 
+                                 wordSetDataSO.wordSetsEntriesToShow, 
                                  true, 
                                  ref wordSetsListScrollPos, 
                                  ref isAllWordSetsFoldoutOpened);
@@ -671,9 +671,9 @@ namespace CrossClimbLite
                 {
                     if (GUILayout.Button("Generate All Word Sets"))//On Generate Grid button pressed:...
                     {
-                        wordSetSO.GenerateWordChainsList();
+                        wordSetDataSO.GenerateWordChainsList();
 
-                        EditorUtility.SetDirty(this);
+                        EditorUtility.SetDirty(wordSetDataSO);
                     }
                 }
 
