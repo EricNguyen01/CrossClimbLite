@@ -41,7 +41,6 @@ namespace CrossClimbLite
         private int wordHintEntriesToShow = 40;
 
         [SerializeField]
-        [HideInInspector]
         [FormerlySerializedAs("wordHintList")]
         private List<WordHintStruct> wordHintList = new List<WordHintStruct>();
 
@@ -71,7 +70,6 @@ namespace CrossClimbLite
         }
 
         [SerializeField]
-        [HideInInspector]
         [FormerlySerializedAs("allWordSetsList")]
         private List<SingleWordChainWrapper> allWordSetsList = new List<SingleWordChainWrapper>();
 
@@ -586,6 +584,10 @@ namespace CrossClimbLite
 
             private bool isRandomWordSetFoldoutOpened = true;
 
+            private Vector2 wordHintListScrollPos;
+
+            private Vector2 wordSetsListScrollPos;
+
             private void OnEnable()
             {
                 wordSetSO = target as WordSetSO;
@@ -627,7 +629,11 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space();
 
-                DrawReadOnlyList(wordHintListProp, wordSetSO.wordHintEntriesToShow, true, ref isWordHintListFoldoutOpened);
+                DrawReadOnlyList(wordHintListProp, 
+                                 wordSetSO.wordHintEntriesToShow, 
+                                 true, 
+                                 ref wordHintListScrollPos, 
+                                 ref isWordHintListFoldoutOpened);
 
                 EditorGUILayout.Space(15);
 
@@ -649,7 +655,11 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space();
 
-                DrawReadOnlyList(allWordSetsListProp, wordSetSO.wordSetsEntriesToShow, true, ref isAllWordSetsFoldoutOpened);
+                DrawReadOnlyList(allWordSetsListProp, 
+                                 wordSetSO.wordSetsEntriesToShow, 
+                                 true, 
+                                 ref wordSetsListScrollPos, 
+                                 ref isAllWordSetsFoldoutOpened);
 
                 EditorGUILayout.Space(15);
 
@@ -669,14 +679,12 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space(15);
 
-                DrawReadOnlyList(runtimeRandomWordSetProp, 5, true, ref isRandomWordSetFoldoutOpened);
+                DrawReadOnlyListNoScroll(runtimeRandomWordSetProp, runtimeRandomWordSetProp.arraySize, ref isRandomWordSetFoldoutOpened);
 
                 serializedObject.ApplyModifiedProperties();
             }
 
-            private Vector2 scrollPos;
-
-            private void DrawReadOnlyList(SerializedProperty listProp, int entriesToShow, bool canScroll, ref bool foldout)
+            private void DrawReadOnlyList(SerializedProperty listProp, int entriesToShow, bool canScroll, ref Vector2 scrollPos, ref bool foldout)
             {
                 if (listProp == null) return;
 
@@ -705,7 +713,7 @@ namespace CrossClimbLite
                 // Begin scrollable view
                 //scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(500));
                 if(canScroll) 
-                    scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(EditorGUIUtility.currentViewWidth));
+                    scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Mathf.Max(EditorGUIUtility.currentViewWidth, 500.0f)));
 
                 for (int i = 0; i < maxDisplay; i++)
                 {
@@ -715,7 +723,7 @@ namespace CrossClimbLite
 
                     if (element.isArray)
                     {
-                        DrawReadOnlyList(element, element.arraySize, false, ref foldout);
+                        DrawReadOnlyListNoScroll(element, element.arraySize, ref foldout);
 
                         continue;
                     }
@@ -742,7 +750,7 @@ namespace CrossClimbLite
 
                     if(lengthProp != null) DrawReadOnlyField("Word Length", lengthProp?.intValue.ToString());
 
-                    if(singleWordChainsProp != null) DrawReadOnlyList(singleWordChainsProp, singleWordChainsProp.arraySize, false, ref foldout);
+                    if(singleWordChainsProp != null) DrawReadOnlyListNoScroll(singleWordChainsProp, singleWordChainsProp.arraySize, ref foldout);
 
                     EditorGUI.indentLevel--;
 
@@ -757,6 +765,13 @@ namespace CrossClimbLite
                 if(canScroll) EditorGUILayout.EndScrollView();
 
                 EditorGUI.indentLevel--;
+            }
+
+            private void DrawReadOnlyListNoScroll(SerializedProperty listProp, int entriesToShow, ref bool foldout)
+            {
+                Vector2 scrollPos = Vector2.zero;
+
+                DrawReadOnlyList(listProp, entriesToShow, false, ref scrollPos, ref foldout);
             }
 
             private void DrawReadOnlyField(string label, string value, bool multiLine = false)
