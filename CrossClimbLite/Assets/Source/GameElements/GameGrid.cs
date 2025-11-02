@@ -2,6 +2,10 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.Serialization;
+using Unity.VisualScripting;
+
+
 
 
 #if UNITY_EDITOR
@@ -85,6 +89,8 @@ namespace CrossClimbLite
         //INTERNALS.................................................................
 
         [field: SerializeField]
+        [field: HideInInspector]
+        [field: FormerlySerializedAs("<wordPlankRowsInGrid>k__BackingField")]
         public WordPlankRow[] wordPlankRowsInGrid { get; private set; }
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
@@ -456,16 +462,28 @@ namespace CrossClimbLite
         {
             private GameGrid gameGrid;
 
+            private SerializedProperty wordPlankRowsProp;
+
+            private bool wordPlankRowsFoldout = true;
+
             private void OnEnable()
             {
                 gameGrid = (GameGrid)target;
+
+                wordPlankRowsProp = serializedObject.FindProperty("wordPlankRowsInGrid");
+
+                if (wordPlankRowsProp == null) wordPlankRowsProp = serializedObject.FindProperty("<wordPlankRowsInGrid>k__BackingField");
             }
 
             public override void OnInspectorGUI()
             {
                 DrawDefaultInspector();
 
-                EditorGUILayout.Space(12);
+                EditorGUILayout.Space(15);
+
+                DrawReadOnlyList(wordPlankRowsProp, ref wordPlankRowsFoldout);
+
+                EditorGUILayout.Space(15);
 
                 EditorGUILayout.HelpBox("Generating the grid removes the current game grid and its layout", MessageType.Info);
 
@@ -494,6 +512,49 @@ namespace CrossClimbLite
                         serializedObject.ApplyModifiedProperties();
                     }
                 }
+            }
+
+            private void DrawReadOnlyList(SerializedProperty listProp, ref bool foldout)
+            {
+                if (listProp == null) return;
+
+                // Toggle foldout
+                foldout = EditorGUILayout.Foldout(foldout, $"{listProp.displayName} Read-Only", true);
+
+                if (!foldout) return;
+
+                EditorGUI.indentLevel++;
+
+                int size = listProp.arraySize;
+
+                if (size == 0)
+                {
+                    EditorGUILayout.LabelField("List is empty.");
+
+                    EditorGUI.indentLevel--;
+
+                    return;
+                }
+
+                for (int i = 0; i < listProp.arraySize; i++)
+                {
+                    var element = listProp.GetArrayElementAtIndex(i);
+
+                    if (element == null) continue;
+
+                    GUI.enabled = false;
+
+                    // Draw box-like element
+                    EditorGUILayout.BeginVertical("box");
+
+                    EditorGUILayout.PropertyField(element);
+
+                    EditorGUILayout.EndVertical();
+
+                    GUI.enabled = true;
+                }
+
+                EditorGUI.indentLevel--;
             }
         }
 #endif
