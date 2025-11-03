@@ -1,21 +1,90 @@
 using UnityEngine;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 
 namespace CrossClimbLite
 {
-    public static class GameAnswerConfig
+    public class GameAnswerConfig : MonoBehaviour
     {
-        private static string[] wordPlankAnswersInOrder;
+        [SerializeField, NotNull, DisallowNull]
+        private WordSetDataSO wordSetDataToUse;
 
-        public static void SetWordPlankAnswersInOrder(string[] wordPlankAnswersInOrder)
+        private List<WordSetDataSO.SingleWordChainWrapper> allWordSets = new List<WordSetDataSO.SingleWordChainWrapper>();
+
+        private string[] wordPlankAnswersInOrder;
+
+        private event Action OnGeneratingAnswerConfigStarted;
+
+        private event Action OnGeneratingAnswerConfigFinished;
+
+        private static GameAnswerConfig gameAnswerConfigInstance;
+
+        private void Awake()
+        {
+            if (gameAnswerConfigInstance && gameAnswerConfigInstance != this)
+            {
+                gameObject.SetActive(false);
+
+                enabled = false;
+
+                Destroy(gameObject);
+
+                return;
+            }
+
+            gameAnswerConfigInstance = this;
+
+            if (!wordSetDataToUse)
+            {
+                Debug.LogError($"WordSetDataToUse is missing on {name} game object. " +
+                                                    "A WordSetData SO is required to provide the answer words and hints data!");
+
+                enabled = false;
+
+                return;
+            }
+
+            allWordSets = wordSetDataToUse.GetAllWordChains();
+        }
+
+        private void SetWordPlankAnswersInOrder(string[] wordPlankAnswersInOrder)
         {
             if (wordPlankAnswersInOrder == null || wordPlankAnswersInOrder.Length == 0) return;
 
-            GameAnswerConfig.wordPlankAnswersInOrder = null;
+            wordPlankAnswersInOrder = null;
 
-            GameAnswerConfig.wordPlankAnswersInOrder = wordPlankAnswersInOrder;
+            this.wordPlankAnswersInOrder = wordPlankAnswersInOrder;
         }
 
-        public static bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)
+        public void GenerateNewAnswerConfig(GameGrid gameGridInUse)
+        {
+            if (!enabled || !wordSetDataToUse) return;
+
+            if (!gameGridInUse)
+            {
+                Debug.LogError("Couldn't generate new answer config. Invalid game grid in use provided!");
+
+                return;
+            }
+
+            if (allWordSets == null || allWordSets.Count == 0)
+            {
+                Debug.LogError("Couldn't generate a new answer config. Either a word set data SO is not assigned or the word sets data in the assigned word set data SO was not properly set!");
+
+                return;
+            }
+
+            OnGeneratingAnswerConfigStarted?.Invoke();
+
+            int wordNumRequired = gameGridInUse.rowNum;
+
+            int wordLengthRequired = gameGridInUse.columnNum;
+
+            OnGeneratingAnswerConfigFinished?.Invoke();
+        }
+
+        public bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)
         {
             if (!gridWithPlanksToCompare) return false;
 

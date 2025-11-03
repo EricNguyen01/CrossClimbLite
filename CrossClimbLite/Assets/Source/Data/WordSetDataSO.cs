@@ -57,15 +57,20 @@ namespace CrossClimbLite
         private List<List<WordHintStruct>> allWordChains = new List<List<WordHintStruct>>();
 
         [Serializable]
-        private class SingleWordChainWrapper
+        public class SingleWordChainWrapper
         {
             [SerializeField]
-            [FormerlySerializedAs("singleWordChains")]
-            private List<WordHintStruct> singleWordChains = new List<WordHintStruct>();
+            [FormerlySerializedAs("singleWordChain")]
+            private List<WordHintStruct> singleWordChain = new List<WordHintStruct>();
 
-            public SingleWordChainWrapper(List<WordHintStruct> singleWordChains)
+            public SingleWordChainWrapper(List<WordHintStruct> singleWordChain)
             {
-                this.singleWordChains = singleWordChains;
+                this.singleWordChain = singleWordChain;
+            }
+
+            public List<WordHintStruct> GetWordChain()
+            {
+                return singleWordChain;
             }
         }
 
@@ -79,7 +84,7 @@ namespace CrossClimbLite
         private List<WordHintStruct> runtimeRandomWordSet = new List<WordHintStruct>();
 
         [Serializable]
-        private struct WordHintStruct
+        public struct WordHintStruct
         {
             [SerializeField]
             public string word;
@@ -551,6 +556,25 @@ namespace CrossClimbLite
             return dp[a.Length, b.Length];
         }
 
+        public List<SingleWordChainWrapper> GetAllWordChains()
+        {
+            return allWordSetsList;
+        }
+
+        public void GetRandomWordChainRuntime(int wordCountRequired, int wordLengthRequired)
+        {
+            if(wordCountRequired < 2) wordCountRequired = 2;
+
+            if(wordLengthRequired < 3)
+            {
+                Debug.LogWarning($"Invalid word length provided: {wordLengthRequired}. Word length must not be less than 3 when getting random word chain!");
+
+                wordLengthRequired = 3;
+            }
+
+
+        }
+
         //EDITOR..................................................................................................................................................
 
 #if UNITY_EDITOR
@@ -735,7 +759,7 @@ namespace CrossClimbLite
 
                     var lengthProp = element.FindPropertyRelative("wordLength");
 
-                    var singleWordChainsProp = element.FindPropertyRelative("singleWordChains");
+                    var singleWordChainsProp = element.FindPropertyRelative("singleWordChain");
 
                     // Draw box-like element
                     EditorGUILayout.BeginVertical("box");
