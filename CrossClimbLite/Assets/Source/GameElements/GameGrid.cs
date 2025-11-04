@@ -339,6 +339,26 @@ namespace CrossClimbLite
             gameGridUIInstance.InitGameElementUI(this);
         }
 
+        public void SetPlanksBasedOnWordSet(List<WordSetDataSO.WordHintStruct> wordSetToAssignToPlanks)
+        {
+            if (wordSetToAssignToPlanks == null || wordSetToAssignToPlanks.Count == 0) return;
+
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) continue;
+
+                int plankOrder = wordPlankRowsInGrid[i].plankRowOrder;
+
+                if(plankOrder >= wordSetToAssignToPlanks.Count) continue;
+
+                wordPlankRowsInGrid[i].SetPlankCorrectWord(wordSetToAssignToPlanks[plankOrder].word);
+
+                wordPlankRowsInGrid[i].SetPlankHint(wordSetToAssignToPlanks[plankOrder].hint);
+            }
+        }
+
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI) { }
 
         public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI) { }

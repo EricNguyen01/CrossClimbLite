@@ -13,13 +13,13 @@ namespace CrossClimbLite
 
         private string[] wordPlankAnswersInOrder;
 
-        public List<WordSetDataSO.WordHintStruct> randomAnswerWordSet { get; private set; } = new List<WordSetDataSO.WordHintStruct>();
+        public List<WordSetDataSO.WordHintStruct> answerWordSet { get; private set; } = new List<WordSetDataSO.WordHintStruct>();
 
         private event Action OnGeneratingAnswerConfigStarted;
 
         private event Action<bool> OnGeneratingAnswerConfigFinishedSuccessful;
 
-        private static GameAnswerConfig gameAnswerConfigInstance;
+        public static GameAnswerConfig gameAnswerConfigInstance;
 
         private void Awake()
         {
@@ -67,7 +67,7 @@ namespace CrossClimbLite
 
             OnGeneratingAnswerConfigStarted?.Invoke();
 
-            randomAnswerWordSet.Clear();
+            answerWordSet.Clear();
 
             int wordCountRequired = gameGridInUse.rowNum;
 
@@ -92,7 +92,7 @@ namespace CrossClimbLite
 
                 wordPlankAnswersInOrder[i] = randomWordSet[i].word;
 
-                randomAnswerWordSet.Add(randomWordSet[i]);
+                answerWordSet.Add(randomWordSet[i]);
             }
 
             yield return new WaitForSecondsRealtime(0.1f);

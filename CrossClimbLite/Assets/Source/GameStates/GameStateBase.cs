@@ -2,6 +2,7 @@ using UnityEngine;
 
 namespace CrossClimbLite
 {
+    [DisallowMultipleComponent]
     public abstract class GameStateBase : MonoBehaviour
     {
         private GameStateManager gameStateManagerParent;

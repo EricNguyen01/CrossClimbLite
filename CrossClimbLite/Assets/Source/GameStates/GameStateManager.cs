@@ -8,6 +8,7 @@ using System.Linq;
 
 namespace CrossClimbLite
 {
+    [DisallowMultipleComponent]
     public class GameStateManager : MonoBehaviour
     {
         [Header("Game State Data")]
