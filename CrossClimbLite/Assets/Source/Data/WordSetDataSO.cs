@@ -79,6 +79,10 @@ namespace CrossClimbLite
         private List<SingleWordChainWrapper> allWordSetsList = new List<SingleWordChainWrapper>();
 
         [SerializeField]
+        //Key: length group num | Value: index entry in allWordSetsList
+        private Dictionary<int, int> wordSetsLengthGroupStartIndexDict = new Dictionary<int, int>();
+
+        [SerializeField]
         [HideInInspector]
         [FormerlySerializedAs("runtimeRandomWordSet")]
         private List<WordHintStruct> runtimeRandomWordSet = new List<WordHintStruct>();
@@ -337,7 +341,7 @@ namespace CrossClimbLite
             Debug.Log("Successfully sorted Word hint list by word length (shortest to longest).");
         }
 
-        private void GenerateWordChainsList()
+        private bool GenerateWordChainsList()
         {
             float startTime = Time.realtimeSinceStartup;
 
@@ -347,7 +351,7 @@ namespace CrossClimbLite
 
             if(wordHintList == null || wordHintList.Count == 0)
             {
-                if (!GenerateWordsListFromCSV()) return;
+                if (!GenerateWordsListFromCSV()) return false;
             }
 
             allWordChains.Clear();
@@ -364,7 +368,7 @@ namespace CrossClimbLite
 
                 Debug.Log($"Word Sets List Generation Complete With Errors. Time took: {timeTook}");
 
-                return;
+                return false;
             }
 
             if (allWordSetsList == null) allWordSetsList = new List<SingleWordChainWrapper>();
@@ -383,6 +387,8 @@ namespace CrossClimbLite
             timeTook = (float)Math.Round(timeTook, 2);
 
             Debug.Log($"Word Sets List Generation Complete Successfully. Time took: {timeTook}");
+
+            return true;
         }
 
         /// <summary>
@@ -498,6 +504,12 @@ namespace CrossClimbLite
                         chainsForThisLength.Add(currentChain);
                     }
 
+                    if (wordSetsLengthGroupStartIndexDict == null) wordSetsLengthGroupStartIndexDict = new Dictionary<int, int>();
+
+                    if(allChains.Count <= 1) wordSetsLengthGroupStartIndexDict.TryAdd(group.Key, 0);
+
+                    else wordSetsLengthGroupStartIndexDict.TryAdd(group.Key, allChains.Count);
+
                     //once all chains for the current word length group are found and processed -> add to the all chains list
                     //start next word length group iteration to find chains for next word length group
                     allChains.AddRange(chainsForThisLength);
@@ -556,14 +568,23 @@ namespace CrossClimbLite
             return dp[a.Length, b.Length];
         }
 
-        public List<SingleWordChainWrapper> GetAllWordChains()
+        public List<WordHintStruct> GetRandomWordSetRuntime(int wordLengthRequired, int wordCountRequired)
         {
-            return allWordSetsList;
-        }
+            List<WordHintStruct> randomWordChain = new List<WordHintStruct>();
 
-        public void GetRandomWordChainRuntime(int wordCountRequired, int wordLengthRequired)
-        {
-            if(wordCountRequired < 2) wordCountRequired = 2;
+            if(allWordSetsList == null || 
+               allWordSetsList.Count == 0 || 
+               wordSetsLengthGroupStartIndexDict == null || 
+               wordSetsLengthGroupStartIndexDict.Count == 0)
+            {
+                if(!GenerateWordChainsList()) return randomWordChain;
+            }
+
+            if(allWordSetsList == null || allWordSetsList.Count == 0) return randomWordChain;
+
+            if (wordSetsLengthGroupStartIndexDict == null || wordSetsLengthGroupStartIndexDict.Count == 0) return randomWordChain;
+
+            if (wordCountRequired < 2) wordCountRequired = 2;
 
             if(wordLengthRequired < 3)
             {
@@ -572,7 +593,75 @@ namespace CrossClimbLite
                 wordLengthRequired = 3;
             }
 
+            int wordSetsRangeStart = wordSetsLengthGroupStartIndexDict[wordLengthRequired];
 
+            int wordSetsRangeEnd = 0;
+
+            if(wordSetsLengthGroupStartIndexDict.ContainsKey(wordLengthRequired + 1))
+            {
+                wordSetsRangeEnd = wordSetsLengthGroupStartIndexDict[wordLengthRequired] - 1;
+            }
+            else
+            {
+                wordSetsRangeEnd = allWordSetsList.Count - 1;
+            }
+
+            List<SingleWordChainWrapper> wordSetsInLengthGroup = new List<SingleWordChainWrapper>();
+
+            wordSetsInLengthGroup.AddRange(allWordSetsList.GetRange(wordSetsRangeStart, wordSetsRangeEnd - wordSetsRangeStart));
+
+            int rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
+
+            int previousRand = -1;
+
+            int maxIteration = 30;
+
+            int count = 0;
+
+            bool validRandomSetFound = false;
+
+            while(count <= maxIteration && !validRandomSetFound)
+            {
+                if(previousRand != -1 && previousRand == rand)
+                {
+                    rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
+
+                    count++;
+
+                    continue;
+                }
+
+                previousRand = rand;
+
+                if (wordSetsInLengthGroup[rand] == null || 
+                    wordSetsInLengthGroup[rand].GetWordChain() == null|| 
+                    wordSetsInLengthGroup[rand].GetWordChain().Count == 0 ||
+                    wordSetsInLengthGroup[rand].GetWordChain().Count < wordCountRequired)
+                {
+                    rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
+
+                    count++;
+
+                    continue;
+                }
+
+                List<WordHintStruct> tempWordSet = wordSetsInLengthGroup[rand].GetWordChain();
+
+                if (wordSetsInLengthGroup[rand].GetWordChain().Count == wordCountRequired)
+                {
+                    randomWordChain = tempWordSet;
+                }
+                else
+                {
+                    tempWordSet = tempWordSet.GetRange(UnityEngine.Random.Range(0, tempWordSet.Count - wordCountRequired), wordCountRequired);
+
+                    randomWordChain = tempWordSet;
+                }
+
+                runtimeRandomWordSet = randomWordChain;
+            }
+
+            return randomWordChain;
         }
 
         //EDITOR..................................................................................................................................................

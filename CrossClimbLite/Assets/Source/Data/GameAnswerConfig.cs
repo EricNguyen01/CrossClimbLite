@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
@@ -10,13 +11,13 @@ namespace CrossClimbLite
         [SerializeField, NotNull, DisallowNull]
         private WordSetDataSO wordSetDataToUse;
 
-        private List<WordSetDataSO.SingleWordChainWrapper> allWordSets = new List<WordSetDataSO.SingleWordChainWrapper>();
-
         private string[] wordPlankAnswersInOrder;
+
+        public List<WordSetDataSO.WordHintStruct> randomAnswerWordSet { get; private set; } = new List<WordSetDataSO.WordHintStruct>();
 
         private event Action OnGeneratingAnswerConfigStarted;
 
-        private event Action OnGeneratingAnswerConfigFinished;
+        private event Action<bool> OnGeneratingAnswerConfigFinishedSuccessful;
 
         private static GameAnswerConfig gameAnswerConfigInstance;
 
@@ -44,44 +45,59 @@ namespace CrossClimbLite
 
                 return;
             }
-
-            allWordSets = wordSetDataToUse.GetAllWordChains();
         }
 
-        private void SetWordPlankAnswersInOrder(string[] wordPlankAnswersInOrder)
+        public IEnumerator GenerateNewAnswerConfig(GameGrid gameGridInUse)
         {
-            if (wordPlankAnswersInOrder == null || wordPlankAnswersInOrder.Length == 0) return;
+            if (!enabled) yield break;
 
-            wordPlankAnswersInOrder = null;
+            if (!wordSetDataToUse)
+            {
+                Debug.LogError("Couldn't generate new answer config. Invalid word sets data SO provided");
 
-            this.wordPlankAnswersInOrder = wordPlankAnswersInOrder;
-        }
-
-        public void GenerateNewAnswerConfig(GameGrid gameGridInUse)
-        {
-            if (!enabled || !wordSetDataToUse) return;
+                yield break;
+            }
 
             if (!gameGridInUse)
             {
                 Debug.LogError("Couldn't generate new answer config. Invalid game grid in use provided!");
 
-                return;
-            }
-
-            if (allWordSets == null || allWordSets.Count == 0)
-            {
-                Debug.LogError("Couldn't generate a new answer config. Either a word set data SO is not assigned or the word sets data in the assigned word set data SO was not properly set!");
-
-                return;
+                yield break;
             }
 
             OnGeneratingAnswerConfigStarted?.Invoke();
 
-            int wordNumRequired = gameGridInUse.rowNum;
+            randomAnswerWordSet.Clear();
+
+            int wordCountRequired = gameGridInUse.rowNum;
 
             int wordLengthRequired = gameGridInUse.columnNum;
 
-            OnGeneratingAnswerConfigFinished?.Invoke();
+            List<WordSetDataSO.WordHintStruct> randomWordSet = wordSetDataToUse.GetRandomWordSetRuntime(wordLengthRequired, wordCountRequired);
+
+            if (randomWordSet == null || randomWordSet.Count == 0)
+            {
+                Debug.LogError("Trying to get random word set from word sets data SO, but none could be found. Please check word sets data setup in assigned WordSetDataSO in use.");
+
+                OnGeneratingAnswerConfigFinishedSuccessful?.Invoke(false);
+
+                yield break;
+            }
+
+            wordPlankAnswersInOrder = new string[wordCountRequired];
+
+            for(int i = 0; i < wordPlankAnswersInOrder.Length; i++)
+            {
+                if (i >= randomWordSet.Count) break;
+
+                wordPlankAnswersInOrder[i] = randomWordSet[i].word;
+
+                randomAnswerWordSet.Add(randomWordSet[i]);
+            }
+
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            OnGeneratingAnswerConfigFinishedSuccessful?.Invoke(true);
         }
 
         public bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)
