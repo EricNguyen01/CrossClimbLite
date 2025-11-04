@@ -638,6 +638,24 @@ namespace CrossClimbLite
                     wordSetsInLengthGroup[rand].GetWordChain().Count == 0 ||
                     wordSetsInLengthGroup[rand].GetWordChain().Count < wordCountRequired)
                 {
+                    //fall back to finding the first valid word chain in all possible chains if all random picks before and at max iteration failed
+                    if(count == maxIteration)
+                    {
+                        for(int i = 0; i < wordSetsInLengthGroup.Count; i++)
+                        {
+                            if (wordSetsInLengthGroup[i] == null ||
+                                wordSetsInLengthGroup[i].GetWordChain() == null ||
+                                wordSetsInLengthGroup[i].GetWordChain().Count == 0 ||
+                                wordSetsInLengthGroup[i].GetWordChain().Count < wordCountRequired) continue;
+
+                            randomWordChain = wordSetsInLengthGroup[i].GetWordChain();
+
+                            validRandomSetFound = true;
+
+                            return randomWordChain;
+                        }
+                    }
+
                     rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
 
                     count++;
@@ -659,6 +677,8 @@ namespace CrossClimbLite
                 }
 
                 runtimeRandomWordSet = randomWordChain;
+
+                validRandomSetFound = true;
             }
 
             return randomWordChain;
