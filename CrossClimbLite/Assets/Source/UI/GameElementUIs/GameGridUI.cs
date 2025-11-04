@@ -104,33 +104,28 @@ namespace CrossClimbLite
 
             if (gameGridLinked.wordPlankRowsInGrid == null || gameGridLinked.wordPlankRowsInGrid.Length == 0) return;
 
-            if (verticalGroupToSpawnPlanksUnder)
+            if (gameGridLinked.wordPlankRowsInGrid.Length > 4)
             {
-                if(!verticalGroupToSpawnPlanksUnder.enabled) verticalGroupToSpawnPlanksUnder.enabled = true;
+                verticalGroupToSpawnPlanksUnder.childForceExpandHeight = true;
 
-                if (gameGridLinked.wordPlankRowsInGrid.Length > 4)
-                {
-                    verticalGroupToSpawnPlanksUnder.childForceExpandHeight = true;
+                verticalGroupToSpawnPlanksUnder.childForceExpandWidth = true;
 
-                    verticalGroupToSpawnPlanksUnder.childForceExpandWidth = true;
+                verticalGroupToSpawnPlanksUnder.childControlHeight = true;
 
-                    verticalGroupToSpawnPlanksUnder.childControlHeight = true;
+                verticalGroupToSpawnPlanksUnder.childControlWidth = true;
+            }
+            else
+            {
+                verticalGroupToSpawnPlanksUnder.childControlHeight = false;
 
-                    verticalGroupToSpawnPlanksUnder.childControlWidth = true;
-                }
-                else
-                {
-                    verticalGroupToSpawnPlanksUnder.childControlHeight = false;
+                verticalGroupToSpawnPlanksUnder.childControlWidth = false;
 
-                    verticalGroupToSpawnPlanksUnder.childControlWidth = false;
+                verticalGroupToSpawnPlanksUnder.childForceExpandHeight = false;
 
-                    verticalGroupToSpawnPlanksUnder.childForceExpandHeight = false;
-
-                    verticalGroupToSpawnPlanksUnder.childForceExpandWidth = false;
-                }
+                verticalGroupToSpawnPlanksUnder.childForceExpandWidth = false;
             }
 
-            for(int i = 0; i < gameGridLinked.wordPlankRowsInGrid.Length; i++)
+            for (int i = 0; i < gameGridLinked.wordPlankRowsInGrid.Length; i++)
             {
                 if (!gameGridLinked.wordPlankRowsInGrid[i]) continue;
 
@@ -165,8 +160,6 @@ namespace CrossClimbLite
 
                 plankUISpawned[i].transform.SetSiblingIndex(plankUISpawned[i].wordPlankRowLinked.transform.GetSiblingIndex());
             }
-
-            if (verticalGroupToSpawnPlanksUnder && verticalGroupToSpawnPlanksUnder.enabled) verticalGroupToSpawnPlanksUnder.enabled = false;
         }
 
         private void RemoveCurrentGridUILayout()

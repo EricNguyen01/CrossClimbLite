@@ -5,7 +5,10 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public abstract class GameStateBase : MonoBehaviour
     {
-        private GameStateManager gameStateManagerParent;
+        [SerializeField]
+        protected GameStateBase nextState;
+
+        protected GameStateManager gameStateManagerParent;
 
         public virtual void InitializeState(GameStateManager gameStateManagerHoldingState)
         {

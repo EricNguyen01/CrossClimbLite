@@ -15,10 +15,6 @@ namespace CrossClimbLite
 
         public List<WordSetDataSO.WordHintStruct> answerWordSet { get; private set; } = new List<WordSetDataSO.WordHintStruct>();
 
-        private event Action OnGeneratingAnswerConfigStarted;
-
-        private event Action<bool> OnGeneratingAnswerConfigFinishedSuccessful;
-
         public static GameAnswerConfig gameAnswerConfigInstance;
 
         private void Awake()
@@ -65,8 +61,6 @@ namespace CrossClimbLite
                 yield break;
             }
 
-            OnGeneratingAnswerConfigStarted?.Invoke();
-
             answerWordSet.Clear();
 
             int wordCountRequired = gameGridInUse.rowNum;
@@ -78,8 +72,6 @@ namespace CrossClimbLite
             if (randomWordSet == null || randomWordSet.Count == 0)
             {
                 Debug.LogError("Trying to get random word set from word sets data SO, but none could be found. Please check word sets data setup in assigned WordSetDataSO in use.");
-
-                OnGeneratingAnswerConfigFinishedSuccessful?.Invoke(false);
 
                 yield break;
             }
@@ -96,8 +88,6 @@ namespace CrossClimbLite
             }
 
             yield return new WaitForSecondsRealtime(0.1f);
-
-            OnGeneratingAnswerConfigFinishedSuccessful?.Invoke(true);
         }
 
         public bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)

@@ -5,6 +5,8 @@ namespace CrossClimbLite
 {
     public class GameStartState : GameStateBase
     {
+        [Header("Game Start Components")]
+
         [SerializeField]
         private GameGrid gameGridPrefab;
 
@@ -67,7 +69,7 @@ namespace CrossClimbLite
 
             if (!GameAnswerConfig.gameAnswerConfigInstance || !gameGridRuntime) return;
 
-            StartCoroutine(GameStartProcess());
+            StartCoroutine(GameStartLoadProcess());
         }
 
         public override void OnStateExit()
@@ -75,11 +77,15 @@ namespace CrossClimbLite
             if (!enabled) return;
         }
 
-        private IEnumerator GameStartProcess()
+        private IEnumerator GameStartLoadProcess()
         {
+            gameGridRuntime.SetGameElementLockedStatus(true, true);
+
             yield return GameAnswerConfig.gameAnswerConfigInstance.GenerateNewAnswerConfig(gameGridRuntime);
 
             gameGridRuntime.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
+
+            gameGridRuntime.SetGameElementLockedStatus(false, true);
         }
     }
 }

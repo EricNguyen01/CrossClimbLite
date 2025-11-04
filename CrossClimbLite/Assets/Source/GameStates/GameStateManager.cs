@@ -17,6 +17,10 @@ namespace CrossClimbLite
         [NotNull, DisallowNull]
         private GameStateBase initState;
 
+        [SerializeField]
+        [Min(0.02f)]
+        private float stateUpdateInterval = 0.25f;
+
         private List<GameStateBase> allGameStates = new List<GameStateBase>();
 
         private GameStateBase currentGameState;
@@ -70,7 +74,7 @@ namespace CrossClimbLite
             StopStateUpdateCoroutine();
         }
 
-        public void SetCurrentGameState(GameStateBase newGameState)
+        public void TransitionToGameState(GameStateBase newGameState)
         {
             if (!enabled) return;
 
@@ -138,7 +142,14 @@ namespace CrossClimbLite
             {
                 currentGameState.OnStateUpdate();
 
-                yield return new WaitForSeconds(0.8f);
+                if (stateUpdateInterval <= 0.02f)
+                {
+                    yield return new WaitForFixedUpdate();
+                }
+                else
+                {
+                    yield return new WaitForSeconds(stateUpdateInterval);
+                }
             }
         }
     }
