@@ -69,6 +69,13 @@ namespace CrossClimbLite
             }
         }
 
+        private void Start()
+        {
+            if (!enabled) return;
+
+            TransitionToGameState(initState);
+        }
+
         private void OnDisable()
         {
             StopStateUpdateCoroutine();

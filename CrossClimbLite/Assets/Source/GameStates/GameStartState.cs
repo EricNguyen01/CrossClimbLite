@@ -5,35 +5,37 @@ namespace CrossClimbLite
 {
     public class GameStartState : GameStateBase
     {
-        [Header("Game Start Components")]
+        [Header("Game Start Prefabs")]
 
         [SerializeField]
         private GameGrid gameGridPrefab;
 
         [SerializeField]
-        private GameGrid gameGridRuntime;
+        private GameAnswerConfig gameAnswerConfigPrefab;
+
+        [Header("Game Start Scene Preset Components")]
 
         [SerializeField]
-        private GameAnswerConfig gameAnswerConfigPrefab;
+        private GameGrid presetGameGridInScene;
 
         private void OnEnable()
         {
-            if (!gameGridRuntime)
+            if (!presetGameGridInScene)
             {
-                gameGridRuntime = FindAnyObjectByType<GameGrid>();
+                presetGameGridInScene = FindAnyObjectByType<GameGrid>();
 
-                if (!gameGridRuntime && gameGridPrefab)
+                if (!presetGameGridInScene && gameGridPrefab)
                 {
                     GameObject gameGridObj = Instantiate(gameGridPrefab.gameObject, Vector3.zero, Quaternion.identity);
 
                     GameGrid gameGridComp = gameGridObj.GetComponent<GameGrid>();
 
-                    if (gameGridComp) gameGridRuntime = gameGridComp;
-                    else gameGridRuntime = gameGridObj.AddComponent<GameGrid>();
+                    if (gameGridComp) presetGameGridInScene = gameGridComp;
+                    else presetGameGridInScene = gameGridObj.AddComponent<GameGrid>();
                 }
             }
 
-            if (!gameGridRuntime)
+            if (!presetGameGridInScene)
             {
                 Debug.LogError("Game Grid doesnt exist! Game will not start!");
 
@@ -67,7 +69,7 @@ namespace CrossClimbLite
         {
             if (!enabled) return;
 
-            if (!GameAnswerConfig.gameAnswerConfigInstance || !gameGridRuntime) return;
+            if (!GameAnswerConfig.gameAnswerConfigInstance || !presetGameGridInScene) return;
 
             StartCoroutine(GameStartLoadProcess());
         }
@@ -79,13 +81,23 @@ namespace CrossClimbLite
 
         private IEnumerator GameStartLoadProcess()
         {
-            gameGridRuntime.SetGameElementLockedStatus(true, true);
+            if (GameStartLoadUI.gameStartLoadUIInstance)
+            {
+                GameStartLoadUI.gameStartLoadUIInstance.OnGameStartsLoading();
+            }
 
-            yield return GameAnswerConfig.gameAnswerConfigInstance.GenerateNewAnswerConfig(gameGridRuntime);
+            presetGameGridInScene.SetGameElementLockedStatus(true, true);
 
-            gameGridRuntime.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
+            yield return GameAnswerConfig.gameAnswerConfigInstance.GenerateNewAnswerConfig(presetGameGridInScene);
 
-            gameGridRuntime.SetGameElementLockedStatus(false, true);
+            presetGameGridInScene.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
+
+            presetGameGridInScene.SetGameElementLockedStatus(false, true);
+
+            if (GameStartLoadUI.gameStartLoadUIInstance)
+            {
+                GameStartLoadUI.gameStartLoadUIInstance.OnGameStopLoading();
+            }
         }
     }
 }
