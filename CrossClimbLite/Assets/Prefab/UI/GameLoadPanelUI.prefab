@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 8153455590204113552}
   - component: {fileID: 1110082269003536690}
   m_Layer: 5
-  m_Name: GameLoadText
+  m_Name: LoadingText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -243,10 +243,34 @@ MonoBehaviour:
   canvasGroup: {fileID: 9159264918130687327}
   OnLoadingPanelUIDisplayed:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6962415825962596175}
+        m_TargetAssemblyTypeName: CrossClimbLite.UIFade, Assembly-CSharp
+        m_MethodName: RunTweenInternal
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
   OnLoadingPanelUIHidden:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 6962415825962596175}
+        m_TargetAssemblyTypeName: CrossClimbLite.UIFade, Assembly-CSharp
+        m_MethodName: StopAndResetUITweenImmediate
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &8480260895785841405
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -260,8 +284,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI_TweenExecuteMode: 4
-  easeMode: 30
-  tweenDuration: 0.5
+  easeMode: 9
+  tweenDuration: 2
   tweenAutoStartDelay: 0
   <isLooped>k__BackingField: 0
   <isIndependentTimeScale>k__BackingField: 1
@@ -274,12 +298,13 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   canvasGroupToFade: {fileID: 9159264918130687327}
-  canvasGroupAlphaToFadeInTo: 0
-  canvasGroupAlphaToFadeOutTo: 1
+  canvasGroupAlphaToFadeInTo: 1
+  canvasGroupAlphaToFadeOutTo: 0
   imageToFade: {fileID: 0}
   imageAlphaToFadeInTo: 0
   imageAlphaToFadeOutTo: 255
   fadeMode: 0
+  <reverseFadeOnFadeCycleFinished>k__BackingField: 0
 --- !u!1 &7227656951658886186
 GameObject:
   m_ObjectHideFlags: 0
@@ -291,6 +316,8 @@ GameObject:
   - component: {fileID: 3780548613289455034}
   - component: {fileID: 8443344969291305192}
   - component: {fileID: 5146801923264619326}
+  - component: {fileID: 6962415825962596175}
+  - component: {fileID: 3411555882582858623}
   m_Layer: 5
   m_Name: GameLoadTextBG
   m_TagString: Untagged
@@ -356,3 +383,49 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &6962415825962596175
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7227656951658886186}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0c46783e39a635f44967fee21d131f63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UI_TweenExecuteMode: 4
+  easeMode: 7
+  tweenDuration: 0.9
+  tweenAutoStartDelay: 0.15
+  <isLooped>k__BackingField: 1
+  <isIndependentTimeScale>k__BackingField: 1
+  disableUIFunctionDuringTween: 1
+  disableUIFunctionAfterTween: 0
+  OnUITweenStarted:
+    m_PersistentCalls:
+      m_Calls: []
+  OnUITweenFinished:
+    m_PersistentCalls:
+      m_Calls: []
+  canvasGroupToFade: {fileID: 3411555882582858623}
+  canvasGroupAlphaToFadeInTo: 1
+  canvasGroupAlphaToFadeOutTo: 0
+  imageToFade: {fileID: 0}
+  imageAlphaToFadeInTo: 0
+  imageAlphaToFadeOutTo: 255
+  fadeMode: 0
+  <reverseFadeOnFadeCycleFinished>k__BackingField: 1
+--- !u!225 &3411555882582858623
+CanvasGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7227656951658886186}
+  m_Enabled: 1
+  m_Alpha: 0
+  m_Interactable: 0
+  m_BlocksRaycasts: 0
+  m_IgnoreParentGroups: 0

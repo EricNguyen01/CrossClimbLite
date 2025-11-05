@@ -66,15 +66,11 @@ namespace CrossClimbLite
         {
             if (!enabled) return;
 
-            if (canvasGroup) canvasGroup.blocksRaycasts = true;
-
-            if (UIFadeComponent)
+            if (canvasGroup)
             {
-                UIFadeComponent.SetFadeMode(UIFade.UIFadeMode.FadeIn);
+                canvasGroup.alpha = 1.0f;
 
-                UIFadeComponent.isLooped = false;
-
-                UIFadeComponent.RunTweenInternal();
+                canvasGroup.blocksRaycasts = true;
             }
 
             OnLoadingPanelUIDisplayed?.Invoke();
@@ -88,6 +84,9 @@ namespace CrossClimbLite
 
             if (UIFadeComponent)
             {
+                if(UIFadeComponent.IsTweenRunning())
+                    UIFadeComponent.StopAndResetUITweenImmediate();
+
                 UIFadeComponent.SetFadeMode(UIFade.UIFadeMode.FadeOut);
 
                 UIFadeComponent.isLooped = false;

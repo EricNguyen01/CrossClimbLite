@@ -90,6 +90,10 @@ namespace CrossClimbLite
 
             yield return GameAnswerConfig.gameAnswerConfigInstance.GenerateNewAnswerConfig(presetGameGridInScene);
 
+            yield return new WaitForSecondsRealtime(3.4f);
+
+            yield return new WaitForEndOfFrame();
+
             presetGameGridInScene.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
 
             presetGameGridInScene.SetGameElementLockedStatus(false, true);

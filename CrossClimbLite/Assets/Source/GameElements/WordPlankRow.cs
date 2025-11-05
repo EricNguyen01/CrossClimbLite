@@ -238,9 +238,7 @@ namespace CrossClimbLite
         {
             if (hint == string.Empty || string.IsNullOrEmpty(hint) || hint == "")
             {
-                plankHint = "Plank Row_" + plankRowOrder + "'s Hint";
-
-                return;
+                hint = "Plank Row_" + plankRowOrder + "'s Hint";
             }
 
             plankHint = hint;

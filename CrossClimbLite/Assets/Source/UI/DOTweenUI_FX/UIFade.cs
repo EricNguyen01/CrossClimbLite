@@ -35,7 +35,7 @@ namespace CrossClimbLite
         "For Click-on mode, fade in/out will be toggled")]
         private FadeMode fadeMode = FadeMode.FadeIn;
 
-        [SerializeField] public bool reverseFadeOnFadeCycleFinished { get; set; } = false;
+        [field: SerializeField] public bool reverseFadeOnFadeCycleFinished { get; set; } = false;
 
         public enum UIFadeMode { FadeIn, FadeOut }
 

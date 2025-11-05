@@ -22,7 +22,7 @@ namespace CrossClimbLite
         protected UITweenExecuteMode UI_TweenExecuteMode = UITweenExecuteMode.ClickOnly;
 
         [SerializeField] 
-        protected Ease easeMode = Ease.OutBounce;
+        protected Ease easeMode = Ease.OutSine;
 
         [SerializeField] protected float tweenDuration = 0.5f;
 

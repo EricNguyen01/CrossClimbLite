@@ -4,11 +4,12 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Serialization;
+using UnityEngine.UIElements;
 
 namespace CrossClimbLite
 {
     [CreateAssetMenu(fileName = "WordSetDataSO", menuName = "Scriptable Objects/WordSetDataSO")]
-    public class WordSetDataSO : ScriptableObject
+    public class WordSetDataSO : ScriptableObject, ISerializationCallbackReceiver
     {
         [Header("CSV Source")]
 
@@ -84,8 +85,11 @@ namespace CrossClimbLite
 
         [SerializeField]
         [HideInInspector]
-        [FormerlySerializedAs("runtimeRandomWordSet")]
-        private List<WordHintStruct> runtimeRandomWordSet = new List<WordHintStruct>();
+        private List<int> wordSetsLengthGroupStartIndexDictKeys = new List<int>();
+
+        [SerializeField]
+        [HideInInspector]
+        private List<int> wordSetsLengthGroupStartIndexDictValues = new List<int>();
 
         [Serializable]
         public struct WordHintStruct
@@ -570,118 +574,196 @@ namespace CrossClimbLite
 
         public List<WordHintStruct> GetRandomWordSetRuntime(int wordLengthRequired, int wordCountRequired)
         {
-            List<WordHintStruct> randomWordChain = new List<WordHintStruct>();
+            List<WordHintStruct> finalWordSet = new List<WordHintStruct>();
 
-            if(allWordSetsList == null || 
+            bool validRandomSetFound = false;
+
+            if (allWordSetsList == null || 
                allWordSetsList.Count == 0 || 
                wordSetsLengthGroupStartIndexDict == null || 
                wordSetsLengthGroupStartIndexDict.Count == 0)
             {
-                if(!GenerateWordChainsList()) return randomWordChain;
+                if(!GenerateWordChainsList()) return finalWordSet;
             }
 
-            if(allWordSetsList == null || allWordSetsList.Count == 0) return randomWordChain;
+            if (allWordSetsList == null || allWordSetsList.Count == 0) return finalWordSet;
 
-            if (wordSetsLengthGroupStartIndexDict == null || wordSetsLengthGroupStartIndexDict.Count == 0) return randomWordChain;
+            if (wordSetsLengthGroupStartIndexDict == null || wordSetsLengthGroupStartIndexDict.Count == 0) return finalWordSet;
 
-            if (wordCountRequired < 2) wordCountRequired = 2;
-
-            if(wordLengthRequired < 3)
+            if (wordCountRequired < 3)
             {
-                Debug.LogWarning($"Invalid word length provided: {wordLengthRequired}. Word length must not be less than 3 when getting random word chain!");
+                Debug.LogWarning($"Invalid word count provided: {wordCountRequired}. " +
+                                 "Word count must not be less than 3 when getting random word chain!");
+
+                wordCountRequired = 3;
+            }
+
+            if (wordLengthRequired < 3)
+            {
+                Debug.LogWarning($"Invalid word length provided: {wordLengthRequired}. " +
+                                 "Word length must not be less than 3 when getting random word chain!");
 
                 wordLengthRequired = 3;
             }
 
+            if (!wordSetsLengthGroupStartIndexDict.ContainsKey(wordLengthRequired))
+            {
+                wordLengthRequired = wordSetsLengthGroupStartIndexDict.ElementAt(wordSetsLengthGroupStartIndexDict.Count - 1).Key;
+            }
+
             int wordSetsRangeStart = wordSetsLengthGroupStartIndexDict[wordLengthRequired];
 
-            int wordSetsRangeEnd = 0;
+            int wordSetsRangeEnd = allWordSetsList.Count - 1;
 
-            if(wordSetsLengthGroupStartIndexDict.ContainsKey(wordLengthRequired + 1))
+            if (wordSetsLengthGroupStartIndexDict.ContainsKey(wordLengthRequired + 1))
             {
-                wordSetsRangeEnd = wordSetsLengthGroupStartIndexDict[wordLengthRequired] - 1;
-            }
-            else
-            {
-                wordSetsRangeEnd = allWordSetsList.Count - 1;
+                wordSetsRangeEnd = wordSetsLengthGroupStartIndexDict[wordLengthRequired + 1] - 1;
             }
 
-            List<SingleWordChainWrapper> wordSetsInLengthGroup = new List<SingleWordChainWrapper>();
-
-            wordSetsInLengthGroup.AddRange(allWordSetsList.GetRange(wordSetsRangeStart, wordSetsRangeEnd - wordSetsRangeStart));
-
-            int rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
-
-            int previousRand = -1;
-
-            int maxIteration = 30;
-
-            int count = 0;
-
-            bool validRandomSetFound = false;
-
-            while(count <= maxIteration && !validRandomSetFound)
+            try
             {
-                if(previousRand != -1 && previousRand == rand)
+                List<SingleWordChainWrapper> wordSetsInLengthGroup = new List<SingleWordChainWrapper>();
+                
+                wordSetsInLengthGroup.AddRange(allWordSetsList.GetRange(wordSetsRangeStart, wordSetsRangeEnd - wordSetsRangeStart));
+
+                int rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
+
+                int previousRand = -1;
+
+                int maxIteration = 30;
+
+                int count = 0;
+
+                while (count <= maxIteration && !validRandomSetFound)
                 {
-                    rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
-
-                    count++;
-
-                    continue;
-                }
-
-                previousRand = rand;
-
-                if (wordSetsInLengthGroup[rand] == null || 
-                    wordSetsInLengthGroup[rand].GetWordChain() == null|| 
-                    wordSetsInLengthGroup[rand].GetWordChain().Count == 0 ||
-                    wordSetsInLengthGroup[rand].GetWordChain().Count < wordCountRequired)
-                {
-                    //fall back to finding the first valid word chain in all possible chains if all random picks before and at max iteration failed
-                    if(count == maxIteration)
+                    if (previousRand != -1 && previousRand == rand)
                     {
-                        for(int i = 0; i < wordSetsInLengthGroup.Count; i++)
-                        {
-                            if (wordSetsInLengthGroup[i] == null ||
-                                wordSetsInLengthGroup[i].GetWordChain() == null ||
-                                wordSetsInLengthGroup[i].GetWordChain().Count == 0 ||
-                                wordSetsInLengthGroup[i].GetWordChain().Count < wordCountRequired) continue;
+                        rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
 
-                            randomWordChain = wordSetsInLengthGroup[i].GetWordChain();
+                        count++;
 
-                            validRandomSetFound = true;
-
-                            return randomWordChain;
-                        }
+                        continue;
                     }
 
-                    rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
+                    previousRand = rand;
 
-                    count++;
+                    if (wordSetsInLengthGroup[rand] == null ||
+                        wordSetsInLengthGroup[rand].GetWordChain() == null ||
+                        wordSetsInLengthGroup[rand].GetWordChain().Count == 0 ||
+                        wordSetsInLengthGroup[rand].GetWordChain().Count < wordCountRequired)
+                    {
+                        //fall back to finding the first valid word chain in all possible chains if all random picks before and at max iteration failed
+                        if (count == maxIteration)
+                        {
+                            for (int i = 0; i < wordSetsInLengthGroup.Count; i++)
+                            {
+                                if (wordSetsInLengthGroup[i] == null ||
+                                    wordSetsInLengthGroup[i].GetWordChain() == null ||
+                                    wordSetsInLengthGroup[i].GetWordChain().Count == 0 ||
+                                    wordSetsInLengthGroup[i].GetWordChain().Count < wordCountRequired) continue;
 
-                    continue;
+                                finalWordSet = wordSetsInLengthGroup[i].GetWordChain();
+
+                                validRandomSetFound = true;
+
+                                break;
+                            }
+                        }
+
+                        rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
+
+                        count++;
+
+                        continue;
+                    }
+
+                    finalWordSet = wordSetsInLengthGroup[rand].GetWordChain();
+
+                    validRandomSetFound = true;
                 }
-
-                List<WordHintStruct> tempWordSet = wordSetsInLengthGroup[rand].GetWordChain();
-
-                if (wordSetsInLengthGroup[rand].GetWordChain().Count == wordCountRequired)
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"Encountered Fatal Error while trying to generate a random word set. \n{ex}");
+            }
+            finally
+            {
+                if (validRandomSetFound)
                 {
-                    randomWordChain = tempWordSet;
+                    if (finalWordSet.Count > wordCountRequired)
+                    {
+                        finalWordSet = finalWordSet.GetRange(UnityEngine.Random.Range(0, finalWordSet.Count - wordCountRequired), wordCountRequired);
+                    }
                 }
                 else
                 {
-                    tempWordSet = tempWordSet.GetRange(UnityEngine.Random.Range(0, tempWordSet.Count - wordCountRequired), wordCountRequired);
+                    Debug.LogWarning("Iterations could not find a valid word set." +
+                                 "\nFalling back to the very first word set in current word length group as the final option.");
 
-                    randomWordChain = tempWordSet;
+                    //fallback to first word chain 
+                    finalWordSet = allWordSetsList[wordSetsRangeStart].GetWordChain();
+
+                    if (finalWordSet == null || finalWordSet.Count == 0)
+                    {
+                        Debug.LogError("Invalid first word set (null or empty). Word Set Retrieval Failed!");
+                    }
+                    else
+                    {
+                        if (finalWordSet.Count < wordCountRequired)
+                        {
+                            Debug.LogError("Invalid word count in the first word set. Word Set Retrieved Partially!");
+                        }
+                        else if (finalWordSet.Count > wordCountRequired)
+                        {
+                            finalWordSet = finalWordSet.GetRange(UnityEngine.Random.Range(0, finalWordSet.Count - wordCountRequired), wordCountRequired);
+                        }
+                    }
                 }
-
-                runtimeRandomWordSet = randomWordChain;
-
-                validRandomSetFound = true;
             }
+        
+            return finalWordSet;
+        }
 
-            return randomWordChain;
+        void ISerializationCallbackReceiver.OnBeforeSerialize()
+        {
+            if (wordSetsLengthGroupStartIndexDict == null || wordSetsLengthGroupStartIndexDict.Count == 0) return;
+
+            if (wordSetsLengthGroupStartIndexDictKeys == null) wordSetsLengthGroupStartIndexDictKeys = new List<int>();
+
+            wordSetsLengthGroupStartIndexDictKeys.Clear();
+
+            if(wordSetsLengthGroupStartIndexDictValues == null) wordSetsLengthGroupStartIndexDictValues = new List<int>();
+
+            wordSetsLengthGroupStartIndexDictValues.Clear();
+
+            foreach (KeyValuePair<int, int> pair in wordSetsLengthGroupStartIndexDict)
+            {
+                wordSetsLengthGroupStartIndexDictKeys.Add(pair.Key);
+
+                wordSetsLengthGroupStartIndexDictValues.Add(pair.Value);
+            }
+        }
+
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
+        {
+            if (wordSetsLengthGroupStartIndexDictKeys == null || wordSetsLengthGroupStartIndexDictValues == null) return;
+
+            if (wordSetsLengthGroupStartIndexDictKeys.Count == 0 || wordSetsLengthGroupStartIndexDictValues.Count == 0) return;
+
+            if (wordSetsLengthGroupStartIndexDictKeys.Count != wordSetsLengthGroupStartIndexDictValues.Count) return;
+
+            if(wordSetsLengthGroupStartIndexDict == null) wordSetsLengthGroupStartIndexDict = new Dictionary<int, int>();
+
+            wordSetsLengthGroupStartIndexDict.Clear();
+
+            for(int i = 0; i <  wordSetsLengthGroupStartIndexDictKeys.Count; i++)
+            {
+                int key = wordSetsLengthGroupStartIndexDictKeys[i];
+
+                int value = wordSetsLengthGroupStartIndexDictValues[i];
+
+                wordSetsLengthGroupStartIndexDict.TryAdd(key, value);
+            }
         }
 
         //EDITOR..................................................................................................................................................
@@ -709,13 +791,9 @@ namespace CrossClimbLite
 
             private SerializedProperty allWordSetsListProp;
 
-            private SerializedProperty runtimeRandomWordSetProp;
-
             private bool isWordHintListFoldoutOpened = true;
 
             private bool isAllWordSetsFoldoutOpened = true;
-
-            private bool isRandomWordSetFoldoutOpened = true;
 
             private Vector2 wordHintListScrollPos;
 
@@ -740,8 +818,6 @@ namespace CrossClimbLite
                 wordSetsEntriesToShowProp = serializedObject.FindProperty("wordSetsEntriesToShow");
 
                 allWordSetsListProp = serializedObject.FindProperty("allWordSetsList");
-
-                runtimeRandomWordSetProp = serializedObject.FindProperty("runtimeRandomWordSet");
             }
 
             public override void OnInspectorGUI()
@@ -809,10 +885,6 @@ namespace CrossClimbLite
                         EditorUtility.SetDirty(wordSetDataSO);
                     }
                 }
-
-                EditorGUILayout.Space(15);
-
-                DrawReadOnlyListNoScroll(runtimeRandomWordSetProp, runtimeRandomWordSetProp.arraySize, ref isRandomWordSetFoldoutOpened);
 
                 serializedObject.ApplyModifiedProperties();
             }

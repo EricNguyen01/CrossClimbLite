@@ -357,6 +357,17 @@ namespace CrossClimbLite
 
                 wordPlankRowsInGrid[i].SetPlankHint(wordSetToAssignToPlanks[plankOrder].hint);
             }
+
+            DisplayHintOfCurrentSelectedPlank();
+        }
+
+        public void DisplayHintOfCurrentSelectedPlank()
+        {
+            if(!currentPlankBeingSelected) return;
+
+            string hint = currentPlankBeingSelected.plankHint;
+
+            if (HintBoxUI.hintBoxUIInstance) HintBoxUI.hintBoxUIInstance.SetHintTextToDisplay(hint);
         }
 
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI) { }

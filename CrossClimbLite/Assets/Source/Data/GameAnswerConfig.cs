@@ -1,5 +1,4 @@
 using UnityEngine;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
@@ -10,6 +9,9 @@ namespace CrossClimbLite
     {
         [SerializeField, NotNull, DisallowNull]
         private WordSetDataSO wordSetDataToUse;
+
+        [SerializeField, ReadOnlyInspector]
+        private List<WordSetDataSO.WordHintStruct> runtimeAnswerWordSetReadOnly;
 
         private string[] wordPlankAnswersInOrder;
 
@@ -69,6 +71,8 @@ namespace CrossClimbLite
 
             List<WordSetDataSO.WordHintStruct> randomWordSet = wordSetDataToUse.GetRandomWordSetRuntime(wordLengthRequired, wordCountRequired);
 
+            runtimeAnswerWordSetReadOnly = randomWordSet;
+
             if (randomWordSet == null || randomWordSet.Count == 0)
             {
                 Debug.LogError("Trying to get random word set from word sets data SO, but none could be found. Please check word sets data setup in assigned WordSetDataSO in use.");
@@ -87,7 +91,7 @@ namespace CrossClimbLite
                 answerWordSet.Add(randomWordSet[i]);
             }
 
-            yield return new WaitForSecondsRealtime(0.1f);
+            yield return new WaitForEndOfFrame();
         }
 
         public bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)
