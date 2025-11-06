@@ -509,7 +509,7 @@ MonoBehaviour:
   normalStateColor: {r: 1, g: 1, b: 1, a: 1}
   lockedColor: {r: 0.6150943, g: 0.6150943, b: 0.6150943, a: 1}
   selectedColor: {r: 0.9607843, g: 0.7529412, b: 1, a: 1}
-  keywordColor: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
+  keywordColor: {r: 1, g: 0.6834218, b: 0.28490567, a: 1}
   wordPlankRowBackgroundImage: {fileID: 379848902463306467}
   leftDragHandleUIRoot: {fileID: 7291116225988372092}
   rightDragHandleUIRoot: {fileID: 8022515662136052350}

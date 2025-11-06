@@ -100,25 +100,31 @@ namespace CrossClimbLite
 
             if (gridWithPlanksToCompare.wordPlankRowsInGrid == null || gridWithPlanksToCompare.wordPlankRowsInGrid.Length == 0) return false;
 
-            if(wordPlankAnswersInOrder == null || wordPlankAnswersInOrder.Length == 0) return false;
+            if (wordPlankAnswersInOrder == null || wordPlankAnswersInOrder.Length == 0) return false;
 
-            bool isMatched = false;
+            bool isMatched = true;
 
             for(int i = 0; i < wordPlankAnswersInOrder.Length; i++)
             {
                 if(i >= gridWithPlanksToCompare.wordPlankRowsInGrid.Length) break;
 
-                if (!gridWithPlanksToCompare.wordPlankRowsInGrid[i]) break;
+                if (!gridWithPlanksToCompare.wordPlankRowsInGrid[i]) continue;
 
-                if(!shouldCheckKeyword && gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword) continue;
+                if (!shouldCheckKeyword && gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword) continue;
 
-                if (wordPlankAnswersInOrder[i] != gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord()) break;
-
-                if(i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder) break;
-
-                if (i == wordPlankAnswersInOrder.Length - 1 && wordPlankAnswersInOrder[i] == gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord())
+                if (wordPlankAnswersInOrder[i].ToLower() != 
+                    gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord().ToLower())
                 {
-                    isMatched = true;
+                    isMatched = false;
+
+                    break;
+                }
+
+                if(i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder)
+                {
+                    isMatched = false;
+
+                    break;
                 }
             }
 

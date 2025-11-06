@@ -48,7 +48,10 @@ namespace CrossClimbLite
                 GameStartLoadUI.gameStartLoadUIInstance.OnGameStartsLoading();
             }
 
-            presetGameGridInScene.SetGameElementLockedStatus(true, true);
+            yield return presetGameGridInScene.InitGridOnGameStartLoad();
+
+            if(presetGameGridInScene.hasGridGenerated)
+                presetGameGridInScene.SetGameElementLockedStatus(true, true);
 
             yield return GameAnswerConfig.gameAnswerConfigInstance.GenerateNewAnswerConfig(presetGameGridInScene);
 
@@ -56,9 +59,12 @@ namespace CrossClimbLite
 
             yield return new WaitForEndOfFrame();
 
-            presetGameGridInScene.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
+            if (presetGameGridInScene.hasGridGenerated)
+            {
+                presetGameGridInScene.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
 
-            presetGameGridInScene.SetGameElementLockedStatus(false, true);
+                presetGameGridInScene.SetGameElementLockedStatus(false, true);
+            }
 
             if (GameStartLoadUI.gameStartLoadUIInstance)
             {

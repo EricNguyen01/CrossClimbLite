@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Serialization;
@@ -82,9 +83,15 @@ namespace CrossClimbLite
         [SerializeField]
         private Canvas canvasToPlaceGameGridUI;
 
-        [ReadOnlyInspector]
-        [SerializeField]
-        private GameGridUI gameGridUIInstance;
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
+        public GameGridUI gameGridUIInstance { get; private set; }
+
+        [field: Header("Grid Runtime Data")]
+
+        [field: SerializeField]
+        [field: ReadOnlyInspector]
+        public bool hasGridGenerated { get; private set; } = false;
 
         //INTERNALS.................................................................
 
@@ -124,13 +131,17 @@ namespace CrossClimbLite
         }
 #endif
 
-        private void Start()
+        public IEnumerator InitGridOnGameStartLoad()
         {
-            if (!Application.isPlaying) return;
+            if (!Application.isPlaying) yield break;
 
             if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0)
             {
                 InitGrid();
+            }
+            else
+            {
+                if(!hasGridGenerated) hasGridGenerated = true;
             }
 
             ShuffleWordPlankOrderInGrid();
@@ -141,9 +152,11 @@ namespace CrossClimbLite
 
                 gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
             }
+
+            yield return new WaitForEndOfFrame();
         }
 
-        public void InitGrid()
+        private void InitGrid()
         {
             if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
             {
@@ -193,12 +206,16 @@ namespace CrossClimbLite
                 if(!alreadyInitWordPlankComp) wordPlankRowComp.InitPlank(this, i, columnNum);
 
                 wordPlankRowsInGrid[i] = wordPlankRowComp;
+
+                hasGridGenerated = true;
             }
         }
 
         private void ShuffleWordPlankOrderInGrid()
         {
             if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            List<int> wordPlankRowsKeywordsIndexes = new List<int>();
 
             List<int> wordPlankRowsNoKeywordsIndexes = new List<int>();
 
@@ -210,7 +227,12 @@ namespace CrossClimbLite
 
                 wordPlankRowsInGrid[i].SetPlankHint("");
 
-                if (wordPlankRowsInGrid[i].isPlankKeyword) continue;
+                if (wordPlankRowsInGrid[i].isPlankKeyword)
+                {
+                    wordPlankRowsKeywordsIndexes.Add(i);
+
+                    continue;
+                }
 
                 wordPlankRowsNoKeywordsIndexes.Add(i);
             }
@@ -221,18 +243,40 @@ namespace CrossClimbLite
             {
                 if (wordPlankRowsInGrid[i] == null) continue;
 
-                if (wordPlankRowsInGrid[i].isPlankKeyword) continue;
-
                 int randOrderToSwap = i;
 
-                int count = 0;
-
-                while(randOrderToSwap == i && count <= 5)
+                if (wordPlankRowsInGrid[i].isPlankKeyword)
                 {
-                    randOrderToSwap = wordPlankRowsNoKeywordsIndexes[UnityEngine.Random.Range(0, wordPlankRowsNoKeywordsIndexes.Count)];
+                    if(wordPlankRowsKeywordsIndexes.Count > 0)
+                    {
+                        randOrderToSwap = wordPlankRowsKeywordsIndexes[UnityEngine.Random.Range(0, wordPlankRowsKeywordsIndexes.Count)];
+                    }
 
-                    count++;
+                    if(wordPlankRowsKeywordsIndexes.Count > 0 && wordPlankRowsKeywordsIndexes.Count <= 2)
+                    {
+                        if (randOrderToSwap != i && wordPlankRowsKeywordsIndexes.Contains(i))
+                            wordPlankRowsKeywordsIndexes.Remove(i);
+
+                        wordPlankRowsKeywordsIndexes.Remove(randOrderToSwap);
+                    }
                 }
+                else
+                {
+                    if(wordPlankRowsNoKeywordsIndexes.Count > 0)
+                    {
+                        randOrderToSwap = wordPlankRowsNoKeywordsIndexes[UnityEngine.Random.Range(0, wordPlankRowsNoKeywordsIndexes.Count)];
+                    }
+
+                    if(wordPlankRowsNoKeywordsIndexes.Count > 0 && wordPlankRowsNoKeywordsIndexes.Count <= 2)
+                    {
+                        if (randOrderToSwap != i && wordPlankRowsNoKeywordsIndexes.Contains(i))
+                            wordPlankRowsNoKeywordsIndexes.Remove(i);
+
+                        wordPlankRowsNoKeywordsIndexes.Remove(randOrderToSwap);
+                    }
+                }
+
+                if (randOrderToSwap == i) continue;
 
                 WordPlankRow plankToSwap = wordPlankRowsInGrid[randOrderToSwap];
 
@@ -374,7 +418,7 @@ namespace CrossClimbLite
             if (HintBoxUI.hintBoxUIInstance) HintBoxUI.hintBoxUIInstance.SetHintTextToDisplay(hint);
         }
 
-        public void UnlockKeywordPlanksInGrid()
+        public void UnlockKeywordPlanksInGrid(bool unlock = true)
         {
             if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
 
@@ -384,9 +428,46 @@ namespace CrossClimbLite
 
                 if (!wordPlankRowsInGrid[i].isPlankKeyword) continue;
 
-                if (wordPlankRowsInGrid[i].isPlankLocked)
+                if (unlock)
                 {
-                    wordPlankRowsInGrid[i].SetGameElementLockedStatus(false, true);
+                    if (wordPlankRowsInGrid[i].isPlankLocked)
+                    {
+                        wordPlankRowsInGrid[i].SetGameElementLockedStatus(false, true);
+                    }
+                }
+                else
+                {
+                    if (!wordPlankRowsInGrid[i].isPlankLocked)
+                    {
+                        wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);
+                    }
+                }
+            }
+        }
+
+        public void UnlockNonKeywordPlanksInGrid(bool unlock = true)
+        {
+            if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) continue;
+
+                if (wordPlankRowsInGrid[i].isPlankKeyword) continue;
+
+                if (unlock)
+                {
+                    if (wordPlankRowsInGrid[i].isPlankLocked)
+                    {
+                        wordPlankRowsInGrid[i].SetGameElementLockedStatus(false, true);
+                    }
+                }
+                else
+                {
+                    if (!wordPlankRowsInGrid[i].isPlankLocked)
+                    {
+                        wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);
+                    }
                 }
             }
         }

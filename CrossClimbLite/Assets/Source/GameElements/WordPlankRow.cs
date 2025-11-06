@@ -285,23 +285,26 @@ namespace CrossClimbLite
                     plankTypedWordStrBuilder[letterSlot.slotIndexInPlank] = ' ';
                 }
 
-                plankTypedWord = plankTypedWordStrBuilder.ToString();
-
-                if (wordPlankRowUILinked) wordPlankRowUILinked.UpdateUIInternalData_UpdatePlankUILetter(plankTypedWord);
-
-                return;
+                goto FinalizeTypedWord;
             }
             
             plankTypedWordStrBuilder.Append(letterSlot.letter[0]);
 
+        FinalizeTypedWord:
+
             plankTypedWord = plankTypedWordStrBuilder.ToString();
 
             if (wordPlankRowUILinked) wordPlankRowUILinked.UpdateUIInternalData_UpdatePlankUILetter(plankTypedWord);
-
+            
             if(plankTypedWord != string.Empty && !string.IsNullOrEmpty(plankTypedWord))
             {
                 if(gameGridHoldingPlank && plankTypedWord.Length == gameGridHoldingPlank.columnNum)
                 {
+                    for(int i = 0; i < plankTypedWord.Length; i++)
+                    {
+                        if (plankTypedWord[i] == ' ' || plankTypedWord[i] == char.MinValue) return;
+                    }
+
                     gameGridHoldingPlank.InvokeOnAWordPlankFilledEvent(plankTypedWord);
                 }
             }

@@ -54,7 +54,12 @@ namespace CrossClimbLite
             {
                 hasKeywordsUnlocked = true;
 
-                if (presetGameGridInScene) presetGameGridInScene.UnlockKeywordPlanksInGrid();
+                if (presetGameGridInScene)
+                {
+                    presetGameGridInScene.UnlockNonKeywordPlanksInGrid(false);
+
+                    presetGameGridInScene.UnlockKeywordPlanksInGrid();
+                }
 
                 return;
             }

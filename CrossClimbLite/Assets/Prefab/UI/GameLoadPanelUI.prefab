@@ -285,7 +285,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UI_TweenExecuteMode: 4
   easeMode: 9
-  tweenDuration: 2
+  tweenDuration: 3
   tweenAutoStartDelay: 0
   <isLooped>k__BackingField: 0
   <isIndependentTimeScale>k__BackingField: 1

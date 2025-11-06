@@ -287,6 +287,10 @@ namespace CrossClimbLite
                 if (wordPlankRowBackgroundImage)
                     wordPlankRowBackgroundImage.color = lockedColor;
 
+                if(leftDragHandleUIRoot) leftDragHandleUIRoot.UpdateUI_OnGameElementModalLocked(true);
+
+                if (rightDragHandleUIRoot) rightDragHandleUIRoot.UpdateUI_OnGameElementModalLocked(true);
+
                 return;
             }
 
@@ -298,6 +302,10 @@ namespace CrossClimbLite
                 else
                     wordPlankRowBackgroundImage.color = normalStateColor;
             }
+
+            if (leftDragHandleUIRoot) leftDragHandleUIRoot.UpdateUI_OnGameElementModalLocked(false);
+
+            if (rightDragHandleUIRoot) rightDragHandleUIRoot.UpdateUI_OnGameElementModalLocked(false);
         }
 
         public void SetPlankUICanvasGroupData(bool blockRaycast, bool interactable, float enableAlpha = 1.0f, float disableAlpha = 0.0f)
