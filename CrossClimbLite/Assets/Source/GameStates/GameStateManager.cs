@@ -23,7 +23,7 @@ namespace CrossClimbLite
 
         private List<GameStateBase> allGameStates = new List<GameStateBase>();
 
-        private GameStateBase currentGameState;
+        public GameStateBase currentGameState { get; private set; }
 
         private bool hasRunStateUpdateCoroutine = false;
 
@@ -87,7 +87,12 @@ namespace CrossClimbLite
 
             if (!newGameState)
             {
-                if(currentGameState) currentGameState.OnStateExit();
+                if (currentGameState)
+                {
+                    StopStateUpdateCoroutine();
+
+                    currentGameState.OnStateExit();
+                }
 
                 return;
             }
@@ -103,9 +108,9 @@ namespace CrossClimbLite
                 return;
             }
 
-            currentGameState.OnStateExit();
-
             StopStateUpdateCoroutine();
+
+            currentGameState.OnStateExit();
 
             currentGameState = newGameState;
 
@@ -125,18 +130,16 @@ namespace CrossClimbLite
             if(updateMethodInDerived != null)
             {
                 StartCoroutine(StateUpdateCoroutine());
-
-                hasRunStateUpdateCoroutine = true;
             }
         }
 
-        private void StopStateUpdateCoroutine()
+        public void StopStateUpdateCoroutine()
         {
             if(!hasRunStateUpdateCoroutine) return;
 
-            StopCoroutine(StateUpdateCoroutine());
-
             hasRunStateUpdateCoroutine = false;
+
+            StopCoroutine(StateUpdateCoroutine());
         }
 
         private IEnumerator StateUpdateCoroutine()
@@ -145,9 +148,16 @@ namespace CrossClimbLite
 
             if (!currentGameState) yield break;
 
-            while (hasRunStateUpdateCoroutine || enabled || currentGameState)
+            hasRunStateUpdateCoroutine = true;
+
+            while (hasRunStateUpdateCoroutine && enabled && currentGameState)
             {
-                currentGameState.OnStateUpdate();
+                if (!currentGameState.OnStateUpdate())
+                {
+                    hasRunStateUpdateCoroutine = false;
+
+                    yield break;
+                }
 
                 if (stateUpdateInterval <= 0.02f)
                 {

@@ -1,2 +1,15 @@
 fileFormatVersion: 2
 guid: 8e33e941e7a414643b143d25c935f681
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - gameGridPrefab: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+  - gameAnswerConfigPrefab: {fileID: 1138563718356796635, guid: 142deb5efb797b14db32662b32be6b9c, type: 3}
+  - presetGameGridInScene: {instanceID: 0}
+  - nextState: {instanceID: 0}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

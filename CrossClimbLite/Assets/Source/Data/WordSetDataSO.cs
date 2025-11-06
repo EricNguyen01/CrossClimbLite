@@ -15,7 +15,9 @@ namespace CrossClimbLite
 
         [Space(10)]
 
-        [HelpBox("Make sure the CSV contains the WORD, HINT, and CHARACTERS column with the exact names.", UnityEngine.UIElements.HelpBoxMessageType.Warning)]
+        [HelpBox("Make sure the CSV contains the WORD, HINT, " +
+        "and CHARACTERS column with the exact names.", 
+        UnityEngine.UIElements.HelpBoxMessageType.Warning)]
         [SerializeField]
         [FormerlySerializedAs("wordHintCSV")]
         private TextAsset wordHintCSV;

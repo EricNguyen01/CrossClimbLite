@@ -5,78 +5,43 @@ namespace CrossClimbLite
 {
     public class GameStartState : GameStateBase
     {
-        [Header("Game Start Prefabs")]
+        private bool hasFinishedGameStartLoad = false;
 
-        [SerializeField]
-        private GameGrid gameGridPrefab;
-
-        [SerializeField]
-        private GameAnswerConfig gameAnswerConfigPrefab;
-
-        [Header("Game Start Scene Preset Components")]
-
-        [SerializeField]
-        private GameGrid presetGameGridInScene;
-
-        private void OnEnable()
+        public override bool OnStateEnter()
         {
-            if (!presetGameGridInScene)
-            {
-                presetGameGridInScene = FindAnyObjectByType<GameGrid>();
+            if (!base.OnStateEnter()) return false;
 
-                if (!presetGameGridInScene && gameGridPrefab)
-                {
-                    GameObject gameGridObj = Instantiate(gameGridPrefab.gameObject, Vector3.zero, Quaternion.identity);
+            if (!enabled) return false;
 
-                    GameGrid gameGridComp = gameGridObj.GetComponent<GameGrid>();
+            hasFinishedGameStartLoad = false;
 
-                    if (gameGridComp) presetGameGridInScene = gameGridComp;
-                    else presetGameGridInScene = gameGridObj.AddComponent<GameGrid>();
-                }
-            }
-
-            if (!presetGameGridInScene)
-            {
-                Debug.LogError("Game Grid doesnt exist! Game will not start!");
-
-                gameObject.SetActive(false);
-
-                enabled = false;
-
-                return;
-            }
-
-            if (GameAnswerConfig.gameAnswerConfigInstance == null && !FindAnyObjectByType<GameAnswerConfig>())
-            {
-                if (gameAnswerConfigPrefab)
-                {
-                    Instantiate(gameAnswerConfigPrefab.gameObject, Vector3.zero, Quaternion.identity);
-                }
-                else
-                {
-                    Debug.LogError("Game Answer Config and game answer word set data could not be found and its prefab is not provided for instantiation. Game won't start!");
-
-                    gameObject.SetActive(false);
-
-                    enabled = false;
-
-                    return;
-                }
-            }
-        }
-
-        public override void OnStateEnter()
-        {
-            if (!enabled) return;
-
-            if (!GameAnswerConfig.gameAnswerConfigInstance || !presetGameGridInScene) return;
+            if (!GameAnswerConfig.gameAnswerConfigInstance || !presetGameGridInScene) return false;
 
             StartCoroutine(GameStartLoadProcess());
+
+            return true;
         }
 
-        public override void OnStateExit()
+        public override bool OnStateUpdate()
         {
-            if (!enabled) return;
+            if(!base.OnStateUpdate()) return false;
+
+            if(!enabled) return false;
+
+            if (hasFinishedGameStartLoad)
+            {
+                if (gameStateManagerParent) 
+                    gameStateManagerParent.TransitionToGameState(nextState);
+            }
+
+            return true;
+        }
+
+        public override bool OnStateExit()
+        {
+            if(!base.OnStateExit()) return false;
+
+            return true;
         }
 
         private IEnumerator GameStartLoadProcess()
@@ -102,6 +67,8 @@ namespace CrossClimbLite
             {
                 GameStartLoadUI.gameStartLoadUIInstance.OnGameStopLoading();
             }
+
+            hasFinishedGameStartLoad = true;
         }
     }
 }
