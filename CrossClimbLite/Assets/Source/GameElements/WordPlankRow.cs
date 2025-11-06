@@ -13,6 +13,7 @@ namespace CrossClimbLite
         [field: Header("Plank Data")]
 
         [field: SerializeField]
+        [field: ReadOnlyInspectorPlayMode]
         public string plankCorrectWord { get; private set; }
 
         [ReadOnlyInspector]
@@ -22,6 +23,7 @@ namespace CrossClimbLite
         private StringBuilder plankTypedWordStrBuilder = new StringBuilder();
 
         [field: SerializeField]
+        [field: ReadOnlyInspectorPlayMode]
         public string plankHint { get; private set; }
 
         [field: Space]
