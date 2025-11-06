@@ -37,13 +37,6 @@ namespace CrossClimbLite
             return true;
         }
 
-        public override bool OnStateExit()
-        {
-            if(!base.OnStateExit()) return false;
-
-            return true;
-        }
-
         private IEnumerator GameStartLoadProcess()
         {
             if (GameStartLoadUI.gameStartLoadUIInstance)

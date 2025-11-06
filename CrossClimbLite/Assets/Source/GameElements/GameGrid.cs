@@ -95,6 +95,8 @@ namespace CrossClimbLite
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
 
+        public event Action<string> OnAWordPlankFilled;
+
 #if UNITY_EDITOR
         private void OnValidate()
         {
@@ -368,6 +370,28 @@ namespace CrossClimbLite
             string hint = currentPlankBeingSelected.plankHint;
 
             if (HintBoxUI.hintBoxUIInstance) HintBoxUI.hintBoxUIInstance.SetHintTextToDisplay(hint);
+        }
+
+        public void UnlockKeywordPlanksInGrid()
+        {
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) continue;
+
+                if (!wordPlankRowsInGrid[i].isPlankKeyword) continue;
+
+                if (wordPlankRowsInGrid[i].isPlankLocked)
+                {
+                    wordPlankRowsInGrid[i].SetGameElementLockedStatus(false, true);
+                }
+            }
+        }
+
+        public void InvokeOnAWordPlankFilledEvent(string wordPlankFilledWord)
+        {
+            OnAWordPlankFilled?.Invoke(wordPlankFilledWord);
         }
 
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI) { }

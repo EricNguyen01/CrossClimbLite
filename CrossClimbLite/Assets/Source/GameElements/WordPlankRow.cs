@@ -297,6 +297,14 @@ namespace CrossClimbLite
             plankTypedWord = plankTypedWordStrBuilder.ToString();
 
             if (wordPlankRowUILinked) wordPlankRowUILinked.UpdateUIInternalData_UpdatePlankUILetter(plankTypedWord);
+
+            if(plankTypedWord != string.Empty && !string.IsNullOrEmpty(plankTypedWord))
+            {
+                if(gameGridHoldingPlank && plankTypedWord.Length == gameGridHoldingPlank.columnNum)
+                {
+                    gameGridHoldingPlank.InvokeOnAWordPlankFilledEvent(plankTypedWord);
+                }
+            }
         }
     }
 }
