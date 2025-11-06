@@ -5,6 +5,10 @@ namespace CrossClimbLite
 {
     public class GameStartState : GameStateBase
     {
+        [Header("Game Start State Runtime Data")]
+
+        [SerializeField]
+        [ReadOnlyInspector]
         private bool hasFinishedGameStartLoad = false;
 
         public override bool OnStateEnter()

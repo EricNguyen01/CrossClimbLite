@@ -316,6 +316,8 @@ namespace CrossClimbLite
             wordPlankRowsInGrid[plankFromIndex] = plankTo;
 
             wordPlankRowsInGrid[plankToIndex] = plankFrom;
+
+            OnAWordPlankFilled?.Invoke(plankTo.GetPlankTypedWord());
         }
 
         private void SpawnGameGridUI_IfNull()

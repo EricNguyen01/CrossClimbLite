@@ -23,6 +23,20 @@ namespace CrossClimbLite
         [SerializeField]
         protected GameStateBase nextState;
 
+        [Header("State Data Runtime")]
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        protected bool stateEntered = false;
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        protected bool stateBeingUpdated = false;
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        protected bool stateExited = false;
+
         protected GameStateManager gameStateManagerParent;
 
         protected virtual void OnEnable()
@@ -84,6 +98,8 @@ namespace CrossClimbLite
             }
 
             gameStateManagerParent = gameStateManagerHoldingState;
+
+            stateEntered = false; stateBeingUpdated = false; stateExited = false;
         }
 
         public virtual bool OnStateEnter()
@@ -108,6 +124,12 @@ namespace CrossClimbLite
 
                 return false;
             }
+
+            stateEntered = true;
+
+            stateBeingUpdated = false;
+
+            stateExited = false;
 
             return true;
         }
@@ -135,6 +157,8 @@ namespace CrossClimbLite
                 return false;
             }
 
+            stateBeingUpdated = true;
+
             return true;
         }
 
@@ -146,6 +170,12 @@ namespace CrossClimbLite
             {
                 gameStateManagerParent.StopStateUpdateCoroutine();
             }
+
+            stateEntered = false;
+
+            stateBeingUpdated = false;
+
+            stateExited = true;
 
             return true;
         }
