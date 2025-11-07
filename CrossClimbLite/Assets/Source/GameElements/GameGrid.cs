@@ -4,10 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Serialization;
-using Unity.VisualScripting;
-
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -130,6 +126,16 @@ namespace CrossClimbLite
             }
         }
 #endif
+
+        private void Start()
+        {
+            if (!Application.isPlaying) return;
+
+            if (!FindAnyObjectByType<GameStartState>())
+            {
+                StartCoroutine(InitGridOnGameStartLoad());
+            }
+        }
 
         public IEnumerator InitGridOnGameStartLoad()
         {
@@ -418,9 +424,11 @@ namespace CrossClimbLite
             if (HintBoxUI.hintBoxUIInstance) HintBoxUI.hintBoxUIInstance.SetHintTextToDisplay(hint);
         }
 
-        public void UnlockKeywordPlanksInGrid(bool unlock = true)
+        public void UnlockKeywordPlanksInGrid(bool unlock = true, bool selectFirstKeywordPlankOnUnlocked = true)
         {
             if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            bool hasSelectedFirst = false;
 
             for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
@@ -433,10 +441,36 @@ namespace CrossClimbLite
                     if (wordPlankRowsInGrid[i].isPlankLocked)
                     {
                         wordPlankRowsInGrid[i].SetGameElementLockedStatus(false, true);
+
+                        if (selectFirstKeywordPlankOnUnlocked && !hasSelectedFirst)
+                        {
+                            wordPlankRowsInGrid[i].SetGameElementSelectionStatus(true, true);
+
+                            if (wordPlankRowsInGrid[i].letterSlotsInWordPlank != null && wordPlankRowsInGrid[i].letterSlotsInWordPlank.Length > 0)
+                            {
+                                for(int j = 0; j < wordPlankRowsInGrid[j].letterSlotsInWordPlank.Length; j++)
+                                {
+                                    if (!wordPlankRowsInGrid[i].letterSlotsInWordPlank[j]) continue;
+
+                                    wordPlankRowsInGrid[i].letterSlotsInWordPlank[j].SetGameElementSelectionStatus(true, true);
+
+                                    break;
+                                }
+                            }
+
+                            hasSelectedFirst = true;
+                        }
                     }
                 }
                 else
                 {
+                    if (currentPlankBeingSelected && currentPlankBeingSelected == wordPlankRowsInGrid[i])
+                    {
+                        wordPlankRowsInGrid[i].SetGameElementSelectionStatus(false, true);
+
+                        SetCurrentPlankRowSelected(null);
+                    }
+
                     if (!wordPlankRowsInGrid[i].isPlankLocked)
                     {
                         wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);
@@ -445,9 +479,11 @@ namespace CrossClimbLite
             }
         }
 
-        public void UnlockNonKeywordPlanksInGrid(bool unlock = true)
+        public void UnlockNonKeywordPlanksInGrid(bool unlock = true, bool selectFirstNonKeywordPlankOnUnlocked = true)
         {
             if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            bool hasSelectedFirst = false;
 
             for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
@@ -460,10 +496,24 @@ namespace CrossClimbLite
                     if (wordPlankRowsInGrid[i].isPlankLocked)
                     {
                         wordPlankRowsInGrid[i].SetGameElementLockedStatus(false, true);
+
+                        if (selectFirstNonKeywordPlankOnUnlocked && !hasSelectedFirst)
+                        {
+                            wordPlankRowsInGrid[i].SetGameElementSelectionStatus(true, true);
+
+                            hasSelectedFirst = true;
+                        }
                     }
                 }
                 else
                 {
+                    if (currentPlankBeingSelected && currentPlankBeingSelected == wordPlankRowsInGrid[i])
+                    {
+                        wordPlankRowsInGrid[i].SetGameElementSelectionStatus(false, true);
+
+                        SetCurrentPlankRowSelected(null);
+                    }
+
                     if (!wordPlankRowsInGrid[i].isPlankLocked)
                     {
                         wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);

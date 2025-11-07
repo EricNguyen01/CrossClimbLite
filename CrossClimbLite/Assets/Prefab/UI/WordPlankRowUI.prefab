@@ -507,7 +507,7 @@ MonoBehaviour:
   isSelected: 0
   isLocked: 0
   normalStateColor: {r: 1, g: 1, b: 1, a: 1}
-  lockedColor: {r: 0.6150943, g: 0.6150943, b: 0.6150943, a: 1}
+  lockedColor: {r: 0.735849, g: 0.735849, b: 0.735849, a: 1}
   selectedColor: {r: 0.9607843, g: 0.7529412, b: 1, a: 1}
   keywordColor: {r: 1, g: 0.6834218, b: 0.28490567, a: 1}
   wordPlankRowBackgroundImage: {fileID: 379848902463306467}
