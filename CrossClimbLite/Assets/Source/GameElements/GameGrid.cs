@@ -529,7 +529,10 @@ namespace CrossClimbLite
 
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI) { }
 
-        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI) { }
+        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI)
+        {
+            if (shouldUpdateUI && gameGridUIInstance) gameGridUIInstance.UpdateUI_OnGameElementModalLocked(isLocked);
+        }
 
         //EDITOR FUNCS...............................................................................................
 

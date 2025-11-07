@@ -105,7 +105,7 @@ namespace CrossClimbLite
                 elementCanvasGroup.blocksRaycasts = false;
 
                 elementCanvasGroup.interactable = false;
-
+                
                 return;
             }
 
