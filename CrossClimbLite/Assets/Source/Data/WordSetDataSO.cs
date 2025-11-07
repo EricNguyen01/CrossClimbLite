@@ -585,6 +585,10 @@ namespace CrossClimbLite
                wordSetsLengthGroupStartIndexDict == null || 
                wordSetsLengthGroupStartIndexDict.Count == 0)
             {
+                Debug.LogWarning("Trying to generate random word set during runtime " +
+                                 "but the all word sets list appear to be null or empty. " +
+                                 "Regenerating word sets list...");
+
                 if(!GenerateWordChainsList()) return finalWordSet;
             }
 

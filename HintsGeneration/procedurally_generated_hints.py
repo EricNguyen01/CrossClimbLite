@@ -1,14 +1,11 @@
 # ============================================================
-# procedurally_generated_hints_v8.py
+# procedurally_generated_hints_v9.py
 # ------------------------------------------------------------
 # Offline crossword-style hint generator (definition-only version)
 # Improvements:
-# - Removes markdown-style bold (**) and italic (*) markers
-# - Removes parts of speech labels like "Noun", "Adjective", "Verb", etc.
-# - Keeps only the first numbered/main definition
-# - Removes self-references and meta-language
-# - Never cuts sentences mid-way
-# - Loads meta-phrases externally
+# - Final repair pass for overly short hints
+# - Ensures complete sentences by extending with next sentence if needed
+# - Retains all previous cleanup (markdown, meta-phrases, numbering)
 # ============================================================
 
 import pandas as pd
@@ -19,28 +16,34 @@ from pathlib import Path
 
 # ---------- CONFIG ----------
 INPUT_CSV = "Filtered_WordDB_ModernNoNames.csv"
-OUTPUT_CSV = "Filtered_WordDB_Procedural_Hints.csv"  # ✅ Preferred naming
+OUTPUT_CSV = "Filtered_WordDB_Procedural_Hints.csv"
 META_FILE = "meta_phrases.txt"
-MAX_WORDS = 60
+MAX_WORDS = 25
+MIN_HINT_WORDS = 4  # If fewer words than this, try to repair
 
 # ---------- BASIC CLEANING ----------
 def clean_definition(text):
-    """Clean and normalize definition text."""
     if not isinstance(text, str) or not text.strip():
         return ""
     text = re.sub(r"[•→/\\\-;<>•]+", " ", text)
     text = re.sub(r"\s+", " ", text.strip())
 
-    # Remove markdown bold/italic markers (** or *)
+    # Remove markdown bold/italic markers and underscores
     text = re.sub(r"\*{1,2}", "", text)
     text = re.sub(r"_+", "", text)
 
-    # Remove stray double asterisks left behind
-    text = re.sub(r"\*+", "", text)
+    # Remove parts of speech labels (noun, verb, etc.)
+    text = re.sub(
+        r"\b(?:noun|verb|adjective|adverb|preposition|conjunction|interjection|pronoun)\b[:\s]*",
+        "",
+        text,
+        flags=re.IGNORECASE,
+    )
 
+    text = re.sub(r"\*+", "", text)
     return text.strip(string.punctuation + " ")
 
-# ---------- META-PHRASE LOADING ----------
+# ---------- META-PHRASE HANDLING ----------
 def load_meta_phrases(filepath=META_FILE):
     defaults = [
         r"\bhas (a couple of|several|multiple|a few) meanings\b.*?(?=[.:\n]|$)",
@@ -131,6 +134,24 @@ def generate_hint(word, definition, meta_patterns):
     hint = trim_to_sentence_or_limit(main_sentence, MAX_WORDS)
     return finalize_hint(hint)
 
+# ---------- REPAIR SHORT HINTS ----------
+def repair_short_hints(df, min_words=MIN_HINT_WORDS):
+    """Fix short or incomplete hints by extending them with next sentence if available."""
+    repaired = 0
+    for idx, row in df.iterrows():
+        hint = row["HINT"]
+        definition = str(row["DEFINITION"])
+        if not isinstance(hint, str) or len(hint.split()) < min_words:
+            sentences = re.split(r"(?<=[.!?])\s+", definition)
+            if len(sentences) > 1:
+                extended_hint = sentences[0].strip() + " " + sentences[1].strip()
+            else:
+                extended_hint = definition.strip()
+            df.at[idx, "HINT"] = finalize_hint(extended_hint)
+            repaired += 1
+    print(f"🔧 Repaired {repaired} short hints.")
+    return df
+
 # ---------- MAIN ----------
 def main():
     meta_patterns = load_meta_phrases()
@@ -141,10 +162,13 @@ def main():
     tqdm.pandas(desc="Cleaning definitions")
     df["DEFINITION"] = df["DEFINITION"].progress_apply(clean_definition)
 
-    tqdm.pandas(desc="Generating refined crossword-style hints")
+    tqdm.pandas(desc="Generating crossword-style hints")
     df["HINT"] = df.progress_apply(
         lambda row: generate_hint(row.WORD, row.DEFINITION, meta_patterns), axis=1
     )
+
+    tqdm.pandas(desc="Repairing short hints")
+    df = repair_short_hints(df)
 
     cols = list(df.columns)
     if "WORD" in cols and "DEFINITION" in cols and "HINT" in cols:
@@ -156,3 +180,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
