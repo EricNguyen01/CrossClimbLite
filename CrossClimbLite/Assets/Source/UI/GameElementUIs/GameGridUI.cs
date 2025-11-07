@@ -54,23 +54,6 @@ namespace CrossClimbLite
             gameGridLinked.ConnectGameElementUI(this);
         }
 
-        public void UpdateUI_OnGameGridModalInitOrRemove()
-        {
-            if (!gameGridLinked) return;
-
-            if (gameGridLinked.wordPlankRowsInGrid == null || gameGridLinked.wordPlankRowsInGrid.Length == 0)
-            {
-                RemoveCurrentGridUILayout();
-
-                return;
-            }
-
-            if (gameGridLinked.wordPlankRowsInGrid != null && gameGridLinked.wordPlankRowsInGrid.Length > 0)
-            {
-                SpawnNewGridUILayoutFollowingGridLinkedLayout();
-            }
-        }
-
         public void SetAllPlankUIsCanvasGroupData(bool blockRaycast, bool interactable, float enableAlpha = 1.0f, float disableAlpha = 0.0f)
         {
             if(plankUISpawned == null || plankUISpawned.Count == 0) return; 
@@ -83,7 +66,7 @@ namespace CrossClimbLite
             }
         }
 
-        private void SpawnNewGridUILayoutFollowingGridLinkedLayout()
+        public void SpawnNewGridUILayoutFollowingGridLinkedLayout()
         {
             if (!wordPlankUIPrefabToSpawn)
             {
@@ -95,12 +78,7 @@ namespace CrossClimbLite
 
             if(plankUISpawned == null) plankUISpawned = new List<WordPlankRowUI>();
 
-            else plankUISpawned.Clear();
-
-            if (plankUISpawned != null && plankUISpawned.Count > 0)
-            {
-                RemoveCurrentGridUILayout();
-            }
+            if(plankUISpawned.Count > 0) RemoveCurrentGridUILayout();
 
             if (gameGridLinked.wordPlankRowsInGrid == null || gameGridLinked.wordPlankRowsInGrid.Length == 0) return;
 
@@ -162,7 +140,7 @@ namespace CrossClimbLite
             }
         }
 
-        private void RemoveCurrentGridUILayout()
+        public void RemoveCurrentGridUILayout()
         {
             if (plankUISpawned == null || plankUISpawned.Count == 0) return;
 
@@ -174,6 +152,8 @@ namespace CrossClimbLite
 
                 else if(Application.isPlaying) Destroy(plankUISpawned[i].gameObject);
             }
+
+            if (plankUISpawned.Count > 0) plankUISpawned.Clear();
         }
     }
 }

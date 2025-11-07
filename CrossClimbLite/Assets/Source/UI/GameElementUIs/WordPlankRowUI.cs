@@ -140,24 +140,6 @@ namespace CrossClimbLite
             }
 
             parentGridUI = parentHoldingUIToLink as GameGridUI;
-
-            if(!wordPlankRowLinked.isPlankLocked && !wordPlankRowLinked.isPlankKeyword)
-            {
-                if (parentGridUI.gameGridLinked && !parentGridUI.gameGridLinked.currentPlankBeingSelected)
-                {
-                    if(letterSlotsUISpawned != null && letterSlotsUISpawned.Count > 0)
-                    {
-                        for(int i = 0; i < letterSlotsUISpawned.Count; i++)
-                        {
-                            if (!letterSlotsUISpawned[i] || !letterSlotsUISpawned[i].linkedPlankLetterSlot) continue;
-
-                            letterSlotsUISpawned[i].linkedPlankLetterSlot.SetGameElementSelectionStatus(true, true);
-
-                            break;
-                        }
-                    }
-                }
-            }
         }
 
         public void InitChildrenLetterSlotsUI()
@@ -224,8 +206,6 @@ namespace CrossClimbLite
 
         public void UpdateUIInternalData_UpdatePlankUILetter(string letter)
         {
-            if(letter == string.Empty || string.IsNullOrEmpty(letter)) return;
-
             plankLetter = letter;
         }
 

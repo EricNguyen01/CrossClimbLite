@@ -104,26 +104,34 @@ namespace CrossClimbLite
 
             bool isMatched = true;
 
-            for(int i = 0; i < wordPlankAnswersInOrder.Length; i++)
+            for (int i = 0; i < wordPlankAnswersInOrder.Length; i++)
             {
-                if(i >= gridWithPlanksToCompare.wordPlankRowsInGrid.Length) break;
+                if (i >= gridWithPlanksToCompare.wordPlankRowsInGrid.Length) break;
 
                 if (!gridWithPlanksToCompare.wordPlankRowsInGrid[i]) continue;
 
                 if (!shouldCheckKeyword && gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword) continue;
 
-                if (wordPlankAnswersInOrder[i].ToLower() != 
-                    gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord().ToLower())
+                string typedWord = gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord();
+
+                if (string.IsNullOrEmpty(typedWord) || string.IsNullOrWhiteSpace(typedWord))
                 {
                     isMatched = false;
 
                     break;
                 }
 
-                if(i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder)
+                if (wordPlankAnswersInOrder[i].ToLower() != typedWord.ToLower())
                 {
                     isMatched = false;
+                    
+                    break;
+                }
 
+                if (i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder)
+                {
+                    isMatched = false;
+                   
                     break;
                 }
             }

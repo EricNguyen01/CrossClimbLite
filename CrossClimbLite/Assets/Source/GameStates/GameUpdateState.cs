@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace CrossClimbLite
@@ -10,13 +11,17 @@ namespace CrossClimbLite
         [field: ReadOnlyInspector]
         public bool hasKeywordsUnlocked { get; private set; } = false;
 
+        [field: SerializeField]
+        [field: ReadOnlyInspector]
+        public bool hasWonGame { get; private set; } = false;
+
         public override bool OnStateEnter()
         {
             if (!base.OnStateEnter()) return false;
 
-            if (!enabled) return false;
-
             hasKeywordsUnlocked = false;
+
+            hasWonGame = false;
 
             if (presetGameGridInScene)
             {
@@ -35,6 +40,10 @@ namespace CrossClimbLite
                 presetGameGridInScene.OnAWordPlankFilled -= (string s) => OnPlankWordFilled();
             }
 
+            hasKeywordsUnlocked = false;
+
+            hasWonGame = false;
+
             return true;
         }
 
@@ -49,7 +58,7 @@ namespace CrossClimbLite
             }
 
             bool answersMatched = GameAnswerConfig.gameAnswerConfigInstance.IsWordPlankAnswersMatched(presetGameGridInScene, hasKeywordsUnlocked);
-
+            
             if(!hasKeywordsUnlocked && answersMatched)
             {
                 hasKeywordsUnlocked = true;
@@ -64,7 +73,17 @@ namespace CrossClimbLite
                 return;
             }
 
-            //Transition to game end (won) state here...
+            if(answersMatched)
+            {
+                hasWonGame = true;
+
+                if (presetGameGridInScene)
+                {
+                    presetGameGridInScene.SetGameElementLockedStatus(true, true);
+                }
+
+                gameStateManagerParent.TransitionToStateDelay(nextState, 0.5f);
+            }
         }
     }
 }

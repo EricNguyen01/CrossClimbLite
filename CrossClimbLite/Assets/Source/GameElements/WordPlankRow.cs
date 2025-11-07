@@ -14,17 +14,17 @@ namespace CrossClimbLite
 
         [field: SerializeField]
         [field: ReadOnlyInspectorPlayMode]
-        public string plankCorrectWord { get; private set; }
+        public string plankCorrectWord { get; private set; } = "";
 
         [ReadOnlyInspector]
         [SerializeField]
-        private string plankTypedWord;
+        private string plankTypedWord = "";
 
         private StringBuilder plankTypedWordStrBuilder = new StringBuilder();
 
         [field: SerializeField]
         [field: ReadOnlyInspectorPlayMode]
-        public string plankHint { get; private set; }
+        public string plankHint { get; private set; } = "";
 
         [field: Space]
 
@@ -201,6 +201,20 @@ namespace CrossClimbLite
             if (slotIndexToSet >= totalLetterCountInPlank - 1) slotIndexToSet = totalLetterCountInPlank - 1;
 
             currentLetterIndex = slotIndexToSet;
+        }
+
+        public void ClearPlankTypedWord()
+        {
+            if (string.IsNullOrEmpty(plankTypedWord) || string.IsNullOrWhiteSpace(plankTypedWord)) return;
+
+            if(letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
+
+            for(int i = 0; i < letterSlotsInWordPlank.Length; i++)
+            {
+                if (!letterSlotsInWordPlank[i]) continue;
+
+                letterSlotsInWordPlank[i].WriteLetterToSlot("", true);
+            }
         }
 
         public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI)

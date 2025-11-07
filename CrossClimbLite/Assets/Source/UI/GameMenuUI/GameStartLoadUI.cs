@@ -4,23 +4,11 @@ using UnityEngine.Events;
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
-    public class GameStartLoadUI : MonoBehaviour
+    public class GameStartLoadUI : GameMenuUIBase
     {
-        [SerializeField]
-        private UIFade UIFadeComponent;
-
-        [SerializeField]
-        private CanvasGroup canvasGroup;
-
-        [SerializeField]
-        private UnityEvent OnLoadingPanelUIDisplayed;
-
-        [SerializeField]
-        private UnityEvent OnLoadingPanelUIHidden;
-
         public static GameStartLoadUI gameStartLoadUIInstance;
 
-        private void Awake()
+        protected override void Awake()
         {
             if (gameStartLoadUIInstance)
             {
@@ -35,36 +23,15 @@ namespace CrossClimbLite
 
             gameStartLoadUIInstance = this;
 
-            if (!canvasGroup)
-            {
-                if(!TryGetComponent<CanvasGroup>(out canvasGroup))
-                {
-                    canvasGroup = gameObject.AddComponent<CanvasGroup>();
-                }
-            }
-
-            canvasGroup.interactable = false;
-
-            canvasGroup.blocksRaycasts = false;
-
-            canvasGroup.alpha = 0.0f;
-
-            if (!UIFadeComponent)
-            {
-                if (!TryGetComponent<UIFade>(out UIFadeComponent))
-                {
-                    UIFadeComponent = gameObject.AddComponent<UIFade>();
-                }
-            }
-
-            UIFadeComponent.SetTweenExecuteMode(UITweenBase.UITweenExecuteMode.Internal);
-
-            UIFadeComponent.SetUITweenCanvasGroup(canvasGroup);
+            base.Awake();
         }
 
-        public void OnGameStartsLoading()
+        public override void DisplayUIPanel()
         {
             if (!enabled) return;
+
+            if (UIFadeComponent && UIFadeComponent.IsTweenRunning())
+                UIFadeComponent.StopAndResetUITweenImmediate();
 
             if (canvasGroup)
             {
@@ -73,28 +40,7 @@ namespace CrossClimbLite
                 canvasGroup.blocksRaycasts = true;
             }
 
-            OnLoadingPanelUIDisplayed?.Invoke();
-        }
-
-        public void OnGameStopLoading()
-        {
-            if (!enabled) return;
-
-            if (canvasGroup) canvasGroup.blocksRaycasts = false;
-
-            if (UIFadeComponent)
-            {
-                if(UIFadeComponent.IsTweenRunning())
-                    UIFadeComponent.StopAndResetUITweenImmediate();
-
-                UIFadeComponent.SetFadeMode(UIFade.UIFadeMode.FadeOut);
-
-                UIFadeComponent.isLooped = false;
-
-                UIFadeComponent.RunTweenInternal();
-            }
-
-            OnLoadingPanelUIHidden?.Invoke();
+            OnPanelUIDisplayed?.Invoke();
         }
     }
 }

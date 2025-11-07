@@ -81,18 +81,20 @@ namespace CrossClimbLite
             
             if (!inputField) return;
 
+            string previousText = inputField.text;
+
             if (isSelected)
             {
-                //Debug.Log("Game Element UI Selected: " + name);
-
                 inputField.Select();
-                
-                //eventSystem.SetSelectedGameObject(inputField.gameObject);
+
+                inputField.ActivateInputField();
 
                 return;
             }
 
             inputField.ReleaseSelection();
+
+            inputField.DeactivateInputField();
         }
 
         //UNITY TMPro UI INPUT FIELD EVENT SUBS............................................................

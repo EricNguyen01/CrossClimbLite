@@ -78,14 +78,9 @@ namespace CrossClimbLite
             
             wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
 
-            if (shouldUpdateUI && gameElementUILinked)
+            if (shouldUpdateUI && letterSlotUILinked)
             {
-                if(gameElementUILinked is PlankLetterSlotUI)
-                {
-                    PlankLetterSlotUI letterSlotUI = gameElementUILinked as PlankLetterSlotUI;
-
-                    letterSlotUI.UpdateUI_OnModalLetterChanged(letter);
-                }
+                letterSlotUILinked.UpdateUI_OnModalLetterChanged(letter);
             }
         }
 

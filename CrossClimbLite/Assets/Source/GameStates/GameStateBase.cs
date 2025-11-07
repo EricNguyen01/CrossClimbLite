@@ -99,7 +99,11 @@ namespace CrossClimbLite
 
             gameStateManagerParent = gameStateManagerHoldingState;
 
-            stateEntered = false; stateBeingUpdated = false; stateExited = false;
+            stateEntered = false; 
+            
+            stateBeingUpdated = false; 
+            
+            stateExited = false;
         }
 
         public virtual bool OnStateEnter()

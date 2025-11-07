@@ -26,6 +26,15 @@ namespace CrossClimbLite
 
         [field: SerializeField]
         [field: Min(4)]
+        public int columnNumMin { get; private set; } = 4;
+
+        [field: SerializeField]
+        [field: Min(5)]
+        public int columnNumMax { get; private set; } = 5;
+
+        [field: SerializeField]
+        [field: ReadOnlyInspector]
+        [field: Min(4)]
         public int columnNum { get; private set; } = 4;
 
         [Space]
@@ -103,6 +112,8 @@ namespace CrossClimbLite
 #if UNITY_EDITOR
         private void OnValidate()
         {
+            if (columnNumMax <= columnNumMin) columnNumMax = columnNumMin + 1;
+
             ValidateRowNumToLockOnStartData();
 
             if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
@@ -141,23 +152,19 @@ namespace CrossClimbLite
         {
             if (!Application.isPlaying) yield break;
 
-            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0)
-            {
-                InitGrid();
-            }
-            else
-            {
-                if(!hasGridGenerated) hasGridGenerated = true;
-            }
+            columnNum = UnityEngine.Random.Range(columnNumMin, columnNumMax + 1);
+
+            if (currentPlankBeingSelected) currentPlankBeingSelected = null;
+
+            InitGrid();
 
             ShuffleWordPlankOrderInGrid();
 
-            if (!gameGridUIInstance)
-            {
-                SpawnGameGridUI_IfNull();
+            if (!gameGridUIInstance) SpawnGameGridUI_IfNull();
 
-                gameGridUIInstance.UpdateUI_OnGameGridModalInitOrRemove();
-            }
+            gameGridUIInstance.SpawnNewGridUILayoutFollowingGridLinkedLayout();
+
+            SetActiveFirstCharSlotOfFirstNonKeywordRow();
 
             yield return new WaitForEndOfFrame();
         }
@@ -393,7 +400,7 @@ namespace CrossClimbLite
             gameGridUIInstance.InitGameElementUI(this);
         }
 
-        public void SetPlanksBasedOnWordSet(List<WordSetDataSO.WordHintStruct> wordSetToAssignToPlanks)
+        public void SetPlanksWordsBasedOnWordSet(List<WordSetDataSO.WordHintStruct> wordSetToAssignToPlanks)
         {
             if (wordSetToAssignToPlanks == null || wordSetToAssignToPlanks.Count == 0) return;
 
@@ -518,6 +525,43 @@ namespace CrossClimbLite
                     {
                         wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);
                     }
+                }
+            }
+        }
+
+        public void ClearAllPlanksTypedWords()
+        {
+            if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) continue;
+
+                wordPlankRowsInGrid[i].ClearPlankTypedWord();
+            }
+        }
+
+        public void SetActiveFirstCharSlotOfFirstNonKeywordRow()
+        {
+            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) continue;
+
+                if (wordPlankRowsInGrid[i].isPlankKeyword || wordPlankRowsInGrid[i].isPlankLocked) continue;
+
+                PlankLetterSlot[] letterSlotsInCurrentPlank = wordPlankRowsInGrid[i].letterSlotsInWordPlank;
+
+                if (letterSlotsInCurrentPlank == null || letterSlotsInCurrentPlank.Length == 0) continue;
+
+                for (int j = 0; j < letterSlotsInCurrentPlank.Length; j++)
+                {
+                    if (!letterSlotsInCurrentPlank[j]) continue;
+
+                    letterSlotsInCurrentPlank[j].SetGameElementSelectionStatus(true, true);
+
+                    return;
                 }
             }
         }

@@ -148,6 +148,7 @@ GameObject:
   - component: {fileID: 6257476744611282808}
   - component: {fileID: 1015749500982576003}
   - component: {fileID: 8416855791489443105}
+  - component: {fileID: 735725486549445316}
   - component: {fileID: 3670255834982995769}
   m_Layer: 5
   m_Name: GameEndPanelUI
@@ -199,7 +200,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
   m_Color: {r: 0.29440364, g: 0.5808802, b: 0.6754716, a: 1}
-  m_RaycastTarget: 0
+  m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
@@ -227,6 +228,28 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &735725486549445316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2251437820878431147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 106eab93caf9aa844b8b00386e5068a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIFadeComponent: {fileID: 3670255834982995769}
+  canvasGroup: {fileID: 8416855791489443105}
+  OnPanelUIDisplayed:
+    m_PersistentCalls:
+      m_Calls: []
+  OnPanelUIHidden:
+    m_PersistentCalls:
+      m_Calls: []
+  displayFadeInDuration: 1
+  hideFadeOutDuration: 1.5
 --- !u!114 &3670255834982995769
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -240,12 +263,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI_TweenExecuteMode: 4
-  easeMode: 9
+  easeMode: 16
   tweenDuration: 3
   tweenAutoStartDelay: 0
   <isLooped>k__BackingField: 0
   <isIndependentTimeScale>k__BackingField: 1
-  disableUIFunctionDuringTween: 1
+  disableUIFunctionDuringTween: 0
   disableUIFunctionAfterTween: 0
   OnUITweenStarted:
     m_PersistentCalls:
@@ -408,8 +431,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI_TweenExecuteMode: 1
-  easeMode: 31
-  tweenDuration: 1.3
+  easeMode: 8
+  tweenDuration: 0.4
   tweenAutoStartDelay: 0
   <isLooped>k__BackingField: 0
   <isIndependentTimeScale>k__BackingField: 1
@@ -421,7 +444,7 @@ MonoBehaviour:
   OnUITweenFinished:
     m_PersistentCalls:
       m_Calls: []
-  expandValue: 250
+  expandValue: 30
 --- !u!1 &8058536283333992251
 GameObject:
   m_ObjectHideFlags: 0
@@ -510,7 +533,7 @@ GameObject:
   - component: {fileID: 100015162547932266}
   - component: {fileID: 7458924362288570855}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: ReplayText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -563,7 +586,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Play Again
+  m_text: Replay
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: cb4991ddef649fc499dd2ffc10b9ab24, type: 2}
   m_sharedMaterial: {fileID: 7906350216939441245, guid: cb4991ddef649fc499dd2ffc10b9ab24, type: 2}
@@ -596,7 +619,7 @@ MonoBehaviour:
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
   m_fontSizeMax: 72
-  m_fontStyle: 0
+  m_fontStyle: 1
   m_HorizontalAlignment: 2
   m_VerticalAlignment: 512
   m_textAlignment: 65535

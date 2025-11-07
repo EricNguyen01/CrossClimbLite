@@ -29,20 +29,24 @@ namespace CrossClimbLite
             if(gameGridLinked.currentPlankBeingSelected.letterSlotsInWordPlank == null || 
                gameGridLinked.currentPlankBeingSelected.letterSlotsInWordPlank.Length == 0) return;
 
-            if (string.IsNullOrEmpty(gameGridLinked.currentPlankBeingSelected.plankCorrectWord)) return;
-
             WordPlankRow selectedPlank = gameGridLinked.currentPlankBeingSelected;
 
-            string playerTypedWord = selectedPlank.GetPlankTypedWord().ToLower();
+            if (string.IsNullOrEmpty(selectedPlank.plankCorrectWord)) return;
 
             string correctWord = selectedPlank.plankCorrectWord.ToLower();
 
+            string playerTypedWord = selectedPlank.GetPlankTypedWord();
+
+            if (string.IsNullOrEmpty(playerTypedWord)) playerTypedWord = "";
+            
             if (playerTypedWord == correctWord) return;
 
             bool hasCrossedOutAnyLetter = false;
 
             if (!string.IsNullOrEmpty(playerTypedWord))
             {
+                playerTypedWord = playerTypedWord.ToLower();
+                
                 for (int i = 0; i < playerTypedWord.Length; i++)
                 {
                     if (string.IsNullOrEmpty(playerTypedWord[i].ToString()) || playerTypedWord[i] == ' ') continue;

@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Diagnostics.CodeAnalysis;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 
 namespace CrossClimbLite
 {
@@ -19,7 +20,7 @@ namespace CrossClimbLite
 
         [SerializeField]
         [Min(0.02f)]
-        private float stateUpdateInterval = 0.25f;
+        private float stateUpdateInterval = 0.2f;
 
         private List<GameStateBase> allGameStates = new List<GameStateBase>();
 
@@ -87,8 +88,12 @@ namespace CrossClimbLite
 
             if (!newGameState)
             {
+                Debug.LogWarning("Transitioned to a null game state...");
+
                 if (currentGameState)
                 {
+                    Debug.LogWarning("Stopping Current State Instead");
+
                     StopStateUpdateCoroutine();
 
                     currentGameState.OnStateExit();
@@ -168,6 +173,18 @@ namespace CrossClimbLite
                     yield return new WaitForSeconds(stateUpdateInterval);
                 }
             }
+        }
+
+        public void TransitionToStateDelay(GameStateBase state, float delay)
+        {
+            StartCoroutine(TransitionToStateDelayCoroutine(state, delay));  
+        }
+
+        private IEnumerator TransitionToStateDelayCoroutine(GameStateBase state, float delay)
+        {
+            yield return new WaitForSeconds(delay);
+
+            TransitionToGameState(state);
         }
     }
 }

@@ -15,8 +15,6 @@ namespace CrossClimbLite
         {
             if (!base.OnStateEnter()) return false;
 
-            if (!enabled) return false;
-
             hasFinishedGameStartLoad = false;
 
             if (!GameAnswerConfig.gameAnswerConfigInstance || !presetGameGridInScene) return false;
@@ -30,8 +28,6 @@ namespace CrossClimbLite
         {
             if(!base.OnStateUpdate()) return false;
 
-            if(!enabled) return false;
-
             if (hasFinishedGameStartLoad)
             {
                 if (gameStateManagerParent) 
@@ -41,11 +37,32 @@ namespace CrossClimbLite
             return true;
         }
 
+        public override bool OnStateExit()
+        {
+            if (!base.OnStateExit()) return false;
+
+            if (presetGameGridInScene.hasGridGenerated)
+            {
+                presetGameGridInScene.SetPlanksWordsBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
+
+                presetGameGridInScene.SetGameElementLockedStatus(false, true);
+
+                presetGameGridInScene.SetActiveFirstCharSlotOfFirstNonKeywordRow();
+            }
+
+            if (GameStartLoadUI.gameStartLoadUIInstance)
+            {
+                GameStartLoadUI.gameStartLoadUIInstance.HideUIPanel();
+            }
+
+            return true;
+        }
+
         private IEnumerator GameStartLoadProcess()
         {
             if (GameStartLoadUI.gameStartLoadUIInstance)
             {
-                GameStartLoadUI.gameStartLoadUIInstance.OnGameStartsLoading();
+                GameStartLoadUI.gameStartLoadUIInstance.DisplayUIPanel();
             }
 
             yield return presetGameGridInScene.InitGridOnGameStartLoad();
@@ -58,18 +75,6 @@ namespace CrossClimbLite
             yield return new WaitForSecondsRealtime(3.4f);
 
             yield return new WaitForEndOfFrame();
-
-            if (presetGameGridInScene.hasGridGenerated)
-            {
-                presetGameGridInScene.SetPlanksBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
-
-                presetGameGridInScene.SetGameElementLockedStatus(false, true);
-            }
-
-            if (GameStartLoadUI.gameStartLoadUIInstance)
-            {
-                GameStartLoadUI.gameStartLoadUIInstance.OnGameStopLoading();
-            }
 
             hasFinishedGameStartLoad = true;
         }
