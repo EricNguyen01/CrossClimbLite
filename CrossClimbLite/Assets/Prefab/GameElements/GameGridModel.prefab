@@ -45,6 +45,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   <rowNum>k__BackingField: 5
+  <columnNumMin>k__BackingField: 4
+  <columnNumMax>k__BackingField: 5
   <columnNum>k__BackingField: 4
   rowNumDataToModifyOnStart:
   - <rowNum>k__BackingField: 0
@@ -56,4 +58,6 @@ MonoBehaviour:
   validRowNum: 0000000004000000
   gameGridUIPrefabToSpawn: {fileID: 9205909639843897066, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
   canvasToPlaceGameGridUI: {fileID: 0}
+  <gameGridUIInstance>k__BackingField: {fileID: 0}
+  <hasGridGenerated>k__BackingField: 0
   <wordPlankRowsInGrid>k__BackingField: []

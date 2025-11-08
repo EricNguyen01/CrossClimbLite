@@ -171,12 +171,9 @@ namespace CrossClimbLite
 
         private void InitGrid()
         {
-            if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
-            {
-                RemoveGrid();
-            }
+            RemoveGrid();
 
-            if(wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length != rowNum) 
+            if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length != rowNum) 
                 wordPlankRowsInGrid = new WordPlankRow[rowNum];
 
             for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
@@ -317,9 +314,9 @@ namespace CrossClimbLite
                 {
                     for(int i = 0; i < transform.childCount; i++)
                     {
-                        if (Application.isEditor) DestroyImmediate(transform.GetChild(i).gameObject);
+                        if (!Application.isPlaying) DestroyImmediate(transform.GetChild(i).gameObject);
 
-                        else if (Application.isPlaying) Destroy(transform.GetChild(i).gameObject);
+                        else Destroy(transform.GetChild(i).gameObject);
                     }
                 }
 
@@ -330,9 +327,9 @@ namespace CrossClimbLite
             {
                 if(wordPlankRowsInGrid[i])
                 {
-                    if (Application.isEditor) DestroyImmediate(wordPlankRowsInGrid[i].gameObject);
+                    if (!Application.isPlaying) DestroyImmediate(wordPlankRowsInGrid[i].gameObject);
 
-                    else if(Application.isPlaying) Destroy(wordPlankRowsInGrid[i].gameObject);
+                    else Destroy(wordPlankRowsInGrid[i].gameObject);
                 }
             }
 

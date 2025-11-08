@@ -1,183 +1,161 @@
 # ============================================================
-# procedurally_generated_hints_v9.py
+# procedurally_generated_hints_v34.py
 # ------------------------------------------------------------
-# Offline crossword-style hint generator (definition-only version)
-# Improvements:
-# - Final repair pass for overly short hints
-# - Ensures complete sentences by extending with next sentence if needed
-# - Retains all previous cleanup (markdown, meta-phrases, numbering)
+# Crossword-style hint generator (offline procedural)
+# ------------------------------------------------------------
+# Unified fallback-style generation with:
+# ✅ Full-definition logic
+# ✅ Blank-line cleanup
+# ✅ Configurable MAX_SENTENCES and MAX_WORDS
+# ✅ "Overall" sentence priority rule
+# ✅ Smart trimming (drops final sentence if exceeding limit)
+# ✅ Ignores colons and numeric dots (e.g., 3.5) as sentence ends
+# 🚫 No meta-phrase exclusion (for more natural hints)
 # ============================================================
 
 import pandas as pd
 import re
 import string
-from tqdm import tqdm
-from pathlib import Path
+from tqdm.auto import tqdm
 
 # ---------- CONFIG ----------
 INPUT_CSV = "Filtered_WordDB_ModernNoNames.csv"
 OUTPUT_CSV = "Filtered_WordDB_Procedural_Hints.csv"
-META_FILE = "meta_phrases.txt"
-MAX_WORDS = 25
-MIN_HINT_WORDS = 4  # If fewer words than this, try to repair
+MAX_WORDS = 60
+MAX_SENTENCES = 3   # Adjustable number of sentences per hint
 
 # ---------- BASIC CLEANING ----------
 def clean_definition(text):
+    """Removes parentheses, formatting, and redundant punctuation."""
     if not isinstance(text, str) or not text.strip():
         return ""
-    text = re.sub(r"[•→/\\\-;<>•]+", " ", text)
-    text = re.sub(r"\s+", " ", text.strip())
+    while re.search(r"\([^()]*\)", text):
+        text = re.sub(r"\([^()]*\)", "", text)
+    text = re.sub(r"\(\s*\)", "", text)
 
-    # Remove markdown bold/italic markers and underscores
+    # Normalize punctuation (keep colons, ignore decimals)
+    text = re.sub(r"\s+[.,;]\s*", ". ", text)
+    text = re.sub(r"[•→/\\\-;<>•]+", " ", text)
     text = re.sub(r"\*{1,2}", "", text)
     text = re.sub(r"_+", "", text)
-
-    # Remove parts of speech labels (noun, verb, etc.)
+    text = re.sub(r"\b\d+\s*[\.\)]\s*", "", text)
+    text = re.sub(r"\s+", " ", text.strip())
     text = re.sub(
         r"\b(?:noun|verb|adjective|adverb|preposition|conjunction|interjection|pronoun)\b[:\s]*",
         "",
         text,
         flags=re.IGNORECASE,
     )
-
-    text = re.sub(r"\*+", "", text)
     return text.strip(string.punctuation + " ")
-
-# ---------- META-PHRASE HANDLING ----------
-def load_meta_phrases(filepath=META_FILE):
-    defaults = [
-        r"\bhas (a couple of|several|multiple|a few) meanings\b.*?(?=[.:\n]|$)",
-        r"\bcan have (several|multiple) meanings\b.*?(?=[.:\n]|$)",
-        r"\bhas (several|multiple) definitions\b.*?(?=[.:\n]|$)",
-        r"\bhas (a couple of|several|multiple) meanings in English\b.*?(?=[.:\n]|$)",
-        r"\bdepending on the context\b.*?(?=[.:\n]|$)",
-        r"\band it has several related meanings\b.*?(?=[.:\n]|$)",
-        r"\bas a noun\b.*?(?=[.:\n]|$)",
-        r"\bsee also\b.*?(?=[.:\n]|$)",
-    ]
-    path = Path(filepath)
-    if path.exists():
-        try:
-            with open(path, "r", encoding="utf-8") as f:
-                patterns = [line.strip() for line in f if line.strip() and not line.startswith("#")]
-            print(f"✅ Loaded {len(patterns)} meta-phrase patterns from {path}")
-            return patterns
-        except Exception as e:
-            print(f"⚠️ Could not read {path}: {e}. Using defaults.")
-            return defaults
-    else:
-        print(f"⚠️ Meta-phrase file not found ({path}). Using default patterns.")
-        return defaults
-
-def remove_meta_phrases(text, patterns):
-    for pattern in patterns:
-        text = re.sub(pattern, "", text, flags=re.IGNORECASE)
-    return text.strip()
 
 # ---------- UTILITIES ----------
 def remove_word_from_text(word, text):
+    """Replaces occurrences of the target word with underscores."""
     pattern = re.compile(rf"\b{re.escape(word)}\w*\b", re.IGNORECASE)
     return pattern.sub("____", text)
 
-def extract_first_numbered_definition(defn):
-    defn = defn.strip()
-    numbered_parts = re.split(r"(?:\b\d+\s*[\.\)])\s*", defn)
-    if len(numbered_parts) > 1:
-        first_def = numbered_parts[1]
-    else:
-        first_def = re.split(r"\b[2-9]\s*[\.\)]", defn)[0]
-    first_def = re.split(r"\b[2-9]\s*[\.\)]", first_def)[0]
-    return first_def.strip()
+def split_sentences(text):
+    """
+    Splits sentences while ignoring:
+    - Dots inside numbers (e.g., 3.5, 2.0)
+    - Colons as sentence boundaries
+    """
+    # Protect numeric decimals temporarily
+    text = re.sub(r"(\d)\.(\d)", r"\1<DECIMAL>\2", text)
 
-def extract_relevant_sentence(defn):
-    first_def = extract_first_numbered_definition(defn)
-    sentences = re.split(r"(?<=[.!?])\s+", first_def)
-    for s in sentences:
-        s = s.strip()
-        if s and not re.search(r"example|e\.g\.", s, re.IGNORECASE):
-            return s
-    return first_def.strip()
+    # Split on '.', '!' or '?'
+    sentences = re.split(r"(?<=[.!?])\s+", text)
 
-def trim_to_sentence_or_limit(text, max_words=MAX_WORDS):
-    words = text.split()
-    if len(words) <= max_words:
-        return text.strip()
-    after_limit = " ".join(words[max_words:])
-    match = re.search(r"([.!?])", after_limit)
-    if match:
-        end_index = max_words + len(after_limit[:match.start()].split())
-        return " ".join(words[:end_index + 1]).strip()
-    else:
-        return " ".join(words[:max_words]).strip()
+    # Restore decimals
+    sentences = [s.replace("<DECIMAL>", ".") for s in sentences]
+    return sentences
+
+def trim_to_sentence_or_limit(text, max_words=MAX_WORDS, max_sentences=MAX_SENTENCES):
+    """
+    Trims text to a maximum number of sentences or words.
+    Removes the final sentence entirely if it pushes the total word count over the limit.
+    """
+    sentences = split_sentences(text)
+    trimmed_sentences = []
+    total_words = 0
+
+    for s in sentences[:max_sentences]:
+        words_in_s = len(s.split())
+        if total_words + words_in_s > max_words:
+            break
+        trimmed_sentences.append(s)
+        total_words += words_in_s
+
+    return " ".join(trimmed_sentences).strip()
+
+def _strip_leading_the_word_mask(text):
+    """Removes leading 'The word ____' if followed by punctuation."""
+    quotes = r"[\"'“”‘’]?"
+    mask = r"\s*_+\s*"
+    pattern = rf"^\s*(the\s+word\s+{quotes}{mask}{quotes})(?=\s*[.:;,\-–—!?…]+)"
+    return re.sub(pattern, "", text, flags=re.IGNORECASE)
 
 def finalize_hint(text):
-    text = text.strip()
-    text = re.sub(r"\s+", " ", text)
+    """Final cleanup and punctuation normalization."""
+    text = re.sub(r"\.{2,}", ".", text)
+    text = re.sub(r"\b\d+\s*[\.\)]\s*", "", text)
+    text = _strip_leading_the_word_mask(text)
+    text = re.sub(r"^(this\s+word\s+means\s+|it\s+means\s+)", "", text, flags=re.IGNORECASE)
+    text = re.sub(r"\s+", " ", text.strip())
     text = text.strip(string.punctuation + " ")
     if not text:
         return ""
     if not text.endswith("."):
         text += "."
-    text = text[0].upper() + text[1:]
-    return text
+    return text[0].upper() + text[1:]
 
-# ---------- HINT GENERATOR ----------
-def generate_hint(word, definition, meta_patterns):
+# ---------- MAIN GENERATOR ----------
+def generate_hint(word, definition):
+    """Unified fallback-style generation with 'Overall' priority rule."""
     if not isinstance(definition, str) or not definition.strip():
         return ""
-    defn = clean_definition(definition)
-    defn = remove_meta_phrases(defn, meta_patterns)
-    defn = remove_word_from_text(word, defn)
-    if not defn:
-        return ""
-    main_sentence = extract_relevant_sentence(defn)
-    hint = trim_to_sentence_or_limit(main_sentence, MAX_WORDS)
-    return finalize_hint(hint)
 
-# ---------- REPAIR SHORT HINTS ----------
-def repair_short_hints(df, min_words=MIN_HINT_WORDS):
-    """Fix short or incomplete hints by extending them with next sentence if available."""
-    repaired = 0
-    for idx, row in df.iterrows():
-        hint = row["HINT"]
-        definition = str(row["DEFINITION"])
-        if not isinstance(hint, str) or len(hint.split()) < min_words:
-            sentences = re.split(r"(?<=[.!?])\s+", definition)
-            if len(sentences) > 1:
-                extended_hint = sentences[0].strip() + " " + sentences[1].strip()
-            else:
-                extended_hint = definition.strip()
-            df.at[idx, "HINT"] = finalize_hint(extended_hint)
-            repaired += 1
-    print(f"🔧 Repaired {repaired} short hints.")
-    return df
+    # 1️⃣ Remove internal blank lines
+    lines = [ln.strip() for ln in definition.splitlines() if ln.strip()]
+    full_def = " ".join(lines)
+
+    # 2️⃣ Check for 'Overall' sentence priority
+    sentences = split_sentences(full_def)
+    for s in sentences:
+        if re.match(r"^\s*Overall[,:\s]", s, flags=re.IGNORECASE):
+            return finalize_hint(remove_word_from_text(word, s))
+
+    # 3️⃣ Mask word, trim, and finalize
+    masked = remove_word_from_text(word, full_def)
+    limited = trim_to_sentence_or_limit(masked, MAX_WORDS, MAX_SENTENCES)
+
+    return finalize_hint(limited)
 
 # ---------- MAIN ----------
 def main():
-    meta_patterns = load_meta_phrases()
-
+    tqdm.pandas()
     print(f"🔹 Loading: {INPUT_CSV}")
     df = pd.read_csv(INPUT_CSV)
 
-    tqdm.pandas(desc="Cleaning definitions")
-    df["DEFINITION"] = df["DEFINITION"].progress_apply(clean_definition)
+    # Generate hints (no meta-phrase exclusion)
+    df["HINT"] = df.progress_apply(lambda row: generate_hint(row["WORD"], row["DEFINITION"]), axis=1)
 
-    tqdm.pandas(desc="Generating crossword-style hints")
-    df["HINT"] = df.progress_apply(
-        lambda row: generate_hint(row.WORD, row.DEFINITION, meta_patterns), axis=1
+    # Clean DEFINITION column (remove internal blanks)
+    df["DEFINITION"] = df["DEFINITION"].apply(
+        lambda d: " ".join([ln.strip() for ln in str(d).splitlines() if ln.strip()])
     )
 
-    tqdm.pandas(desc="Repairing short hints")
-    df = repair_short_hints(df)
-
-    cols = list(df.columns)
-    if "WORD" in cols and "DEFINITION" in cols and "HINT" in cols:
+    # Reorder columns
+    if {"WORD", "DEFINITION", "HINT"}.issubset(df.columns):
+        cols = list(df.columns)
         cols.insert(cols.index("DEFINITION"), cols.pop(cols.index("HINT")))
         df = df[cols]
 
     df.to_csv(OUTPUT_CSV, index=False)
-    print(f"\n✅ Done! Saved refined crossword-style hints to {OUTPUT_CSV}")
+    print(
+        f"\n✅ Done! Saved crossword-style hints to {OUTPUT_CSV}\n"
+        f"   (Max Sentences: {MAX_SENTENCES}, Max Words: {MAX_WORDS})"
+    )
 
 if __name__ == "__main__":
     main()
-

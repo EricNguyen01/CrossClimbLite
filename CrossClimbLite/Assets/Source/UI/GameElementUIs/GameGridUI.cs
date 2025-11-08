@@ -148,9 +148,9 @@ namespace CrossClimbLite
             {
                 if (!plankUISpawned[i]) continue;
 
-                if (Application.isEditor) DestroyImmediate(plankUISpawned[i].gameObject);
+                if (!Application.isPlaying) DestroyImmediate(plankUISpawned[i].gameObject);
 
-                else if(Application.isPlaying) Destroy(plankUISpawned[i].gameObject);
+                else Destroy(plankUISpawned[i].gameObject);
             }
 
             if (plankUISpawned.Count > 0) plankUISpawned.Clear();

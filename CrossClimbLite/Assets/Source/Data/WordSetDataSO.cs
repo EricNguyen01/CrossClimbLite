@@ -156,9 +156,9 @@ namespace CrossClimbLite
 
             if(charIndex == -1) charIndex = headers.IndexOf("CHARACTER"); //fallback to singular form
 
-            if (charIndex == -1) charIndex = headers.IndexOf("FILTERED BY CHARACTER"); 
-
             if (charIndex == -1) charIndex = headers.IndexOf("WORD LENGTH"); //fallback to LENGTH
+
+            if (charIndex == -1) charIndex = headers.IndexOf("FILTERED BY CHARACTERS");
 
             if (wordIndex == -1 || hintIndex == -1 || charIndex == -1)
             {

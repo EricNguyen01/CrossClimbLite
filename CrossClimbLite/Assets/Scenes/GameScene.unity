@@ -2156,30 +2156,6 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
-      propertyPath: <wordPlankRowsInGrid>k__BackingField.Array.size
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
-      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[0]'
-      value: 
-      objectReference: {fileID: 389892103}
-    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
-      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[1]'
-      value: 
-      objectReference: {fileID: 243301549}
-    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
-      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[2]'
-      value: 
-      objectReference: {fileID: 637507091}
-    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
-      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[3]'
-      value: 
-      objectReference: {fileID: 662439997}
-    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
-      propertyPath: '<wordPlankRowsInGrid>k__BackingField.Array.data[4]'
-      value: 
-      objectReference: {fileID: 682126493}
-    - target: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
       propertyPath: rowNumDataToModifyOnStart.Array.data[2].<rowNum>k__BackingField
       value: 3
       objectReference: {fileID: 0}

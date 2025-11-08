@@ -170,6 +170,8 @@ namespace CrossClimbLite
         {
             if (!gameGridHoldingPlank) return;
 
+            if(isPlankLocked) return;
+
             isPlankRowSelected = isSelected;
 
             if (isSelected)

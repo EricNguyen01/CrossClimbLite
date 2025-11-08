@@ -86,6 +86,8 @@ namespace CrossClimbLite
 
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI)
         {
+            if (isSlotLocked) return;
+
             isSlotSelected = isSelected;
             
             if (wordPlankOfSlot)

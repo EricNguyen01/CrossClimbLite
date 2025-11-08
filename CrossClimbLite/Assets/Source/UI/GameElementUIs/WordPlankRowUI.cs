@@ -305,6 +305,8 @@ namespace CrossClimbLite
         {
             if(!enabled) return;
 
+            if(isLocked) return;    
+
             wordPlankRowLinked.SetGameElementSelectionStatus(true, true);
 
             CreatePlankDragVisualObject(false);
@@ -343,6 +345,8 @@ namespace CrossClimbLite
         {
             if (!enabled) return;
 
+            if (isLocked) return;
+
             Vector2 mousePosLocalRect;
 
             RectTransformUtility.ScreenPointToLocalPointInRectangle(parentRect,
@@ -371,6 +375,8 @@ namespace CrossClimbLite
         public void OnEndDrag(PointerEventData eventData)
         {
             if (!enabled) return;
+
+            if (isLocked) return;
 
             plankDragVisualObject.gameObject.SetActive(false);
 
