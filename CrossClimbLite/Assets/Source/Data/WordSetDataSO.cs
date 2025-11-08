@@ -16,7 +16,7 @@ namespace CrossClimbLite
         [Space(10)]
 
         [HelpBox("Make sure the CSV contains the WORD, HINT, " +
-        "and CHARACTERS column with the exact names.", 
+        "and CHARACTERS column with the exact names.",
         UnityEngine.UIElements.HelpBoxMessageType.Warning)]
         [SerializeField]
         [FormerlySerializedAs("wordHintCSV")]
@@ -110,7 +110,7 @@ namespace CrossClimbLite
         {
             Debug.Log("Begins Generating Word Hint List from CSV");
 
-            if(!wordHintCSV)
+            if (!wordHintCSV)
             {
                 Debug.LogWarning("WordSetSO: No CSV file assigned.");
 
@@ -144,17 +144,17 @@ namespace CrossClimbLite
 
             int wordIndex = headers.IndexOf(wordColumnName);
 
-            if(wordIndex == -1) wordIndex = headers.IndexOf("WORD"); //fallback to default
+            if (wordIndex == -1) wordIndex = headers.IndexOf("WORD"); //fallback to default
 
             int hintIndex = headers.IndexOf(hintColumnName);
 
-            if(hintIndex == -1) hintIndex = headers.IndexOf("HINT"); //fallback to default
+            if (hintIndex == -1) hintIndex = headers.IndexOf("HINT"); //fallback to default
 
             int charIndex = headers.IndexOf(charactersColumnName);
 
-            if(charIndex == -1) charIndex = headers.IndexOf("CHARACTERS"); //fallback to default
+            if (charIndex == -1) charIndex = headers.IndexOf("CHARACTERS"); //fallback to default
 
-            if(charIndex == -1) charIndex = headers.IndexOf("CHARACTER"); //fallback to singular form
+            if (charIndex == -1) charIndex = headers.IndexOf("CHARACTER"); //fallback to singular form
 
             if (charIndex == -1) charIndex = headers.IndexOf("WORD LENGTH"); //fallback to LENGTH
 
@@ -173,7 +173,8 @@ namespace CrossClimbLite
 
             try
             {
-                if(Application.isEditor)
+#if UNITY_EDITOR
+                if (Application.isEditor)
                 {
                     if (lines.Length > 251)
                     {
@@ -195,6 +196,7 @@ namespace CrossClimbLite
                         }
                     }
                 }
+#endif
 
                 // Create WordHintStruct for each data row and add to wordHintList
                 for (int i = 1; i < lines.Length; i++)
@@ -235,8 +237,10 @@ namespace CrossClimbLite
             }
             finally
             {
+#if UNITY_EDITOR
                 // Always clear the progress bar even if an error occurs
                 if (Application.isEditor) EditorUtility.ClearProgressBar();
+#endif
             }
 
             //SORT WORD HINT LIST BY WORD LENGTH.................................................................................................................
@@ -245,15 +249,19 @@ namespace CrossClimbLite
             {
                 try
                 {
+#if UNITY_EDITOR
                     if (Application.isEditor) EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 0.0f);
-
+#endif
                     SortWordHintListByLength();
-
+#if UNITY_EDITOR
                     if (Application.isEditor) EditorUtility.DisplayProgressBar("Sorting List...", "Sorting list by word legnth", 1.0f);
+#endif
                 }
                 finally
                 {
+#if UNITY_EDITOR
                     if (Application.isEditor) EditorUtility.ClearProgressBar();
+#endif
                 }
             }
 
@@ -355,7 +363,7 @@ namespace CrossClimbLite
 
             Debug.Log("Begins Generating All Word Sets List");
 
-            if(wordHintList == null || wordHintList.Count == 0)
+            if (wordHintList == null || wordHintList.Count == 0)
             {
                 if (!GenerateWordsListFromCSV()) return false;
             }
@@ -381,7 +389,7 @@ namespace CrossClimbLite
 
             else allWordSetsList.Clear();
 
-            for(int i = 0; i < allWordChains.Count; i++)
+            for (int i = 0; i < allWordChains.Count; i++)
             {
                 if (allWordChains[i] == null || allWordChains[i].Count == 0) continue;
 
@@ -430,8 +438,9 @@ namespace CrossClimbLite
                     string currentGroupLog = $"Processing chars length group: {group.Key} chars words";
 
                     float progress = (float)processedGroups / totalGroups;
-
+#if UNITY_EDITOR
                     if (Application.isEditor) EditorUtility.DisplayProgressBar("Generating Word Chains", currentGroupLog, progress);
+#endif
 
                     //init a list of WordHintStruct from the current word length group 
                     var words = new List<WordHintStruct>(group);
@@ -512,7 +521,7 @@ namespace CrossClimbLite
 
                     if (wordSetsLengthGroupStartIndexDict == null) wordSetsLengthGroupStartIndexDict = new Dictionary<int, int>();
 
-                    if(allChains.Count <= 1) wordSetsLengthGroupStartIndexDict.TryAdd(group.Key, 0);
+                    if (allChains.Count <= 1) wordSetsLengthGroupStartIndexDict.TryAdd(group.Key, 0);
 
                     else wordSetsLengthGroupStartIndexDict.TryAdd(group.Key, allChains.Count);
 
@@ -531,8 +540,10 @@ namespace CrossClimbLite
             }
             finally
             {
+#if UNITY_EDITOR
                 // Always clear progress bar
                 if (Application.isEditor) EditorUtility.ClearProgressBar();
+#endif
             }
 
             return allChains;
@@ -580,16 +591,16 @@ namespace CrossClimbLite
 
             bool validRandomSetFound = false;
 
-            if (allWordSetsList == null || 
-               allWordSetsList.Count == 0 || 
-               wordSetsLengthGroupStartIndexDict == null || 
+            if (allWordSetsList == null ||
+               allWordSetsList.Count == 0 ||
+               wordSetsLengthGroupStartIndexDict == null ||
                wordSetsLengthGroupStartIndexDict.Count == 0)
             {
                 Debug.LogWarning("Trying to generate random word set during runtime " +
                                  "but the all word sets list appear to be null or empty. " +
                                  "Regenerating word sets list...");
 
-                if(!GenerateWordChainsList()) return finalWordSet;
+                if (!GenerateWordChainsList()) return finalWordSet;
             }
 
             if (allWordSetsList == null || allWordSetsList.Count == 0) return finalWordSet;
@@ -629,7 +640,7 @@ namespace CrossClimbLite
             try
             {
                 List<SingleWordChainWrapper> wordSetsInLengthGroup = new List<SingleWordChainWrapper>();
-                
+
                 wordSetsInLengthGroup.AddRange(allWordSetsList.GetRange(wordSetsRangeStart, wordSetsRangeEnd - wordSetsRangeStart));
 
                 int rand = UnityEngine.Random.Range(0, wordSetsInLengthGroup.Count);
@@ -726,7 +737,7 @@ namespace CrossClimbLite
                     }
                 }
             }
-        
+
             return finalWordSet;
         }
 
@@ -738,7 +749,7 @@ namespace CrossClimbLite
 
             wordSetsLengthGroupStartIndexDictKeys.Clear();
 
-            if(wordSetsLengthGroupStartIndexDictValues == null) wordSetsLengthGroupStartIndexDictValues = new List<int>();
+            if (wordSetsLengthGroupStartIndexDictValues == null) wordSetsLengthGroupStartIndexDictValues = new List<int>();
 
             wordSetsLengthGroupStartIndexDictValues.Clear();
 
@@ -758,11 +769,11 @@ namespace CrossClimbLite
 
             if (wordSetsLengthGroupStartIndexDictKeys.Count != wordSetsLengthGroupStartIndexDictValues.Count) return;
 
-            if(wordSetsLengthGroupStartIndexDict == null) wordSetsLengthGroupStartIndexDict = new Dictionary<int, int>();
+            if (wordSetsLengthGroupStartIndexDict == null) wordSetsLengthGroupStartIndexDict = new Dictionary<int, int>();
 
             wordSetsLengthGroupStartIndexDict.Clear();
 
-            for(int i = 0; i <  wordSetsLengthGroupStartIndexDictKeys.Count; i++)
+            for (int i = 0; i < wordSetsLengthGroupStartIndexDictKeys.Count; i++)
             {
                 int key = wordSetsLengthGroupStartIndexDictKeys[i];
 
@@ -774,7 +785,7 @@ namespace CrossClimbLite
 
         //EDITOR..................................................................................................................................................
 
-#if UNITY_EDITOR
+    #if UNITY_EDITOR
 
         [CustomEditor(typeof(WordSetDataSO))]
         private class WordSetDataSOEditor : Editor
@@ -830,13 +841,13 @@ namespace CrossClimbLite
             {
                 serializedObject.Update();
 
-                if(csvFileProp != null) EditorGUILayout.PropertyField(csvFileProp);
+                if (csvFileProp != null) EditorGUILayout.PropertyField(csvFileProp);
 
-                if(wordColumnNameProp != null) EditorGUILayout.PropertyField(wordColumnNameProp);
+                if (wordColumnNameProp != null) EditorGUILayout.PropertyField(wordColumnNameProp);
 
-                if(hintColumnNameProp != null) EditorGUILayout.PropertyField(hintColumnNameProp);
+                if (hintColumnNameProp != null) EditorGUILayout.PropertyField(hintColumnNameProp);
 
-                if(charactersColumnNameProp != null) EditorGUILayout.PropertyField(charactersColumnNameProp);
+                if (charactersColumnNameProp != null) EditorGUILayout.PropertyField(charactersColumnNameProp);
 
                 EditorGUILayout.Space();
 
@@ -844,16 +855,16 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space();
 
-                DrawReadOnlyList(wordHintListProp, 
-                                 wordSetDataSO.wordHintEntriesToShow, 
-                                 true, 
-                                 ref wordHintListScrollPos, 
+                DrawReadOnlyList(wordHintListProp,
+                                 wordSetDataSO.wordHintEntriesToShow,
+                                 true,
+                                 ref wordHintListScrollPos,
                                  ref isWordHintListFoldoutOpened);
 
                 EditorGUILayout.Space(15);
 
                 EditorGUILayout.HelpBox("Use the button to validate and generate words and hints list from the CSV file.", MessageType.Info);
-            
+
                 using (new EditorGUI.DisabledGroupScope(Application.isPlaying))
                 {
                     if (GUILayout.Button("Generate Words List From CSV"))//On Generate Grid button pressed:...
@@ -870,10 +881,10 @@ namespace CrossClimbLite
 
                 EditorGUILayout.Space();
 
-                DrawReadOnlyList(allWordSetsListProp, 
-                                 wordSetDataSO.wordSetsEntriesToShow, 
-                                 true, 
-                                 ref wordSetsListScrollPos, 
+                DrawReadOnlyList(allWordSetsListProp,
+                                 wordSetDataSO.wordSetsEntriesToShow,
+                                 true,
+                                 ref wordSetsListScrollPos,
                                  ref isAllWordSetsFoldoutOpened);
 
                 EditorGUILayout.Space(15);
@@ -899,7 +910,7 @@ namespace CrossClimbLite
             {
                 if (listProp == null) return;
 
-                if(entriesToShow < 1) entriesToShow = listProp.arraySize;
+                if (entriesToShow < 1) entriesToShow = listProp.arraySize;
 
                 // Toggle foldout
                 foldout = EditorGUILayout.Foldout(foldout, $"{listProp.displayName} ({listProp.arraySize} entries)", true);
@@ -923,7 +934,7 @@ namespace CrossClimbLite
 
                 // Begin scrollable view
                 //scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.Height(500));
-                if(canScroll) 
+                if (canScroll)
                     scrollPos = EditorGUILayout.BeginScrollView(scrollPos, GUILayout.MaxHeight(Mathf.Max(EditorGUIUtility.currentViewWidth, 500.0f)));
 
                 for (int i = 0; i < maxDisplay; i++)
@@ -955,13 +966,13 @@ namespace CrossClimbLite
 
                     EditorGUI.indentLevel++;
 
-                    if(wordProp != null) DrawReadOnlyField("Word", wordProp?.stringValue);
+                    if (wordProp != null) DrawReadOnlyField("Word", wordProp?.stringValue);
 
                     if (hintProp != null) DrawReadOnlyField("Hint", hintProp?.stringValue, true); // multi-line
 
-                    if(lengthProp != null) DrawReadOnlyField("Word Length", lengthProp?.intValue.ToString());
+                    if (lengthProp != null) DrawReadOnlyField("Word Length", lengthProp?.intValue.ToString());
 
-                    if(singleWordChainsProp != null) DrawReadOnlyListNoScroll(singleWordChainsProp, singleWordChainsProp.arraySize, ref foldout);
+                    if (singleWordChainsProp != null) DrawReadOnlyListNoScroll(singleWordChainsProp, singleWordChainsProp.arraySize, ref foldout);
 
                     EditorGUI.indentLevel--;
 
@@ -973,7 +984,7 @@ namespace CrossClimbLite
                     EditorGUILayout.HelpBox($"Showing first {maxDisplay} of {size} entries.", MessageType.Info);
                 }
 
-                if(canScroll) EditorGUILayout.EndScrollView();
+                if (canScroll) EditorGUILayout.EndScrollView();
 
                 EditorGUI.indentLevel--;
             }
@@ -1007,8 +1018,8 @@ namespace CrossClimbLite
 
                     float clampedHeight = Mathf.Min(textHeight + 14, 400); // max 300px
 
-                    EditorGUILayout.TextArea(value ?? string.Empty, textStyle, 
-                                             GUILayout.MinHeight(40), 
+                    EditorGUILayout.TextArea(value ?? string.Empty, textStyle,
+                                             GUILayout.MinHeight(40),
                                              GUILayout.Height(clampedHeight),
                                              GUILayout.ExpandHeight(true));
                 }
@@ -1020,6 +1031,6 @@ namespace CrossClimbLite
                 GUI.enabled = true; // restore GUI state
             }
         }
+    #endif
     }
-#endif
 }
