@@ -48,17 +48,19 @@ namespace CrossClimbLite
         {
             if (!base.OnStateExit()) return false;
 
+            //This "if" block HAS TO go above the "presetGameGridInScene.SetActiveFirstCharSlotOfFirstNonKeywordRow();" below
+            //in order for the first selected plank's first char slot's caret to show up on start...
+            if (GameManager.GameManagerInstance)
+            {
+                if (GameManager.GameManagerInstance.gameUICanvas)
+                    GameManager.GameManagerInstance.gameUICanvas.DisableGameUICanvas(false);
+            }
+
             if (presetGameGridInScene && presetGameGridInScene.hasGridGenerated)
             {
                 presetGameGridInScene.SetGameElementLockedStatus(false, true);
 
                 presetGameGridInScene.SetActiveFirstCharSlotOfFirstNonKeywordRow();
-            }
-
-            if (GameManager.GameManagerInstance)
-            {
-                if (GameManager.GameManagerInstance.gameUICanvas)
-                    GameManager.GameManagerInstance.gameUICanvas.DisableGameUICanvas(false);
             }
 
             if (GameStartLoadUI.gameStartLoadUIInstance)
