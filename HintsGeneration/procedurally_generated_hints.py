@@ -1,5 +1,5 @@
 # ============================================================
-# procedurally_generated_hints_v34.py
+# procedurally_generated_hints_v41.py
 # ------------------------------------------------------------
 # Crossword-style hint generator (offline procedural)
 # ------------------------------------------------------------
@@ -7,10 +7,12 @@
 # ✅ Full-definition logic
 # ✅ Blank-line cleanup
 # ✅ Configurable MAX_SENTENCES and MAX_WORDS
-# ✅ "Overall" sentence priority rule
-# ✅ Smart trimming (drops final sentence if exceeding limit)
-# ✅ Ignores colons and numeric dots (e.g., 3.5) as sentence ends
-# 🚫 No meta-phrase exclusion (for more natural hints)
+# ✅ Smart trimming (finish last sentence even if exceeding limit)
+# ✅ Ignores colons (:), semicolons (;), numeric dots (3.5), list numbers (1.), and asterisks (*)
+# ✅ Counts "quoted." endings as sentence boundaries
+# ✅ Detects and logs blank hints
+# 🚫 No meta-phrase exclusion
+# 🚫 No "Overall" rule
 # ============================================================
 
 import pandas as pd
@@ -21,21 +23,22 @@ from tqdm.auto import tqdm
 # ---------- CONFIG ----------
 INPUT_CSV = "Filtered_WordDB_ModernNoNames.csv"
 OUTPUT_CSV = "Filtered_WordDB_Procedural_Hints.csv"
-MAX_WORDS = 60
-MAX_SENTENCES = 3   # Adjustable number of sentences per hint
+MAX_WORDS = 100
+MAX_SENTENCES = 2   # Adjustable number of sentences per hint
 
 # ---------- BASIC CLEANING ----------
 def clean_definition(text):
     """Removes parentheses, formatting, and redundant punctuation."""
     if not isinstance(text, str) or not text.strip():
         return ""
+    # Remove parentheses and nested content
     while re.search(r"\([^()]*\)", text):
         text = re.sub(r"\([^()]*\)", "", text)
     text = re.sub(r"\(\s*\)", "", text)
 
-    # Normalize punctuation (keep colons, ignore decimals)
-    text = re.sub(r"\s+[.,;]\s*", ". ", text)
-    text = re.sub(r"[•→/\\\-;<>•]+", " ", text)
+    # Normalize punctuation (keep colons and semicolons)
+    text = re.sub(r"\s+[.,]\s*", ". ", text)
+    text = re.sub(r"[•→/\\\-<>\*]+", " ", text)
     text = re.sub(r"\*{1,2}", "", text)
     text = re.sub(r"_+", "", text)
     text = re.sub(r"\b\d+\s*[\.\)]\s*", "", text)
@@ -58,22 +61,44 @@ def split_sentences(text):
     """
     Splits sentences while ignoring:
     - Dots inside numbers (e.g., 3.5, 2.0)
-    - Colons as sentence boundaries
+    - Dots after numeric list markers (e.g., 1., 2.)
+    - Colons (:), semicolons (;), and asterisks (*) as sentence boundaries
+    - ✅ Counts dots after closing quotes ("word." or “word.”) as sentence ends
     """
-    # Protect numeric decimals temporarily
+    # Protect decimals (3.5 → 3<DECIMAL>5)
     text = re.sub(r"(\d)\.(\d)", r"\1<DECIMAL>\2", text)
 
-    # Split on '.', '!' or '?'
-    sentences = re.split(r"(?<=[.!?])\s+", text)
+    # Protect list markers (e.g., "1.", "23.") → "1<ENUM>"
+    text = re.sub(r"\b(\d+)\.(\s)", r"\1<ENUM>\2", text)
 
-    # Restore decimals
-    sentences = [s.replace("<DECIMAL>", ".") for s in sentences]
-    return sentences
+    # Protect asterisks, colons, and semicolons
+    text = (
+        text.replace("*", "<ASTERISK>")
+        .replace(";", "<SEMICOLON>")
+        .replace(":", "<COLON>")
+    )
+
+    # ✅ Split sentences, including quotes before punctuation
+    sentences = re.split(
+        r'(?:(?<=[.!?])["\'“”’])\s+|(?<=[.!?])\s+', text
+    )
+
+    # Restore protected markers
+    sentences = [
+        s.replace("<DECIMAL>", ".")
+         .replace("<ENUM>", ".")
+         .replace("<ASTERISK>", "*")
+         .replace("<SEMICOLON>", ";")
+         .replace("<COLON>", ":")
+        for s in sentences
+    ]
+
+    return [s.strip() for s in sentences if s.strip()]
 
 def trim_to_sentence_or_limit(text, max_words=MAX_WORDS, max_sentences=MAX_SENTENCES):
     """
     Trims text to a maximum number of sentences or words.
-    Removes the final sentence entirely if it pushes the total word count over the limit.
+    If final sentence exceeds word limit, finish it instead of dropping.
     """
     sentences = split_sentences(text)
     trimmed_sentences = []
@@ -81,10 +106,10 @@ def trim_to_sentence_or_limit(text, max_words=MAX_WORDS, max_sentences=MAX_SENTE
 
     for s in sentences[:max_sentences]:
         words_in_s = len(s.split())
-        if total_words + words_in_s > max_words:
-            break
         trimmed_sentences.append(s)
         total_words += words_in_s
+        if total_words >= max_words:
+            break  # stop adding further sentences, but keep current one
 
     return " ".join(trimmed_sentences).strip()
 
@@ -111,7 +136,7 @@ def finalize_hint(text):
 
 # ---------- MAIN GENERATOR ----------
 def generate_hint(word, definition):
-    """Unified fallback-style generation with 'Overall' priority rule."""
+    """Generates a crossword-style hint without meta-phrase or 'Overall' filters."""
     if not isinstance(definition, str) or not definition.strip():
         return ""
 
@@ -119,13 +144,7 @@ def generate_hint(word, definition):
     lines = [ln.strip() for ln in definition.splitlines() if ln.strip()]
     full_def = " ".join(lines)
 
-    # 2️⃣ Check for 'Overall' sentence priority
-    sentences = split_sentences(full_def)
-    for s in sentences:
-        if re.match(r"^\s*Overall[,:\s]", s, flags=re.IGNORECASE):
-            return finalize_hint(remove_word_from_text(word, s))
-
-    # 3️⃣ Mask word, trim, and finalize
+    # 2️⃣ Mask, trim, and finalize
     masked = remove_word_from_text(word, full_def)
     limited = trim_to_sentence_or_limit(masked, MAX_WORDS, MAX_SENTENCES)
 
@@ -137,8 +156,14 @@ def main():
     print(f"🔹 Loading: {INPUT_CSV}")
     df = pd.read_csv(INPUT_CSV)
 
-    # Generate hints (no meta-phrase exclusion)
+    # Generate hints
     df["HINT"] = df.progress_apply(lambda row: generate_hint(row["WORD"], row["DEFINITION"]), axis=1)
+
+    # Identify blank hints and record the corresponding word
+    df["Blank Hint Word"] = df.apply(
+        lambda row: row["WORD"] if not str(row["HINT"]).strip() else "", axis=1
+    )
+    blank_count = df["Blank Hint Word"].astype(bool).sum()
 
     # Clean DEFINITION column (remove internal blanks)
     df["DEFINITION"] = df["DEFINITION"].apply(
@@ -152,10 +177,12 @@ def main():
         df = df[cols]
 
     df.to_csv(OUTPUT_CSV, index=False)
+
     print(
         f"\n✅ Done! Saved crossword-style hints to {OUTPUT_CSV}\n"
         f"   (Max Sentences: {MAX_SENTENCES}, Max Words: {MAX_WORDS})"
     )
+    print(f"⚠️ Blank hints detected: {blank_count}")
 
 if __name__ == "__main__":
     main()
