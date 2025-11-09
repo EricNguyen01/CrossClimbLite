@@ -151,7 +151,7 @@ GameObject:
   - component: {fileID: 7170043845407560809}
   - component: {fileID: 425996143753804739}
   m_Layer: 5
-  m_Name: ReplayButton
+  m_Name: ReplayButtonEndMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

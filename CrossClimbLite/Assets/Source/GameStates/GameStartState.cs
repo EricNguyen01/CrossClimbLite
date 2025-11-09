@@ -55,6 +55,12 @@ namespace CrossClimbLite
                 presetGameGridInScene.SetActiveFirstCharSlotOfFirstNonKeywordRow();
             }
 
+            if (GameManager.GameManagerInstance)
+            {
+                if (GameManager.GameManagerInstance.gameUICanvas)
+                    GameManager.GameManagerInstance.gameUICanvas.DisableGameUICanvas(false);
+            }
+
             if (GameStartLoadUI.gameStartLoadUIInstance)
             {
                 GameStartLoadUI.gameStartLoadUIInstance.HideUIPanel();
@@ -68,6 +74,12 @@ namespace CrossClimbLite
             if (GameStartLoadUI.gameStartLoadUIInstance)
             {
                 GameStartLoadUI.gameStartLoadUIInstance.DisplayUIPanel();
+            }
+
+            if (GameManager.GameManagerInstance)
+            {
+                if (GameManager.GameManagerInstance.gameUICanvas)
+                    GameManager.GameManagerInstance.gameUICanvas.DisableGameUICanvas(true);
             }
 
             yield return presetGameGridInScene.InitGridOnGameStartLoad();

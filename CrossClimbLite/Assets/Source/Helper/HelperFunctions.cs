@@ -24,5 +24,16 @@ namespace CrossClimbLite
                 return "1h+";
             }
         }
+
+        public static int GetWordCountFromString(string input)
+        {
+            // Split on any whitespace, remove empty entries
+            string[] words = input.Split(new char[] { ' ', '\t', '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries);
+
+            // Join them back with a single space
+            string cleaned = string.Join(" ", words);
+
+            return words.Length;
+        }
     }
 }

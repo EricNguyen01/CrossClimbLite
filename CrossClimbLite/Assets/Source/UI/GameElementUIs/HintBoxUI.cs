@@ -9,6 +9,8 @@ namespace CrossClimbLite
         [SerializeField]
         private TextMeshProUGUI hintTextBox;
 
+        private float baseTextSize = 0.0f;
+
         public static HintBoxUI hintBoxUIInstance;
 
         protected override void Awake()
@@ -41,12 +43,28 @@ namespace CrossClimbLite
                 Debug.LogError("Hint Box: " + name + " doesnt have a valid text box ref to display hint. Disabling hint box!");
 
                 enabled = false;
+
+                return;
             }
+
+            baseTextSize = hintTextBox.fontSize;
         }
 
         public void SetHintTextToDisplay(string hint)
         {
             if (!enabled || !hintTextBox) return;
+
+            if(!string.IsNullOrEmpty(hint) || !string.IsNullOrWhiteSpace(hint))
+            {
+                if(HelperFunctions.GetWordCountFromString(hint) > 40)
+                {
+                    hintTextBox.fontSize = baseTextSize - 7.0f;
+                }
+                else
+                {
+                    hintTextBox.fontSize = baseTextSize;
+                }
+            }
 
             hintTextBox.text = hint;
         }

@@ -1603,6 +1603,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: GameUICanvas
       objectReference: {fileID: 0}
+    - target: {fileID: 4944869360021566631, guid: ffc8aacf37be482498cc97fb3577ba56, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7082272472768301694, guid: ffc8aacf37be482498cc97fb3577ba56, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 7413678380445090933, guid: ffc8aacf37be482498cc97fb3577ba56, type: 3}
       propertyPath: gameGridLinked
       value: 

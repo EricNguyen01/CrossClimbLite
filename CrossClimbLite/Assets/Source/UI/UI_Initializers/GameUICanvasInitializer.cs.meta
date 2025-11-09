@@ -7,6 +7,7 @@ MonoImporter:
   - gameBackgroundUIPrefab: {fileID: 2374694277721674525, guid: 8f798343f2b18e14bb9e5a897720ee36, type: 3}
   - hintGiverButtonUIPrefab: {fileID: 6654660857790402942, guid: b6c0702933b569f4d8c9151ae4a0f252, type: 3}
   - hintBoxUIPanelPrefab: {fileID: 1382355416594066871, guid: 6566bb3b16231a34f8d052fec2731c81, type: 3}
+  - startNewButtonUIPrefab: {fileID: 6734004743567302520, guid: 0fb379d56143f9d46915a3da4129302e, type: 3}
   - gameGridLayoutUIPrefab: {fileID: 9205909639843897066, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}

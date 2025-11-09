@@ -193,6 +193,8 @@ namespace CrossClimbLite
             {
                 gameUICanvas = SpawnGameObjectWithComponent<GameUICanvasInitializer>(gameUICanvasPrefab.gameObject, "GameUICanvas", null);
             }
+
+            if (gameUICanvas) gameUICanvas.DisableGameUICanvas(true);
         }
 
         private void InitGameMenuUI()

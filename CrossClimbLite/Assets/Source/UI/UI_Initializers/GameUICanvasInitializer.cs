@@ -25,11 +25,18 @@ namespace CrossClimbLite
         public HintBoxUI hintBoxUI { get; private set; }
 
         [SerializeField]
+        private ReplayButton startNewButtonUIPrefab;
+
+        public ReplayButton startNewButtonUI { get; private set; }
+
+        [SerializeField]
         private GameGridUI gameGridLayoutUIPrefab;
 
         public GameGridUI gameGridLayoutUI { get; private set; }
 
         public Canvas gameUICanvas { get; private set; }    
+
+        public CanvasGroup gameUICanvasGroup { get; private set; }  
 
         private void OnEnable()
         {
@@ -47,6 +54,10 @@ namespace CrossClimbLite
             }
 
             SetupGameUICanvas();
+
+            if(!gameUICanvasGroup) gameUICanvasGroup = GetComponent<CanvasGroup>();
+
+            if (!gameUICanvasGroup) gameUICanvasGroup = gameObject.AddComponent<CanvasGroup>();
 
             bool hasBackgroundUI = false;
 
@@ -78,6 +89,13 @@ namespace CrossClimbLite
             if (!hintBoxUI)
             {
                 hintBoxUI = GameManager.SpawnGameObjectWithComponent<HintBoxUI>(hintBoxUIPanelPrefab.gameObject, "HintBoxUI", transform);
+            }
+
+            startNewButtonUI = GetComponentInChildren<ReplayButton>();
+
+            if (!startNewButtonUI)
+            {
+                startNewButtonUI = GameManager.SpawnGameObjectWithComponent<ReplayButton>(startNewButtonUI.gameObject, "StartNewButton", transform);
             }
 
             gameGridLayoutUI = GetComponentInChildren<GameGridUI>();
@@ -140,6 +158,24 @@ namespace CrossClimbLite
             }
 
             if (gameUICanvas.planeDistance != 10.0f) gameUICanvas.planeDistance = 10.0f;
+        }
+
+        public void DisableGameUICanvas(bool disable)
+        {
+            if (!gameUICanvasGroup) gameUICanvasGroup = gameObject.AddComponent<CanvasGroup>();
+
+            if (disable)
+            {
+                gameUICanvasGroup.interactable = false;
+
+                gameUICanvasGroup.blocksRaycasts = false;
+
+                return;
+            }
+
+            gameUICanvasGroup.interactable = true;
+
+            gameUICanvasGroup.blocksRaycasts = true;
         }
     }
 }
