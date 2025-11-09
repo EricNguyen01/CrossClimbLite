@@ -30,6 +30,10 @@ namespace CrossClimbLite
         {
             if (!enabled) return;
 
+            if (isDisplaying) return;
+
+            isDisplaying = true;
+
             if (UIFadeComponent && UIFadeComponent.IsTweenRunning())
                 UIFadeComponent.StopAndResetUITweenImmediate();
 

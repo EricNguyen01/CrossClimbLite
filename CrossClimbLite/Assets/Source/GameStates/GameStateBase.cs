@@ -5,19 +5,6 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public abstract class GameStateBase : MonoBehaviour
     {
-        [Header("Required Game Prefabs")]
-
-        [SerializeField]
-        protected GameGrid gameGridPrefab;
-
-        [SerializeField]
-        protected GameAnswerConfig gameAnswerConfigPrefab;
-
-        [Header("Game Scene Preset Components")]
-
-        [SerializeField]
-        protected GameGrid presetGameGridInScene;
-
         [Header("State Data")]
 
         [SerializeField]
@@ -37,51 +24,24 @@ namespace CrossClimbLite
         [ReadOnlyInspector]
         protected bool stateExited = false;
 
+        [SerializeField]
+        [ReadOnlyInspector]
+        protected GameGrid presetGameGridInScene;
+
         protected GameStateManager gameStateManagerParent;
 
         protected virtual void OnEnable()
         {
             if (!presetGameGridInScene)
             {
-                presetGameGridInScene = FindAnyObjectByType<GameGrid>();
-
-                if (!presetGameGridInScene && gameGridPrefab)
+                if (GameManager.GameManagerInstance)
                 {
-                    GameObject gameGridObj = Instantiate(gameGridPrefab.gameObject, Vector3.zero, Quaternion.identity);
-
-                    GameGrid gameGridComp = gameGridObj.GetComponent<GameGrid>();
-
-                    if (gameGridComp) presetGameGridInScene = gameGridComp;
-                    else presetGameGridInScene = gameGridObj.AddComponent<GameGrid>();
+                    presetGameGridInScene = GameManager.GameManagerInstance.gameGridModal;
                 }
-            }
 
-            if (!presetGameGridInScene)
-            {
-                Debug.LogError("Game Grid doesnt exist! Game will not start!");
-
-                gameObject.SetActive(false);
-
-                enabled = false;
-
-                return;
-            }
-
-            if (GameAnswerConfig.gameAnswerConfigInstance == null && !FindAnyObjectByType<GameAnswerConfig>())
-            {
-                if (gameAnswerConfigPrefab)
+                if (!presetGameGridInScene)
                 {
-                    Instantiate(gameAnswerConfigPrefab.gameObject, Vector3.zero, Quaternion.identity);
-                }
-                else
-                {
-                    Debug.LogError("Game Answer Config and game answer word set data could not be found and its prefab is not provided for instantiation. Game won't start!");
-
-                    gameObject.SetActive(false);
-
-                    enabled = false;
-
-                    return;
+                    presetGameGridInScene = FindAnyObjectByType<GameGrid>();
                 }
             }
         }
@@ -168,7 +128,7 @@ namespace CrossClimbLite
 
         public virtual bool OnStateExit()
         {
-            if (!enabled || !gameStateManagerParent) return false;
+            if (!gameStateManagerParent) return false;
 
             if (gameStateManagerParent.currentGameState != this)
             {

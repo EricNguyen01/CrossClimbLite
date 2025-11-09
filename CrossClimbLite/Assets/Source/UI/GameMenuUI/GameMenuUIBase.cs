@@ -30,6 +30,16 @@ namespace CrossClimbLite
         [Min(0.1f)]
         protected float hideFadeOutDuration = 1.5f;
 
+        [Header("Runtime Data")]
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        protected bool isDisplaying = false;
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        protected bool isHiding = false;
+
         protected virtual void Awake()
         {
             if (!canvasGroup)
@@ -39,6 +49,10 @@ namespace CrossClimbLite
                     canvasGroup = gameObject.AddComponent<CanvasGroup>();
                 }
             }
+
+            isDisplaying = false;
+
+            isHiding = false;
 
             canvasGroup.interactable = false;
 
@@ -63,6 +77,10 @@ namespace CrossClimbLite
         {
             if (!UIFadeComponent) return;
 
+            isDisplaying = true;
+
+            isHiding = false;
+
             if (UIFadeComponent.IsTweenRunning())
                 UIFadeComponent.StopAndResetUITweenImmediate();
 
@@ -84,6 +102,10 @@ namespace CrossClimbLite
         public virtual void HideUIPanel()
         {
             if (!UIFadeComponent) return;
+
+            isDisplaying = false;
+
+            isHiding = true;
 
             if (UIFadeComponent.IsTweenRunning())
                 UIFadeComponent.StopAndResetUITweenImmediate();

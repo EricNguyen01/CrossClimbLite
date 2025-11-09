@@ -57,6 +57,14 @@ namespace CrossClimbLite
                 return;
             }
 
+            if (!GameAnswerConfig.gameAnswerConfigInstance.GetWordSetDataSOInUse())
+            {
+                Debug.LogError("Trying to check if typed word matches the answer, " +
+                               "but there's no word set data SO ref assigned in GameAnswerConfig static object in scene!");
+
+                return;
+            }
+
             bool answersMatched = GameAnswerConfig.gameAnswerConfigInstance.IsWordPlankAnswersMatched(presetGameGridInScene, hasKeywordsUnlocked);
             
             if(!hasKeywordsUnlocked && answersMatched)

@@ -17,6 +17,8 @@ namespace CrossClimbLite
 
         public List<WordSetDataSO.WordHintStruct> answerWordSet { get; private set; } = new List<WordSetDataSO.WordHintStruct>();
 
+        private bool isLoadingWordSetDataSO = false;
+
         public static GameAnswerConfig gameAnswerConfigInstance;
 
         private void Awake()
@@ -33,15 +35,18 @@ namespace CrossClimbLite
             }
 
             gameAnswerConfigInstance = this;
+        }
 
-            if (!wordSetDataToUse)
+        private void OnEnable()
+        {
+            if (!isLoadingWordSetDataSO)
             {
-                Debug.LogError($"WordSetDataToUse is missing on {name} game object. " +
-                                                    "A WordSetData SO is required to provide the answer words and hints data!");
+                if (!wordSetDataToUse)
+                {
+                    Debug.LogError($"WordSetDataToUse is missing on {name} game object. Attempting to load one from resources...");
 
-                enabled = false;
-
-                return;
+                    StartCoroutine(LoadAsyncWordSetDataSO_IfNull());
+                }
             }
         }
 
@@ -51,7 +56,7 @@ namespace CrossClimbLite
 
             if (!wordSetDataToUse)
             {
-                Debug.LogError("Couldn't generate new answer config. Invalid word sets data SO provided");
+                Debug.LogError("Couldn't generate new answer config. Invalid or null word sets data SO provided");
 
                 yield break;
             }
@@ -137,6 +142,33 @@ namespace CrossClimbLite
             }
 
             return isMatched;
+        }
+
+        public WordSetDataSO GetWordSetDataSOInUse()
+        {
+            return wordSetDataToUse;
+        }
+
+        public IEnumerator LoadAsyncWordSetDataSO_IfNull()
+        {
+            if (wordSetDataToUse) yield break;
+
+            if (isLoadingWordSetDataSO) yield break;
+
+            isLoadingWordSetDataSO = true;
+
+            yield return Resources.LoadAsync<WordSetDataSO>("Assets/Resources/ScriptableObject/WordSetDataSO.asset");
+
+            if (!wordSetDataToUse)
+            {
+                Debug.LogError("Word Set Data SO Load Failed! No Word Set Data SO is assiged. Disabling Answer Config...");
+
+                gameObject.SetActive(false);
+
+                enabled = false;
+            }
+
+            isLoadingWordSetDataSO = false;
         }
     }
 }

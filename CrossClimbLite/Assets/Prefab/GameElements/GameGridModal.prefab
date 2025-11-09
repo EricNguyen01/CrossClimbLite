@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 3749734794930966467}
   - component: {fileID: 5346456319413971919}
   m_Layer: 0
-  m_Name: GameGridModel
+  m_Name: GameGridModal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

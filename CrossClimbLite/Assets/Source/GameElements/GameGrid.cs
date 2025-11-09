@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.Serialization;
+using Unity.VisualScripting;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -142,7 +144,8 @@ namespace CrossClimbLite
         {
             if (!Application.isPlaying) return;
 
-            if (!FindAnyObjectByType<GameStartState>())
+            //If found no game manager and start state which both affect the control of grid init, start the grid init by self
+            if (!GameManager.GameManagerInstance && !FindAnyObjectByType<GameStartState>())
             {
                 StartCoroutine(InitGridOnGameStartLoad());
             }
@@ -160,7 +163,9 @@ namespace CrossClimbLite
 
             ShuffleWordPlankOrderInGrid();
 
-            if (!gameGridUIInstance) SpawnGameGridUI_IfNull();
+            if (!gameGridUIInstance) SpawnGameGridUIHoldingPanel_IfNull();
+
+            yield return new WaitForFixedUpdate();
 
             gameGridUIInstance.SpawnNewGridUILayoutFollowingGridLinkedLayout();
 
@@ -374,25 +379,81 @@ namespace CrossClimbLite
             OnAWordPlankFilled?.Invoke(plankTo.GetPlankTypedWord());
         }
 
-        private void SpawnGameGridUI_IfNull()
+        private void SpawnGameGridUIHoldingPanel_IfNull()
         {
-            if (!gameGridUIPrefabToSpawn) return;
-
+            //if game grid UI already existed -> do not spawn one
             if (gameGridUIInstance) return;
+
+            GameUICanvasInitializer validGameUICanvasInitializer = null;
 
             if (!canvasToPlaceGameGridUI)
             {
-                canvasToPlaceGameGridUI = FindAnyObjectByType<Canvas>();
+                if (GameManager.GameManagerInstance)
+                {
+                    if (GameManager.GameManagerInstance.gameUICanvas)
+                    {
+                        validGameUICanvasInitializer = GameManager.GameManagerInstance.gameUICanvas;
+
+                        canvasToPlaceGameGridUI = validGameUICanvasInitializer.gameUICanvas;
+                    }
+                }
+                else
+                {
+                    foreach (GameUICanvasInitializer gameUICanvasInitializer in FindObjectsByType<GameUICanvasInitializer>(FindObjectsSortMode.None))
+                    {
+                        if (gameUICanvasInitializer.gameUICanvas)
+                        {
+                            canvasToPlaceGameGridUI = gameUICanvasInitializer.gameUICanvas;
+
+                            validGameUICanvasInitializer = gameUICanvasInitializer;
+
+                            break;
+                        }
+                    }
+                }
             }
 
             if (!canvasToPlaceGameGridUI)
             {
-                Debug.LogError("Could not find a valid UI Canvas to spawn the game grid layout under!");
+                Debug.LogWarning("Could not find a valid game UI Canvas to spawn the game grid layout UI under! Attempting to spawn one...");
+
+                validGameUICanvasInitializer = GameUICanvasInitializer.SpawnGameUICanvas();
+
+                canvasToPlaceGameGridUI = validGameUICanvasInitializer.gameUICanvas;
+            }
+
+            if (!canvasToPlaceGameGridUI)
+            {
+                Debug.LogError("Could not find or spawn a game UI Canvas. Game grid layout UI wont be spawned!");
 
                 return;
             }
 
-            gameGridUIInstance = Instantiate(gameGridUIPrefabToSpawn, canvasToPlaceGameGridUI.transform);
+            GameGridUI gameGridUI = null;
+
+            if (validGameUICanvasInitializer)
+            {
+                gameGridUI = validGameUICanvasInitializer.gameGridLayoutUI;
+            }
+            else
+            {
+                gameGridUI = canvasToPlaceGameGridUI.GetComponentInChildren<GameGridUI>();
+            }
+
+            if (!gameGridUI)
+            {
+                if (!gameGridUIPrefabToSpawn)
+                {
+                    Debug.LogError($"Trying to spawn a game grid layou UI under the game UI Canvas parent, " +
+                                   $"but no game grid UI Prefab is assigned on {name}. Game Grid Layout UI Wont Be Spawned!");
+
+                    return;
+                }
+
+                gameGridUI = GameManager.SpawnGameObjectWithComponent<GameGridUI>(gameGridUIPrefabToSpawn.gameObject, "GameGridLayoutUI", canvasToPlaceGameGridUI.transform);
+            }
+
+            gameGridUIInstance = gameGridUI;
 
             gameGridUIInstance.InitGameElementUI(this);
         }

@@ -12,7 +12,7 @@ namespace CrossClimbLite
     [DisallowMultipleComponent]
     public class GameStateManager : MonoBehaviour
     {
-        [Header("Game State Data")]
+        [Header("Game State Manager Data")]
 
         [SerializeField]
         [NotNull, DisallowNull]
@@ -22,7 +22,10 @@ namespace CrossClimbLite
         [Min(0.02f)]
         private float stateUpdateInterval = 0.2f;
 
-        private List<GameStateBase> allGameStates = new List<GameStateBase>();
+        [field: SerializeField]
+        public bool isMainStateManager { get; private set; } = false;
+
+        public List<GameStateBase> allGameStates { get; private set; } = new List<GameStateBase>();
 
         public GameStateBase currentGameState { get; private set; }
 
@@ -32,7 +35,8 @@ namespace CrossClimbLite
         {
             if (!initState)
             {
-                Debug.LogError($"Game State Manager: {name} is missing its InitState ref. State Manager wont work and will be disabled!");
+                Debug.LogError($"Game State Manager: {name} is missing its InitState ref. " +
+                               "State Manager wont work and will be disabled!");
 
                 gameObject.SetActive(false);
 
@@ -53,6 +57,11 @@ namespace CrossClimbLite
             for(int i = 0; i < allGameStates.Count; i++)
             {
                 if (!allGameStates[i]) continue;
+
+                if(allGameStates[i].GetType() == typeof(GameStartState))
+                {
+                    isMainStateManager = true;
+                }
 
                 allGameStates[i].InitializeState(this);
 

@@ -1,0 +1,54 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4475507249098692404
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 270005179877253170}
+  - component: {fileID: 994113999082382544}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &270005179877253170
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4475507249098692404}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &994113999082382544
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4475507249098692404}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d9480dca4200184895b40a2c963a05e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainGameSceneName: GameScene
+  gameGridModalPrefab: {fileID: 5346456319413971919, guid: f21dd1f41942daf4c8b2fb8787ba6f92, type: 3}
+  gameAnswerConfigPrefab: {fileID: 1138563718356796635, guid: 142deb5efb797b14db32662b32be6b9c, type: 3}
+  gameMainStatesManagerPrefab: {fileID: 4491695115438850470, guid: 8790dd971e785cf41bc8a38b3a199bdd, type: 3}
+  gameUICanvasPrefab: {fileID: 9213740262609194711, guid: ffc8aacf37be482498cc97fb3577ba56, type: 3}
+  gameMenuUICanvasPrefab: {fileID: 6694204143453791589, guid: ff786d969911b5541bdcc19f244ab8ac, type: 3}
+  eventSystemPrefab: {fileID: 644707369534065621, guid: 6eb95d362a55ffc4db3caed96191221b, type: 3}
+  <hasFinishedInitGameComponents>k__BackingField: 0

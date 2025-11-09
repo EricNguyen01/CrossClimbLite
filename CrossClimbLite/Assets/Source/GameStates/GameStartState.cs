@@ -17,7 +17,14 @@ namespace CrossClimbLite
 
             hasFinishedGameStartLoad = false;
 
-            if (!GameAnswerConfig.gameAnswerConfigInstance || !presetGameGridInScene) return false;
+            if (!presetGameGridInScene)
+            {
+                Debug.LogError("Game Grid doesnt exist! Game will not start!");
+
+                if (gameStateManagerParent) gameStateManagerParent.TransitionToGameState(null);
+
+                return false;
+            }
 
             StartCoroutine(GameStartLoadProcess());
 
@@ -41,10 +48,8 @@ namespace CrossClimbLite
         {
             if (!base.OnStateExit()) return false;
 
-            if (presetGameGridInScene.hasGridGenerated)
+            if (presetGameGridInScene && presetGameGridInScene.hasGridGenerated)
             {
-                presetGameGridInScene.SetPlanksWordsBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
-
                 presetGameGridInScene.SetGameElementLockedStatus(false, true);
 
                 presetGameGridInScene.SetActiveFirstCharSlotOfFirstNonKeywordRow();
@@ -67,12 +72,15 @@ namespace CrossClimbLite
 
             yield return presetGameGridInScene.InitGridOnGameStartLoad();
 
-            if(presetGameGridInScene.hasGridGenerated)
+            if(presetGameGridInScene && presetGameGridInScene.hasGridGenerated)
                 presetGameGridInScene.SetGameElementLockedStatus(true, true);
 
             yield return GameAnswerConfig.gameAnswerConfigInstance.GenerateNewAnswerConfig(presetGameGridInScene);
 
-            yield return new WaitForSecondsRealtime(3.4f);
+            if(presetGameGridInScene) 
+                presetGameGridInScene.SetPlanksWordsBasedOnWordSet(GameAnswerConfig.gameAnswerConfigInstance.answerWordSet);
+
+            yield return new WaitForSecondsRealtime(3.0f);
 
             yield return new WaitForEndOfFrame();
 

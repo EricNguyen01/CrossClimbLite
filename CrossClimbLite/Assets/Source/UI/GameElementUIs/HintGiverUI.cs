@@ -12,17 +12,38 @@ namespace CrossClimbLite
 
         private void Awake()
         {
-            if (!gameGridLinked)
+            GetGameGridLinkRef();
+        }
+
+        private bool GetGameGridLinkRef()
+        {
+            if(gameGridLinked) return true;
+
+            if (GameManager.GameManagerInstance)
             {
-                gameGridLinked = FindAnyObjectByType<GameGrid>();
+                if (GameManager.GameManagerInstance.gameGridModal)
+                {
+                    gameGridLinked = GameManager.GameManagerInstance.gameGridModal;
+
+                    return true;
+                }
             }
+
+            gameGridLinked = FindAnyObjectByType<GameGrid>();
+
+            if(gameGridLinked) return true; 
+
+            return false;
         }
         
         public void OnHintGiverButtonPressed()
         {
             if (!enabled) return;
 
-            if(!gameGridLinked) return;
+            if (!gameGridLinked)
+            {
+                if(!GetGameGridLinkRef()) return;
+            }
 
             if (!gameGridLinked.currentPlankBeingSelected) return;
 

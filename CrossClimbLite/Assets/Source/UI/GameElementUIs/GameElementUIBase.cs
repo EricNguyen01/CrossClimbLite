@@ -49,10 +49,10 @@ namespace CrossClimbLite
             eventSystem = EventSystem.current;
 
             parentRootCanvas = GetComponentInParent<Canvas>();
+            
+            if(parentRootCanvas) parentRootCanvas.TryGetComponent<RectTransform>(out parentRootCanvasRect);
 
-            parentRootCanvas.TryGetComponent<RectTransform>(out parentRootCanvasRect);
-
-            if (!parentRootCanvas.worldCamera) parentRootCanvas.worldCamera = Camera.main;
+            if (parentRootCanvas && !parentRootCanvas.worldCamera) parentRootCanvas.worldCamera = Camera.main;
         }
 
         public virtual void InitGameElementUI(GameElementBase gameElementToLink)
