@@ -47,6 +47,16 @@ namespace CrossClimbLite
         [field: ReadOnlyInspector]
         public bool hasFinishedInitGameComponents { get; private set; } = false;
 
+        [Header("Runtime Player Stats")]
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        public static float timeTakenThisRound = 0.0f;
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        public static int hintsUsedThisRound = 0;
+
         public static GameManager GameManagerInstance;
 
         private void Awake()
@@ -235,6 +245,13 @@ namespace CrossClimbLite
             if(!comp) comp = go.AddComponent<T>();
 
             return comp;
+        }
+
+        public static void ResetRuntimePlayerStats()
+        {
+            timeTakenThisRound = 0;
+
+            hintsUsedThisRound = 0;
         }
     }
 }

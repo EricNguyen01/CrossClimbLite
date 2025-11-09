@@ -18,9 +18,9 @@ namespace CrossClimbLite
         [NotNull, DisallowNull]
         private GameStateBase initState;
 
-        [SerializeField]
-        [Min(0.02f)]
-        private float stateUpdateInterval = 0.2f;
+        [field: SerializeField]
+        [field: Min(0.02f)]
+        public float stateUpdateInterval { get; private set; } = 0.2f;
 
         [field: SerializeField]
         public bool isMainStateManager { get; private set; } = false;

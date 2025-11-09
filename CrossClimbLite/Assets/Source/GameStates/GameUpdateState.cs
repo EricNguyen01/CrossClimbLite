@@ -17,6 +17,8 @@ namespace CrossClimbLite
 
         public override bool OnStateEnter()
         {
+            GameManager.ResetRuntimePlayerStats();
+
             if (!base.OnStateEnter()) return false;
 
             hasKeywordsUnlocked = false;
@@ -27,6 +29,26 @@ namespace CrossClimbLite
             {
                 presetGameGridInScene.OnAWordPlankFilled += (string s) => OnPlankWordFilled();
             }
+
+            return true;
+        }
+
+        public override bool OnStateUpdate()
+        {
+            if (!base.OnStateUpdate()) return false;
+
+            if (gameStateManagerParent)
+            {
+                GameManager.timeTakenThisRound += gameStateManagerParent.stateUpdateInterval * Time.timeScale;
+            }
+            else
+            {
+                GameManager.timeTakenThisRound += Time.fixedDeltaTime * Time.timeScale;
+            }
+
+            GameManager.timeTakenThisRound = (float)System.Math.Round(GameManager.timeTakenThisRound, 1);
+
+            //Debug.Log($"TimeTaken: {GameManager.timeTakenThisRound}");
 
             return true;
         }

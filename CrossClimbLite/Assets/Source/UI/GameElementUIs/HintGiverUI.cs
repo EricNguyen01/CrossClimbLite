@@ -50,6 +50,8 @@ namespace CrossClimbLite
             if(gameGridLinked.currentPlankBeingSelected.letterSlotsInWordPlank == null || 
                gameGridLinked.currentPlankBeingSelected.letterSlotsInWordPlank.Length == 0) return;
 
+            GameManager.hintsUsedThisRound++;
+
             WordPlankRow selectedPlank = gameGridLinked.currentPlankBeingSelected;
 
             if (string.IsNullOrEmpty(selectedPlank.plankCorrectWord)) return;
