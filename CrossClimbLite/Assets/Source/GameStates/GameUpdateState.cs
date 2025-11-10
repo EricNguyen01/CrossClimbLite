@@ -15,6 +15,8 @@ namespace CrossClimbLite
         [field: ReadOnlyInspector]
         public bool hasWonGame { get; private set; } = false;
 
+        private float timeAtUpdateCalled = 0.0f;
+
         public override bool OnStateEnter()
         {
             GameManager.ResetRuntimePlayerStats();
@@ -30,6 +32,9 @@ namespace CrossClimbLite
                 presetGameGridInScene.OnAWordPlankFilled += (string s) => OnPlankWordFilled();
             }
 
+            //reset time at update called to the time at beginning of the first update call (end of state start func)
+            timeAtUpdateCalled = Time.time;
+
             return true;
         }
 
@@ -37,18 +42,13 @@ namespace CrossClimbLite
         {
             if (!base.OnStateUpdate()) return false;
 
-            if (gameStateManagerParent)
-            {
-                GameManager.timeTakenThisRound += gameStateManagerParent.stateUpdateInterval * Time.timeScale;
-            }
-            else
-            {
-                GameManager.timeTakenThisRound += Time.fixedDeltaTime * Time.timeScale;
-            }
+            GameManager.timeTakenThisRound += (Time.time - timeAtUpdateCalled) * Time.timeScale;
 
-            GameManager.timeTakenThisRound = (float)System.Math.Round(GameManager.timeTakenThisRound, 1);
+            //GameManager.timeTakenThisRound = (float)System.Math.Round(GameManager.timeTakenThisRound, 1);
+            
+            //Debug.Log($"TimeTaken: {GameManager.timeTakenThisRound} | Timescale: {Time.timeScale}");
 
-            //Debug.Log($"TimeTaken: {GameManager.timeTakenThisRound}");
+            timeAtUpdateCalled = Time.time;
 
             return true;
         }

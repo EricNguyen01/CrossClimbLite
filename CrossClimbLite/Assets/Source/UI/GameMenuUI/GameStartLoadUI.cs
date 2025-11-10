@@ -44,7 +44,16 @@ namespace CrossClimbLite
                 canvasGroup.blocksRaycasts = true;
             }
 
+            if (TimerUI.timerUIInstance) TimerUI.timerUIInstance.StopTimer(true);
+
             OnPanelUIDisplayed?.Invoke();
+        }
+
+        public override void HideUIPanel()
+        {
+            base.HideUIPanel();
+
+            if (TimerUI.timerUIInstance) TimerUI.timerUIInstance.StopTimer(false);
         }
     }
 }

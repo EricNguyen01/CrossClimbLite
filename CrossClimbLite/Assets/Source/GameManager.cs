@@ -57,6 +57,8 @@ namespace CrossClimbLite
         [ReadOnlyInspector]
         public static int hintsUsedThisRound = 0;
 
+        public static float lastTimeScale { get; private set; } = 0.0f;
+
         public static GameManager GameManagerInstance;
 
         private void Awake()
@@ -254,6 +256,17 @@ namespace CrossClimbLite
             timeTakenThisRound = 0;
 
             hintsUsedThisRound = 0;
+        }
+
+        public static void SetTimeScale(float timeScale)
+        {
+            if(timeScale < 0.0f) timeScale = 0.0f;
+
+            if(timeScale > 1.0f) timeScale = 1.0f;
+
+            lastTimeScale = Time.timeScale;
+
+            Time.timeScale = timeScale;
         }
     }
 }

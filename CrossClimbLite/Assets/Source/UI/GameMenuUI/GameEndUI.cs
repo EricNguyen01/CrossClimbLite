@@ -23,5 +23,19 @@ namespace CrossClimbLite
 
             base.Awake();
         }
+
+        public override void DisplayUIPanel()
+        {
+            base.DisplayUIPanel();
+
+            if (TimerUI.timerUIInstance) TimerUI.timerUIInstance.StopTimer(true);
+        }
+
+        public override void HideUIPanel()
+        {
+            base.HideUIPanel();
+
+            if (TimerUI.timerUIInstance) TimerUI.timerUIInstance.StopTimer(false);
+        }
     }
 }

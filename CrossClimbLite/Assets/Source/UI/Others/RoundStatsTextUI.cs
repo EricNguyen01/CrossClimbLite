@@ -4,6 +4,7 @@ using TMPro;
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
+    [RequireComponent(typeof(TextMeshProUGUI))]
     public class RoundStatsTextUI : MonoBehaviour
     {
         [SerializeField]
@@ -13,7 +14,10 @@ namespace CrossClimbLite
         {
             if(!textMeshPro)
             {
-                TryGetComponent<TextMeshProUGUI>(out textMeshPro);
+                if(!TryGetComponent<TextMeshProUGUI>(out textMeshPro))
+                {
+                    textMeshPro = gameObject.AddComponent<TextMeshProUGUI>();
+                }
             }
         }
 
@@ -28,11 +32,23 @@ namespace CrossClimbLite
 
         public void UpdateTimeTakenText()
         {
+            UpdateTimeTakenTextCustom("Time Taken: ", GameManager.timeTakenThisRound);
+        }
+
+        public void UpdateTimeTakenTextCustom(string prefixText, float timeTakenCustom)
+        {
             if (!textMeshPro) return;
 
-            string timeTakenText = HelperFunctions.FormatSecondsToString(GameManager.timeTakenThisRound);
+            string timeTakenText = HelperFunctions.FormatSecondsToString(timeTakenCustom);
 
-            textMeshPro.text = "Time Taken: " + timeTakenText;
+            if(string.IsNullOrEmpty(prefixText) || string.IsNullOrWhiteSpace(prefixText))
+            {
+                textMeshPro.text = timeTakenText;
+
+                return;
+            }
+
+            textMeshPro.text = prefixText + timeTakenText;
         }
     }
 }
