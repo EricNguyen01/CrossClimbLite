@@ -104,6 +104,11 @@ namespace CrossClimbLite
             {
                 gameGridLayoutUI = GameManager.SpawnGameObjectWithComponent<GameGridUI>(gameGridLayoutUIPrefab.gameObject, "GameGridLayoutUI", transform);
             }
+
+            if (gameGridLayoutUI)
+            {
+                gameGridLayoutUI.transform.SetSiblingIndex(1);
+            }
         }
 
 #if UNITY_EDITOR
