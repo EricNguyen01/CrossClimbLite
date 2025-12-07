@@ -47,6 +47,10 @@ namespace CrossClimbLite
         [field: SerializeField]
         public bool isPlankLocked { get; private set; } = false;
 
+        [field: ReadOnlyInspector]
+        [field: SerializeField]
+        public bool isPlankFilled { get; private set; } = false;
+
         //total number of letter slots in the plank - default is 4
         private int totalLetterCountInPlank = 4;
 
@@ -311,18 +315,29 @@ namespace CrossClimbLite
             plankTypedWord = plankTypedWordStrBuilder.ToString();
 
             if (wordPlankRowUILinked) wordPlankRowUILinked.UpdateUIInternalData_UpdatePlankUILetter(plankTypedWord);
-            
-            if(plankTypedWord != string.Empty && !string.IsNullOrEmpty(plankTypedWord))
-            {
-                if(gameGridHoldingPlank && plankTypedWord.Length == gameGridHoldingPlank.columnNum)
-                {
-                    for(int i = 0; i < plankTypedWord.Length; i++)
-                    {
-                        if (plankTypedWord[i] == ' ' || plankTypedWord[i] == char.MinValue) return;
-                    }
 
-                    gameGridHoldingPlank.InvokeOnAWordPlankFilledEvent(plankTypedWord);
+            if(string.IsNullOrEmpty(plankTypedWord) || string.IsNullOrWhiteSpace(plankTypedWord))
+            {
+                isPlankFilled = false;
+
+                return;
+            }
+
+            if (gameGridHoldingPlank && plankTypedWord.Length == gameGridHoldingPlank.columnNum)
+            {
+                for (int i = 0; i < plankTypedWord.Length; i++)
+                {
+                    if (plankTypedWord[i] == ' ' || plankTypedWord[i] == char.MinValue)
+                    {
+                        isPlankFilled = false;
+
+                        return;
+                    }
                 }
+
+                isPlankFilled = true;
+
+                gameGridHoldingPlank.InvokeOnAWordPlankFilledEvent(plankTypedWord);
             }
         }
     }

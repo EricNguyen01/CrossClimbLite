@@ -228,6 +228,9 @@ MonoBehaviour:
   isSelected: 0
   isLocked: 0
   hintTextBox: {fileID: 1919187188950364402}
+  plankReOrderMessage: Re-order the words so each only differs from the above and
+    below by 1 letter!
+  isPlankReOrderMessageActive: 0
 --- !u!1 &6835406704720518253
 GameObject:
   m_ObjectHideFlags: 0

@@ -255,6 +255,7 @@ MonoBehaviour:
   <isPlankKeyword>k__BackingField: 0
   <isPlankRowSelected>k__BackingField: 0
   <isPlankLocked>k__BackingField: 0
+  <isPlankFilled>k__BackingField: 0
   <letterSlotsInWordPlank>k__BackingField:
   - {fileID: 22220345}
   - {fileID: 1489329213}
@@ -367,6 +368,7 @@ MonoBehaviour:
   <isPlankKeyword>k__BackingField: 1
   <isPlankRowSelected>k__BackingField: 0
   <isPlankLocked>k__BackingField: 1
+  <isPlankFilled>k__BackingField: 0
   <letterSlotsInWordPlank>k__BackingField:
   - {fileID: 335247265}
   - {fileID: 504565231}
@@ -666,6 +668,7 @@ MonoBehaviour:
   <isPlankKeyword>k__BackingField: 0
   <isPlankRowSelected>k__BackingField: 0
   <isPlankLocked>k__BackingField: 0
+  <isPlankFilled>k__BackingField: 0
   <letterSlotsInWordPlank>k__BackingField:
   - {fileID: 791223906}
   - {fileID: 1758709424}
@@ -728,6 +731,7 @@ MonoBehaviour:
   <isPlankKeyword>k__BackingField: 0
   <isPlankRowSelected>k__BackingField: 0
   <isPlankLocked>k__BackingField: 0
+  <isPlankFilled>k__BackingField: 0
   <letterSlotsInWordPlank>k__BackingField:
   - {fileID: 411325776}
   - {fileID: 1931676476}
@@ -790,6 +794,7 @@ MonoBehaviour:
   <isPlankKeyword>k__BackingField: 1
   <isPlankRowSelected>k__BackingField: 0
   <isPlankLocked>k__BackingField: 1
+  <isPlankFilled>k__BackingField: 0
   <letterSlotsInWordPlank>k__BackingField:
   - {fileID: 802611829}
   - {fileID: 1333735291}

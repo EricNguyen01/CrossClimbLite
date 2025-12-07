@@ -9,6 +9,14 @@ namespace CrossClimbLite
 
         [field: SerializeField]
         [field: ReadOnlyInspector]
+        public bool allNonKeywordsCorrectNeedsReorder { get; private set; } = false;
+
+        [field: SerializeField]
+        [field: ReadOnlyInspector]
+        public bool allNonKeywordsCorrectAndOrdered { get; private set; } = false;
+
+        [field: SerializeField]
+        [field: ReadOnlyInspector]
         public bool hasKeywordsUnlocked { get; private set; } = false;
 
         [field: SerializeField]
@@ -22,6 +30,10 @@ namespace CrossClimbLite
             GameManager.ResetRuntimePlayerStats();
 
             if (!base.OnStateEnter()) return false;
+
+            allNonKeywordsCorrectNeedsReorder = false;
+
+            allNonKeywordsCorrectAndOrdered = false;
 
             hasKeywordsUnlocked = false;
 
@@ -44,8 +56,6 @@ namespace CrossClimbLite
 
             GameManager.timeTakenThisRound += (Time.time - timeAtUpdateCalled) * Time.timeScale;
 
-            //GameManager.timeTakenThisRound = (float)System.Math.Round(GameManager.timeTakenThisRound, 1);
-            
             //Debug.Log($"TimeTaken: {GameManager.timeTakenThisRound} | Timescale: {Time.timeScale}");
 
             timeAtUpdateCalled = Time.time;
@@ -61,10 +71,6 @@ namespace CrossClimbLite
             {
                 presetGameGridInScene.OnAWordPlankFilled -= (string s) => OnPlankWordFilled();
             }
-
-            hasKeywordsUnlocked = false;
-
-            hasWonGame = false;
 
             return true;
         }
@@ -87,20 +93,53 @@ namespace CrossClimbLite
                 return;
             }
 
-            bool answersMatched = GameAnswerConfig.gameAnswerConfigInstance.IsWordPlankAnswersMatched(presetGameGridInScene, hasKeywordsUnlocked);
-            
-            if(!hasKeywordsUnlocked && answersMatched)
+            bool allNonKeywordsMatchedButNotOrdered;
+
+            bool answersMatched = GameAnswerConfig.gameAnswerConfigInstance.CheckWordPlankAnswersMatched(presetGameGridInScene, out allNonKeywordsMatchedButNotOrdered, hasKeywordsUnlocked);
+
+            if (!hasKeywordsUnlocked)
             {
-                hasKeywordsUnlocked = true;
-
-                if (presetGameGridInScene)
+                if (allNonKeywordsMatchedButNotOrdered)//this if processes keywords matched but not ordered yet
                 {
-                    presetGameGridInScene.UnlockNonKeywordPlanksInGrid(false);
+                    allNonKeywordsCorrectNeedsReorder = true;
 
-                    presetGameGridInScene.UnlockKeywordPlanksInGrid();
+                    if (HintBoxUI.hintBoxUIInstance)
+                    {
+                        HintBoxUI.hintBoxUIInstance.EnablePlankReOrderNeededMessage(true);
+                    }
+                }
+                else
+                {
+                    allNonKeywordsCorrectNeedsReorder = false;
+
+                    if (HintBoxUI.hintBoxUIInstance)
+                    {
+                        HintBoxUI.hintBoxUIInstance.EnablePlankReOrderNeededMessage(false);
+                    }
                 }
 
-                return;
+                if (answersMatched)//answersMatched == all keywords matched + ordered
+                {
+                    hasKeywordsUnlocked = true;
+
+                    allNonKeywordsCorrectNeedsReorder = false;
+
+                    allNonKeywordsCorrectAndOrdered = true;
+
+                    if (presetGameGridInScene)
+                    {
+                        presetGameGridInScene.UnlockNonKeywordPlanksInGrid(false);
+
+                        presetGameGridInScene.UnlockKeywordPlanksInGrid();
+                    }
+
+                    if (HintBoxUI.hintBoxUIInstance)
+                    {
+                        HintBoxUI.hintBoxUIInstance.EnablePlankReOrderNeededMessage(false);
+                    }
+
+                    return;
+                }
             }
 
             if(answersMatched)

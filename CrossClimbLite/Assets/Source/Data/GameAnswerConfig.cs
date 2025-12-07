@@ -99,8 +99,10 @@ namespace CrossClimbLite
             yield return new WaitForEndOfFrame();
         }
 
-        public bool IsWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, bool shouldCheckKeyword = true)
+        public bool CheckWordPlankAnswersMatched(GameGrid gridWithPlanksToCompare, out bool allNonKeywordsMatchedButNotOrdered, bool shouldCheckKeyword = true)
         {
+            allNonKeywordsMatchedButNotOrdered = false;
+
             if (!gridWithPlanksToCompare) return false;
 
             if (gridWithPlanksToCompare.wordPlankRowsInGrid == null || gridWithPlanksToCompare.wordPlankRowsInGrid.Length == 0) return false;
@@ -109,35 +111,69 @@ namespace CrossClimbLite
 
             bool isMatched = true;
 
+            int currentNonKeywordCorrectCount = 0;
+
             for (int i = 0; i < wordPlankAnswersInOrder.Length; i++)
             {
                 if (i >= gridWithPlanksToCompare.wordPlankRowsInGrid.Length) break;
 
-                if (!gridWithPlanksToCompare.wordPlankRowsInGrid[i]) continue;
+                if (!gridWithPlanksToCompare.wordPlankRowsInGrid[i])
+                {
+                    //Debug.Log($"{gridWithPlanksToCompare.wordPlankRowsInGrid[i]} Is NULL");
 
-                if (!shouldCheckKeyword && gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword) continue;
+                    continue;
+                }
+
+                if (!shouldCheckKeyword && gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword)
+                {
+                    //Debug.Log($"{gridWithPlanksToCompare.wordPlankRowsInGrid[i].name} Skip Keyword");
+
+                    continue;
+                }
+
+                string correctWord = gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankCorrectWord;
+
+                if (string.IsNullOrEmpty(correctWord) || string.IsNullOrWhiteSpace(correctWord)) continue;
 
                 string typedWord = gridWithPlanksToCompare.wordPlankRowsInGrid[i].GetPlankTypedWord();
 
                 if (string.IsNullOrEmpty(typedWord) || string.IsNullOrWhiteSpace(typedWord))
                 {
+                    //Debug.Log($"{gridWithPlanksToCompare.wordPlankRowsInGrid[i].name} has NO Typed Word");
+
                     isMatched = false;
 
                     break;
                 }
 
-                if (wordPlankAnswersInOrder[i].ToLower() != typedWord.ToLower())
+                if (typedWord.ToLower() != correctWord.ToLower())
                 {
+                    //Debug.Log($"{gridWithPlanksToCompare.wordPlankRowsInGrid[i].name} is INcorrect");
+
                     isMatched = false;
-                    
+
                     break;
                 }
 
-                if (i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder)
+                //Debug.Log($"{gridWithPlanksToCompare.wordPlankRowsInGrid[i].name} is Correct");
+
+                if (!shouldCheckKeyword && !gridWithPlanksToCompare.wordPlankRowsInGrid[i].isPlankKeyword)
                 {
+                    currentNonKeywordCorrectCount++;
+
+                    //Debug.Log($"CorrectNK: {currentNonKeywordCorrectCount} | NumNonKeyword: {gridWithPlanksToCompare.numberOfNonKeywordPlanks}");
+
+                    if (currentNonKeywordCorrectCount == gridWithPlanksToCompare.numberOfNonKeywordPlanks)
+                    {
+                        allNonKeywordsMatchedButNotOrdered = true;
+                    }
+                }
+
+                if (isMatched && i != gridWithPlanksToCompare.wordPlankRowsInGrid[i].plankRowOrder)
+                {
+                    //Debug.Log($"{gridWithPlanksToCompare.wordPlankRowsInGrid[i].name} doesnt match order");
+
                     isMatched = false;
-                   
-                    break;
                 }
             }
 

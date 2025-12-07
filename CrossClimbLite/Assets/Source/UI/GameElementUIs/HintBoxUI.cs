@@ -9,6 +9,15 @@ namespace CrossClimbLite
         [SerializeField]
         private TextMeshProUGUI hintTextBox;
 
+        [SerializeField]
+        private string plankReOrderMessage = "Re-order the words so each only differs from the above and below by 1 letter!";
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        private bool isPlankReOrderMessageActive = false;
+
+        private string lastHintText;
+
         private float baseTextSize = 0.0f;
 
         public static HintBoxUI hintBoxUIInstance;
@@ -52,11 +61,25 @@ namespace CrossClimbLite
 
         public void SetHintTextToDisplay(string hint)
         {
+            lastHintText = hint;
+
+            if (isPlankReOrderMessageActive)
+            {
+                SetHintTextToDisplayInternal(plankReOrderMessage);
+
+                return;
+            }
+
+            SetHintTextToDisplayInternal(hint);
+        }
+
+        private void SetHintTextToDisplayInternal(string hint)
+        {
             if (!enabled || !hintTextBox) return;
 
-            if(!string.IsNullOrEmpty(hint) || !string.IsNullOrWhiteSpace(hint))
+            if (!string.IsNullOrEmpty(hint) || !string.IsNullOrWhiteSpace(hint))
             {
-                if(HelperFunctions.GetWordCountFromString(hint) > 40)
+                if (HelperFunctions.GetWordCountFromString(hint) > 40)
                 {
                     hintTextBox.fontSize = baseTextSize - 7.0f;
                 }
@@ -74,6 +97,22 @@ namespace CrossClimbLite
             if (!enabled || !hintTextBox) return;
 
             hintTextBox.text = string.Empty;
+        }
+
+        public void EnablePlankReOrderNeededMessage(bool enabled)
+        {
+            if (enabled)
+            {
+                isPlankReOrderMessageActive = true;
+
+                SetHintTextToDisplayInternal(plankReOrderMessage);
+
+                return;
+            }
+
+            isPlankReOrderMessageActive = false;
+
+            SetHintTextToDisplayInternal(lastHintText);
         }
     }
 }

@@ -100,7 +100,7 @@ namespace CrossClimbLite
         [field: ReadOnlyInspector]
         public bool hasGridGenerated { get; private set; } = false;
 
-        //INTERNALS.................................................................
+        //INTERNALS....................................................................................
 
         [field: SerializeField]
         [field: HideInInspector]
@@ -109,6 +109,8 @@ namespace CrossClimbLite
 
         public WordPlankRow currentPlankBeingSelected { get; private set; }
 
+        public int numberOfNonKeywordPlanks { get; private set; } = 0;
+
         public event Action<string> OnAWordPlankFilled;
 
 #if UNITY_EDITOR
@@ -116,7 +118,13 @@ namespace CrossClimbLite
         {
             if (columnNumMax <= columnNumMin) columnNumMax = columnNumMin + 1;
 
-            ValidateRowNumToLockOnStartData();
+            ValidateRowNumToModifyOnStartData();
+
+            if(rowNumDataToModifyOnStart.Count == rowNum)
+            {
+                Debug.LogError("It seems that the number of rows you are modifying are equal to the total number of rows of the grid (set in RowNum)." +
+                               "Please make sure that you are not locking all the rows or making them all keywords as it might lead to unwanted behaviors and bugs!!!");
+            }
 
             if(wordPlankRowsInGrid != null && wordPlankRowsInGrid.Length > 0)
             {
@@ -181,6 +189,8 @@ namespace CrossClimbLite
             if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length != rowNum) 
                 wordPlankRowsInGrid = new WordPlankRow[rowNum];
 
+            numberOfNonKeywordPlanks = rowNum;
+
             for (int i = 0; i < wordPlankRowsInGrid.Length; i++)
             {
                 GameObject wordPlankRowObj = new GameObject("WordPlankRow_" + i);
@@ -206,6 +216,8 @@ namespace CrossClimbLite
                             bool isKeyword = rowNumDataToModifyList[j].isKeyword;
 
                             bool isLocked = rowNumDataToModifyList[j].isLocked;
+
+                            if (isKeyword) numberOfNonKeywordPlanks--;
 
                             wordPlankRowComp.InitPlank(this, i, columnNum, isKeyword, isLocked);
 
@@ -640,7 +652,7 @@ namespace CrossClimbLite
 
 #if UNITY_EDITOR
 
-        private void ValidateRowNumToLockOnStartData()
+        private void ValidateRowNumToModifyOnStartData()
         {
             if (rowNumDataToModifyOnStart == null || rowNumDataToModifyOnStart.Count == 0)
             {

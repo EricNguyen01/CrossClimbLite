@@ -44,7 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06a8adda6b5b513478100a3f83570a4d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <rowNum>k__BackingField: 5
+  <rowNum>k__BackingField: 7
   <columnNumMin>k__BackingField: 4
   <columnNumMax>k__BackingField: 5
   <columnNum>k__BackingField: 4
@@ -52,10 +52,10 @@ MonoBehaviour:
   - <rowNum>k__BackingField: 0
     <isLocked>k__BackingField: 1
     <isKeyword>k__BackingField: 1
-  - <rowNum>k__BackingField: 4
+  - <rowNum>k__BackingField: 6
     <isLocked>k__BackingField: 1
     <isKeyword>k__BackingField: 1
-  validRowNum: 0000000004000000
+  validRowNum: 0000000006000000
   gameGridUIPrefabToSpawn: {fileID: 9205909639843897066, guid: 56504688fd2e755489c80cca7a1d6d4b, type: 3}
   canvasToPlaceGameGridUI: {fileID: 0}
   <gameGridUIInstance>k__BackingField: {fileID: 0}
