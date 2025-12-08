@@ -227,16 +227,21 @@ namespace CrossClimbLite
         {
             isPlankLocked = isLocked;
 
-            if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
+            SetPlankRowChildrenLetterSlotUILockedStatus(isLocked, false);
 
+            if (shouldUpdateUI && wordPlankRowUILinked) wordPlankRowUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+        }
+
+        public void SetPlankRowChildrenLetterSlotUILockedStatus(bool isLocked, bool shouldUpdateUI = true)
+        {
+            if (letterSlotsInWordPlank == null || letterSlotsInWordPlank.Length == 0) return;
+            
             for (int i = 0; i < letterSlotsInWordPlank.Length; i++)
             {
                 if (!letterSlotsInWordPlank[i]) continue;
 
-                letterSlotsInWordPlank[i].SetGameElementLockedStatus(isLocked, false);
+                letterSlotsInWordPlank[i].SetGameElementLockedStatus(isLocked, shouldUpdateUI);
             }
-
-            if (shouldUpdateUI && wordPlankRowUILinked) wordPlankRowUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }
 
         public void PlankLetterSlotsSwapWith(WordPlankRow plankToSwap)

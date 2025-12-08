@@ -93,15 +93,23 @@ namespace CrossClimbLite
                 return;
             }
 
-            bool allNonKeywordsMatchedButNotOrdered;
-
-            bool answersMatched = GameAnswerConfig.gameAnswerConfigInstance.CheckWordPlankAnswersMatched(presetGameGridInScene, out allNonKeywordsMatchedButNotOrdered, hasKeywordsUnlocked);
+            bool answersMatched = GameAnswerConfig.gameAnswerConfigInstance.CheckWordPlankAnswersMatched(presetGameGridInScene, out bool allNonKeywordsMatchedButNotOrdered, hasKeywordsUnlocked);
 
             if (!hasKeywordsUnlocked)
             {
                 if (allNonKeywordsMatchedButNotOrdered)//this if processes keywords matched but not ordered yet
                 {
                     allNonKeywordsCorrectNeedsReorder = true;
+
+                    if (HintGiverUI.hintGiverInstance)
+                    {
+                        HintGiverUI.hintGiverInstance.EnableHintGiverButtonUI(false);
+                    }
+
+                    if (presetGameGridInScene)
+                    {
+                        presetGameGridInScene.UnlockNonKeywordPlanksInGrid(false, true, true);
+                    }
 
                     if (HintBoxUI.hintBoxUIInstance)
                     {
@@ -111,6 +119,16 @@ namespace CrossClimbLite
                 else
                 {
                     allNonKeywordsCorrectNeedsReorder = false;
+
+                    if (HintGiverUI.hintGiverInstance)
+                    {
+                        HintGiverUI.hintGiverInstance.EnableHintGiverButtonUI(true);
+                    }
+
+                    if (presetGameGridInScene)
+                    {
+                        presetGameGridInScene.UnlockNonKeywordPlanksInGrid(true);
+                    }
 
                     if (HintBoxUI.hintBoxUIInstance)
                     {

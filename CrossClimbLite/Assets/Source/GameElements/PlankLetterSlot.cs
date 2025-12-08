@@ -84,7 +84,7 @@ namespace CrossClimbLite
             }
         }
 
-        public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI)
+        public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI = true)
         {
             if (isSlotLocked) return;
 
@@ -103,18 +103,19 @@ namespace CrossClimbLite
             }
         }
 
-        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI)
+        public override void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI = true)
         {
-            if (wordPlankOfSlot)
-            {
-                if (!wordPlankOfSlot.isPlankLocked && isLocked) return;
-
-                else if (wordPlankOfSlot.isPlankLocked && !isLocked) return;
-            }
-
             isSlotLocked = isLocked;
 
-            if (!shouldUpdateUI && letterSlotUILinked) letterSlotUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+            if (shouldUpdateUI && letterSlotUILinked)
+            {
+                if (isLocked)
+                {
+                    letterSlotUILinked.UpdateUI_OnGameElementModalSelected(false);
+                }
+
+                letterSlotUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
+            }
         }   
     }
 }

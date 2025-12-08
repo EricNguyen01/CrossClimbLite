@@ -81,8 +81,6 @@ namespace CrossClimbLite
             
             if (!inputField) return;
 
-            string previousText = inputField.text;
-
             if (isSelected)
             {
                 inputField.Select();

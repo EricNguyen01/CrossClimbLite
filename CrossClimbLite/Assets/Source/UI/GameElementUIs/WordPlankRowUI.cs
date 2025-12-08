@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 namespace CrossClimbLite
 {
     [DisallowMultipleComponent]
-    public class WordPlankRowUI : GameElementUIBase, IBeginDragHandler, IDragHandler, IEndDragHandler   
+    public class WordPlankRowUI : GameElementUIBase, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerDownHandler
     {
         [Header("Plank State Colors")]
         [SerializeField]
@@ -307,7 +307,7 @@ namespace CrossClimbLite
 
             if(isLocked) return;    
 
-            wordPlankRowLinked.SetGameElementSelectionStatus(true, true);
+            if(wordPlankRowLinked) wordPlankRowLinked.SetGameElementSelectionStatus(true, true);
 
             CreatePlankDragVisualObject(false);
 
@@ -553,6 +553,11 @@ namespace CrossClimbLite
 
                 plankDragVisualObject = null;
             }
+        }
+
+        public void OnPointerDown(PointerEventData eventData)
+        {
+            if (wordPlankRowLinked) wordPlankRowLinked.SetGameElementSelectionStatus(true, true);
         }
     }
 }

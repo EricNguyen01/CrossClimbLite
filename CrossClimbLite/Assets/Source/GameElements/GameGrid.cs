@@ -556,7 +556,7 @@ namespace CrossClimbLite
             }
         }
 
-        public void UnlockNonKeywordPlanksInGrid(bool unlock = true, bool selectFirstNonKeywordPlankOnUnlocked = true)
+        public void UnlockNonKeywordPlanksInGrid(bool unlock = true, bool selectFirstNonKeywordPlankOnUnlocked = true, bool canDrag = false)
         {
             if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
 
@@ -587,13 +587,15 @@ namespace CrossClimbLite
                     if (currentPlankBeingSelected && currentPlankBeingSelected == wordPlankRowsInGrid[i])
                     {
                         wordPlankRowsInGrid[i].SetGameElementSelectionStatus(false, true);
-
+                        
                         SetCurrentPlankRowSelected(null);
                     }
 
                     if (!wordPlankRowsInGrid[i].isPlankLocked)
                     {
-                        wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);
+                        if (!canDrag) wordPlankRowsInGrid[i].SetGameElementLockedStatus(true, true);
+
+                        else wordPlankRowsInGrid[i].SetPlankRowChildrenLetterSlotUILockedStatus(true);
                     }
                 }
             }

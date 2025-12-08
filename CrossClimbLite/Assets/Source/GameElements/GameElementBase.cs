@@ -14,8 +14,8 @@ namespace CrossClimbLite
             gameElementUILinked = gameElementUIToLinked;
         }
 
-        public abstract void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI);
+        public abstract void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI = true);
 
-        public abstract void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI);
+        public abstract void SetGameElementLockedStatus(bool isLocked, bool shouldUpdateUI = true);
     }
 }
