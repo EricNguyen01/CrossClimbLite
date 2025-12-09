@@ -30,6 +30,24 @@ namespace CrossClimbLite
             }
         }
 
+        private void Update()
+        {
+            if (!enabled) return;
+
+            if (!eventSystem) return;
+
+            if (!inputField) return;
+
+            if (!inputField.IsActive() || !inputField.isFocused || !isSelected) return;
+            
+            if (!string.IsNullOrEmpty(inputField.text)) return;
+            
+            if (Input.GetButtonDown("DeleteText"))
+            {
+                linkedPlankLetterSlot.WriteLetterToSlot(null, false);
+            }
+        }
+
         public override void InitGameElementUI(GameElementBase letterSlotToLink, GameElementUIBase parentHoldingUIToLink)
         {
             base.InitGameElementUI(letterSlotToLink);
@@ -102,8 +120,10 @@ namespace CrossClimbLite
             if (!enabled) return;
 
             if (!linkedPlankLetterSlot) return;
+
+            this.isSelected = isSelected;
             
-            linkedPlankLetterSlot.SetGameElementSelectionStatus(isSelected, false);
+            if(isSelected) linkedPlankLetterSlot.SetGameElementSelectionStatus(isSelected, false);
         }
 
         string previousSlotValue;

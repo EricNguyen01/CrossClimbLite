@@ -75,8 +75,12 @@ namespace CrossClimbLite
             letter = newLetter;
 
             wordPlankOfSlot.UpdatePlankTypedWordAtLetterSlot(this);
+
+            int nextLetterSlotIndex = 1;
+
+            if (string.IsNullOrEmpty(newLetter) || string.IsNullOrWhiteSpace(newLetter) || newLetter == "" || newLetter == " ") nextLetterSlotIndex = -1;
             
-            wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + 1);
+            wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + nextLetterSlotIndex);
 
             if (shouldUpdateUI && letterSlotUILinked)
             {
