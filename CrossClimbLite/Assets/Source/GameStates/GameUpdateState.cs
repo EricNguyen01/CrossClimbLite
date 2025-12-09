@@ -144,6 +144,11 @@ namespace CrossClimbLite
 
                     allNonKeywordsCorrectAndOrdered = true;
 
+                    if (HintGiverUI.hintGiverInstance)
+                    {
+                        HintGiverUI.hintGiverInstance.EnableHintGiverButtonUI(true);
+                    }
+
                     if (presetGameGridInScene)
                     {
                         presetGameGridInScene.UnlockNonKeywordPlanksInGrid(false);
@@ -163,6 +168,11 @@ namespace CrossClimbLite
             if(answersMatched)
             {
                 hasWonGame = true;
+
+                if (HintGiverUI.hintGiverInstance)
+                {
+                    HintGiverUI.hintGiverInstance.EnableHintGiverButtonUI(false);
+                }
 
                 if (presetGameGridInScene)
                 {
