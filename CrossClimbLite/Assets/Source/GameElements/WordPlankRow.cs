@@ -227,7 +227,7 @@ namespace CrossClimbLite
         {
             isPlankLocked = isLocked;
 
-            SetPlankRowChildrenLetterSlotUILockedStatus(isLocked, false);
+            SetPlankRowChildrenLetterSlotUILockedStatus(isLocked, shouldUpdateUI);
 
             if (shouldUpdateUI && wordPlankRowUILinked) wordPlankRowUILinked.UpdateUI_OnGameElementModalLocked(isLocked);
         }

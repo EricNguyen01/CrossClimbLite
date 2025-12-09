@@ -1,5 +1,9 @@
+using System.Collections;
+using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using UnityEngine.UI;
+using DG.Tweening;
 
 namespace CrossClimbLite
 {
@@ -9,6 +13,17 @@ namespace CrossClimbLite
         [SerializeField]
         [NotNull, DisallowNull]
         private GameGrid gameGridLinked;
+
+        [SerializeField]
+        [Min(1.0f)]
+        private float hintCooldownTime = 10.0f;
+
+        [SerializeField]
+        private Slider hintCooldownSlider;
+
+        private bool isInCooldown;
+
+        private bool isDisabled;
 
         private CanvasGroup canvasGroup;
 
@@ -33,6 +48,8 @@ namespace CrossClimbLite
             {
                 canvasGroup = gameObject.AddComponent<CanvasGroup>();
             }
+
+            if (!hintCooldownSlider) hintCooldownSlider = GetComponentInChildren<Slider>();
         }
 
         private bool GetGameGridLinkRef()
@@ -68,7 +85,7 @@ namespace CrossClimbLite
                 return;
             }
 
-            GameManager.hintsUsedThisRound++;
+            StartHintCooldownProcess();
 
             WordPlankRow selectedPlank = gameGridLinked.currentPlankBeingSelected;
 
@@ -109,17 +126,25 @@ namespace CrossClimbLite
                     {
                         if (string.IsNullOrEmpty(playerTypedWord[i].ToString()) || playerTypedWord[i] == ' ')
                         {
+                            if (!selectedPlank.letterSlotsInWordPlank[i] || selectedPlank.letterSlotsInWordPlank[i].isSlotLocked) return;
+
                             selectedPlank.letterSlotsInWordPlank[i].WriteLetterToSlot(correctWord[i].ToString(), true);
 
                             break;
                         }
                     }
                 }
-                
+
+                GameManager.hintsUsedThisRound++;
+
                 return;
             }
 
+            if (!selectedPlank.letterSlotsInWordPlank[0] || selectedPlank.letterSlotsInWordPlank[0].isSlotLocked) return;
+            
             selectedPlank.letterSlotsInWordPlank[0].WriteLetterToSlot(correctWord[0].ToString(), true);
+
+            GameManager.hintsUsedThisRound++;
         }
 
         public bool CanGiveHints()
@@ -154,7 +179,45 @@ namespace CrossClimbLite
             if (gameGridLinked.currentPlankBeingSelected.letterSlotsInWordPlank == null ||
                gameGridLinked.currentPlankBeingSelected.letterSlotsInWordPlank.Length == 0) return false;
 
+            if (isInCooldown) return false;
+
             return true;
+        }
+
+        private void StartHintCooldownProcess()
+        {
+            if (isInCooldown)
+            {
+                StopCoroutine(HintCooldownCoroutine());
+
+                isInCooldown = false;
+            }
+
+            StartCoroutine(HintCooldownCoroutine());
+        }
+
+        private IEnumerator HintCooldownCoroutine()
+        {
+            if (isInCooldown) yield break;
+
+            isInCooldown = true;
+
+            canvasGroup.blocksRaycasts = false;
+
+            if (hintCooldownSlider)
+            {
+                hintCooldownSlider.value = 1.0f;
+
+                yield return hintCooldownSlider.DOValue(0.0f, hintCooldownTime).SetEase(Ease.Linear).WaitForCompletion();
+            }
+            else
+            {
+                yield return new WaitForSeconds(hintCooldownTime);
+            }
+
+            isInCooldown = false;
+
+            if(!isDisabled) EnableHintGiverButtonUI(true);
         }
 
         public void EnableHintGiverButtonUI(bool enabled)
@@ -165,7 +228,9 @@ namespace CrossClimbLite
 
             if (enabled)
             {
-                canvasGroup.alpha = 1.0f;
+                if (isInCooldown) return;
+
+                isDisabled = false;
 
                 canvasGroup.interactable = true;
 
@@ -174,7 +239,7 @@ namespace CrossClimbLite
                 return;
             }
 
-            canvasGroup.alpha = 0.4f;
+            isDisabled = true;
 
             canvasGroup.interactable = false;
 
