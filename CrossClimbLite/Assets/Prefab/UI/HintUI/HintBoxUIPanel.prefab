@@ -228,6 +228,8 @@ MonoBehaviour:
   isSelected: 0
   isLocked: 0
   hintTextBox: {fileID: 1919187188950364402}
+  hintTextColor: {r: 1, g: 1, b: 1, a: 1}
+  messageTextColor: {r: 1, g: 0.79607844, b: 0.34509805, a: 1}
   plankReOrderMessage: Re-order the words so each only differs from the above and
     below by 1 letter!
   isPlankReOrderMessageActive: 0

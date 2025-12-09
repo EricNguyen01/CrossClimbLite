@@ -10,6 +10,12 @@ namespace CrossClimbLite
         private TextMeshProUGUI hintTextBox;
 
         [SerializeField]
+        private Color hintTextColor = Color.white;
+
+        [SerializeField]
+        private Color messageTextColor = Color.yellow;
+
+        [SerializeField]
         private string plankReOrderMessage = "Re-order the words so each only differs from the above and below by 1 letter!";
 
         [SerializeField]
@@ -19,6 +25,12 @@ namespace CrossClimbLite
         private string lastHintText;
 
         private float baseTextSize = 0.0f;
+
+        public enum HintBoxTextType
+        {
+            Hint = 1,
+            Message = 2,
+        }
 
         public static HintBoxUI hintBoxUIInstance;
 
@@ -59,7 +71,7 @@ namespace CrossClimbLite
             baseTextSize = hintTextBox.fontSize;
         }
 
-        public void SetHintTextToDisplay(string hint)
+        public void SetHintTextToDisplay(string hint, HintBoxTextType hintBoxTextType = HintBoxTextType.Hint)
         {
             lastHintText = hint;
 
@@ -70,10 +82,10 @@ namespace CrossClimbLite
                 return;
             }
 
-            SetHintTextToDisplayInternal(hint);
+            SetHintTextToDisplayInternal(hint, hintBoxTextType);
         }
 
-        private void SetHintTextToDisplayInternal(string hint)
+        private void SetHintTextToDisplayInternal(string hint, HintBoxTextType hintBoxTextType = HintBoxTextType.Hint)
         {
             if (!enabled || !hintTextBox) return;
 
@@ -87,6 +99,15 @@ namespace CrossClimbLite
                 {
                     hintTextBox.fontSize = baseTextSize;
                 }
+            }
+
+            if (hintBoxTextType == HintBoxTextType.Hint)
+            {
+                hintTextBox.color = hintTextColor;
+            }
+            else if(hintBoxTextType == HintBoxTextType.Message)
+            {
+                hintTextBox.color = messageTextColor;
             }
 
             hintTextBox.text = hint;
@@ -105,14 +126,14 @@ namespace CrossClimbLite
             {
                 isPlankReOrderMessageActive = true;
 
-                SetHintTextToDisplayInternal(plankReOrderMessage);
+                SetHintTextToDisplayInternal(plankReOrderMessage, HintBoxTextType.Message);
 
                 return;
             }
 
             isPlankReOrderMessageActive = false;
 
-            SetHintTextToDisplayInternal(lastHintText);
+            SetHintTextToDisplayInternal(lastHintText, HintBoxTextType.Hint);
         }
     }
 }
