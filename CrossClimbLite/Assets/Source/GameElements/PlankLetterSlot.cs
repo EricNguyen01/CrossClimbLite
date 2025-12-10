@@ -76,16 +76,16 @@ namespace CrossClimbLite
 
             wordPlankOfSlot.UpdatePlankTypedWordAtLetterSlot(this);
 
-            int nextLetterSlotIndex = 1;
-
-            if (string.IsNullOrEmpty(newLetter) || string.IsNullOrWhiteSpace(newLetter) || newLetter == "" || newLetter == " ") nextLetterSlotIndex = -1;
-            
-            wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + nextLetterSlotIndex);
-
             if (shouldUpdateUI && letterSlotUILinked)
             {
                 letterSlotUILinked.UpdateUI_OnModalLetterChanged(letter);
             }
+
+            int nextLetterSlotIndex = 1;
+
+            if (string.IsNullOrEmpty(newLetter)) nextLetterSlotIndex = -1;
+
+            wordPlankOfSlot.SelectNextLetterSlotIndexOnPreviousSlotFilled(slotIndexInPlank + nextLetterSlotIndex);
         }
 
         public override void SetGameElementSelectionStatus(bool isSelected, bool shouldUpdateUI = true)

@@ -85,8 +85,6 @@ namespace CrossClimbLite
                 return;
             }
 
-            StartHintCooldownProcess();
-
             WordPlankRow selectedPlank = gameGridLinked.currentPlankBeingSelected;
 
             if (string.IsNullOrEmpty(selectedPlank.plankCorrectWord)) return;
@@ -96,15 +94,15 @@ namespace CrossClimbLite
             string playerTypedWord = selectedPlank.GetPlankTypedWord();
 
             if (string.IsNullOrEmpty(playerTypedWord)) playerTypedWord = "";
-            
+
+            playerTypedWord = playerTypedWord.ToLower();
+
             if (playerTypedWord == correctWord) return;
 
             bool hasCrossedOutAnyLetter = false;
 
             if (!string.IsNullOrEmpty(playerTypedWord))
             {
-                playerTypedWord = playerTypedWord.ToLower();
-                
                 for (int i = 0; i < playerTypedWord.Length; i++)
                 {
                     if (string.IsNullOrEmpty(playerTypedWord[i].ToString()) || playerTypedWord[i] == ' ') continue;
@@ -137,6 +135,8 @@ namespace CrossClimbLite
 
                 GameManager.hintsUsedThisRound++;
 
+                StartHintCooldownProcess();
+
                 return;
             }
 
@@ -145,6 +145,8 @@ namespace CrossClimbLite
             selectedPlank.letterSlotsInWordPlank[0].WriteLetterToSlot(correctWord[0].ToString(), true);
 
             GameManager.hintsUsedThisRound++;
+
+            StartHintCooldownProcess();
         }
 
         public bool CanGiveHints()

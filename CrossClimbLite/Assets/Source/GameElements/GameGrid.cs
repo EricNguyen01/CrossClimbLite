@@ -171,6 +171,8 @@ namespace CrossClimbLite
 
             ShuffleWordPlankOrderInGrid();
 
+            SetPlankAboveAndBelowOfEachPlankInList_AfterShuffle();
+
             if (!gameGridUIInstance) SpawnGameGridUIHoldingPanel_IfNull();
 
             yield return new WaitForFixedUpdate();
@@ -320,6 +322,34 @@ namespace CrossClimbLite
                 wordPlankRowsInGrid[randOrderToSwap] = wordPlankRowsInGrid[i];
 
                 wordPlankRowsInGrid[i] = plankToSwap;
+            }
+        }
+
+        private void SetPlankAboveAndBelowOfEachPlankInList_AfterShuffle()
+        {
+            if (wordPlankRowsInGrid == null || wordPlankRowsInGrid.Length == 0) return;
+
+            for(int i = 0; i < wordPlankRowsInGrid.Length; i++)
+            {
+                if (!wordPlankRowsInGrid[i]) return;
+
+                if (i - 1 >= 0)
+                {
+                    wordPlankRowsInGrid[i].SetPlankAboveThisPlank(wordPlankRowsInGrid[i - 1]);
+                }
+                else
+                {
+                    wordPlankRowsInGrid[i].SetPlankAboveThisPlank(null);
+                }
+
+                if (i + 1 <= wordPlankRowsInGrid.Length - 1)
+                {
+                    wordPlankRowsInGrid[i].SetPlankBelowThisPlank(wordPlankRowsInGrid[i + 1]);
+                }
+                else
+                {
+                    wordPlankRowsInGrid[i].SetPlankBelowThisPlank(null);
+                }
             }
         }
 

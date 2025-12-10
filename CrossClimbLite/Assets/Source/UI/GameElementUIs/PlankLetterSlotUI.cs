@@ -40,11 +40,17 @@ namespace CrossClimbLite
 
             if (!inputField.IsActive() || !inputField.isFocused || !isSelected) return;
             
-            if (!string.IsNullOrEmpty(inputField.text)) return;
-            
-            if (Input.GetButtonDown("DeleteText"))
+            if (string.IsNullOrEmpty(inputField.text) || string.IsNullOrWhiteSpace(inputField.text) || inputField.text == "" || inputField.text == " ")
             {
-                linkedPlankLetterSlot.WriteLetterToSlot(null, false);
+                if (Input.GetButtonDown("DeleteText"))
+                {
+                    linkedPlankLetterSlot.WriteLetterToSlot(null, false);
+                }
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    linkedPlankLetterSlot.WriteLetterToSlot(" ", false);
+                }
             }
         }
 

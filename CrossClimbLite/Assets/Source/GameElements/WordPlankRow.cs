@@ -71,6 +71,10 @@ namespace CrossClimbLite
         [SerializeField]
         private WordPlankRowUI wordPlankRowUILinked;
 
+        private WordPlankRow plankRowAbove;
+
+        private WordPlankRow plankRowBelow;
+
         private void Awake()
         {
             if (plankHint == string.Empty || string.IsNullOrEmpty(plankHint))
@@ -137,6 +141,16 @@ namespace CrossClimbLite
             }
         }
 
+        public void SetPlankAboveThisPlank(WordPlankRow plankAbove)
+        {
+            plankRowAbove = plankAbove;
+        }
+
+        public void SetPlankBelowThisPlank(WordPlankRow plankBelow)
+        {
+            plankRowBelow = plankBelow;
+        }
+
         public override void ConnectGameElementUI(GameElementUIBase gameElementUIToLinked)
         {
             base.ConnectGameElementUI(gameElementUIToLinked);
@@ -156,9 +170,37 @@ namespace CrossClimbLite
                 return;
             }
 
-            if(slotIndexToSet < 0) slotIndexToSet = 0;
+            if(slotIndexToSet < 0)
+            {
+                slotIndexToSet = 0;
 
-            if (slotIndexToSet >= totalLetterCountInPlank - 1) slotIndexToSet = totalLetterCountInPlank - 1;
+                if (plankRowAbove && !plankRowAbove.isPlankKeyword && plankRowAbove != this)
+                {
+                    letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, true);
+
+                    currentLetterIndex = slotIndexToSet;
+
+                    plankRowAbove.letterSlotsInWordPlank[plankRowAbove.letterSlotsInWordPlank.Length - 1].SetGameElementSelectionStatus(true, true);
+
+                    return;
+                }
+            }
+
+            if (slotIndexToSet > totalLetterCountInPlank - 1)
+            {
+                slotIndexToSet = totalLetterCountInPlank - 1;
+
+                if (plankRowBelow && !plankRowBelow.isPlankKeyword && plankRowBelow != this)
+                {
+                    letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, true);
+
+                    currentLetterIndex = slotIndexToSet;
+
+                    plankRowBelow.letterSlotsInWordPlank[0].SetGameElementSelectionStatus(true, true);
+
+                    return;
+                }
+            }
 
             if(currentLetterIndex != slotIndexToSet)
             {
