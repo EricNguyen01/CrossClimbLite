@@ -174,7 +174,7 @@ namespace CrossClimbLite
             {
                 slotIndexToSet = 0;
 
-                if (plankRowAbove && !plankRowAbove.isPlankKeyword && plankRowAbove != this)
+                if (plankRowAbove && !plankRowAbove.isPlankLocked && plankRowAbove != this)
                 {
                     letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, true);
 
@@ -190,7 +190,7 @@ namespace CrossClimbLite
             {
                 slotIndexToSet = totalLetterCountInPlank - 1;
 
-                if (plankRowBelow && !plankRowBelow.isPlankKeyword && plankRowBelow != this)
+                if (plankRowBelow && !plankRowBelow.isPlankLocked && plankRowBelow != this)
                 {
                     letterSlotsInWordPlank[currentLetterIndex].SetGameElementSelectionStatus(false, true);
 
