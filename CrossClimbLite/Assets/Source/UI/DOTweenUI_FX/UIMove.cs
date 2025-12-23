@@ -59,7 +59,7 @@ namespace CrossClimbLite
         {
             if(UI_TweenExecuteMode == UITweenExecuteMode.Auto)
             {
-                ReverseMove();
+                ReverseMoveDirection();
             }
 
             alreadyPerformedTween = true;
@@ -69,7 +69,7 @@ namespace CrossClimbLite
             alreadyPerformedTween = false;
         }
 
-        public void ReverseMove()
+        public void ReverseMoveDirection()
         {
             if (rectTransform.anchoredPosition == baseAnchoredPos) return;
 

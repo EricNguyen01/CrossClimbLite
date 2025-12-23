@@ -47,6 +47,14 @@ namespace CrossClimbLite
         [field: ReadOnlyInspector]
         public bool hasFinishedInitGameComponents { get; private set; } = false;
 
+        [SerializeField]
+        [ReadOnlyInspector]
+        public static float lastTimeScale { get; private set; } = 0.0f;
+
+        [SerializeField]
+        [ReadOnlyInspector]
+        public static bool isGamePaused = false;
+
         [Header("Runtime Player Stats")]
 
         [SerializeField]
@@ -56,8 +64,6 @@ namespace CrossClimbLite
         [SerializeField]
         [ReadOnlyInspector]
         public static int hintsUsedThisRound = 0;
-
-        public static float lastTimeScale { get; private set; } = 0.0f;
 
         public static GameManager GameManagerInstance;
 
@@ -267,6 +273,22 @@ namespace CrossClimbLite
             lastTimeScale = Time.timeScale;
 
             Time.timeScale = timeScale;
+        }
+
+        public static void ToggleGamePause()
+        {
+            if(!isGamePaused)
+            {
+                isGamePaused = true;
+
+                SetTimeScale(0.0f);
+
+                return;
+            }
+
+            isGamePaused = false;
+
+            SetTimeScale(lastTimeScale);
         }
     }
 }

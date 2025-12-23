@@ -11,7 +11,7 @@ namespace CrossClimbLite
         private WordSetDataSO wordSetDataToUse;
 
         [SerializeField, ReadOnlyInspector]
-        private List<WordSetDataSO.WordHintStruct> runtimeAnswerWordSetReadOnly;
+        public List<WordSetDataSO.WordHintStruct> runtimeAnswerWordSetReadOnly { get; private set; }
 
         private string[] wordPlankAnswersInOrder;
 
