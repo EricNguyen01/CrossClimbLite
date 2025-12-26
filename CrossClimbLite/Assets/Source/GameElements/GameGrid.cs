@@ -418,6 +418,8 @@ namespace CrossClimbLite
 
             wordPlankRowsInGrid[plankToIndex] = plankFrom;
 
+            SetPlankAboveAndBelowOfEachPlankInList_AfterShuffle();
+
             OnAWordPlankFilled?.Invoke(plankTo.GetPlankTypedWord());
         }
 
