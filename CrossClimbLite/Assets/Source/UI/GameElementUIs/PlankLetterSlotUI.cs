@@ -30,30 +30,6 @@ namespace CrossClimbLite
             }
         }
 
-        private void Update()
-        {
-            if (!enabled) return;
-
-            if (!eventSystem) return;
-
-            if (!inputField) return;
-
-            if (!inputField.IsActive() || !inputField.isFocused || !isSelected) return;
-            
-            if (string.IsNullOrEmpty(inputField.text) || string.IsNullOrWhiteSpace(inputField.text) || inputField.text == "" || inputField.text == " ")
-            {
-                if (Input.GetButtonDown("DeleteText"))
-                {
-                    linkedPlankLetterSlot.WriteLetterToSlot(null, false);
-                }
-
-                if (Input.GetKeyDown(KeyCode.Space))
-                {
-                    linkedPlankLetterSlot.WriteLetterToSlot(" ", false);
-                }
-            }
-        }
-
         public override void InitGameElementUI(GameElementBase letterSlotToLink, GameElementUIBase parentHoldingUIToLink)
         {
             base.InitGameElementUI(letterSlotToLink);
@@ -143,8 +119,6 @@ namespace CrossClimbLite
 
             inputField.text = inputField.text.ToUpper();
 
-            if(inputField.text == previousSlotValue) return;
-
             previousSlotValue = inputField.text;
 
             if(inputField.textComponent.fontStyle == TMPro.FontStyles.Strikethrough)
@@ -155,6 +129,7 @@ namespace CrossClimbLite
             linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, false);
         }
 
+        /*DEPRECATED
         //Overload of the above func but do not use in letter slot UI's TM_InputField's UnityEvent.
         //USE ONLY for changing letters when swapping bt/ planks
         public void OnLetterSlotValueChanged(string newLetter)
@@ -168,6 +143,6 @@ namespace CrossClimbLite
             inputField.text = newLetter.ToUpper();
 
             linkedPlankLetterSlot.WriteLetterToSlot(inputField.text, false);
-        }
+        }*/
     }
 }
